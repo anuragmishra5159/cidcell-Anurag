@@ -41,6 +41,11 @@ const userSchema = mongoose.Schema(
         profilePicture: {
             type: String,
             default: '',
+        },
+        userType: {
+            type: String,
+            enum: ['student', 'faculty', 'HOD', 'Admin', 'member'],
+            default: 'student',
         }
     },
     {

@@ -13,6 +13,13 @@ import { AuthProvider } from './context/AuthContext';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import Onboarding from './pages/Onboarding';
+import ProjectDetail from './pages/ProjectDetail';
+
+// Admin Imports
+import AdminLayout from './admin/AdminLayout';
+import AdminDashboard from './admin/pages/AdminDashboard';
+import UserManagement from './admin/pages/UserManagement';
+import ProjectManagement from './admin/pages/ProjectManagement';
 
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
@@ -54,16 +61,33 @@ const OnboardingGuard = ({ children }) => {
   return children;
 };
 
+// Component to protect routes that require admin role
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+  const location = useLocation();
+
+  if (loading) return null;
+  if (!user || user.userType !== 'Admin') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="min-h-screen flex flex-col">
-      <ScrollToTop />
-      <Navbar />
+      {!isAdminRoute && <ScrollToTop />}
+      {!isAdminRoute && <Navbar />}
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/events" element={<Events />} />
           <Route path="/team" element={<Team />} />
           <Route path="/contact" element={<Contact />} />
@@ -83,9 +107,21 @@ function App() {
               <Onboarding />
             </PrivateRoute>
           } />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="projects" element={<ProjectManagement />} />
+          </Route>
         </Routes>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }
