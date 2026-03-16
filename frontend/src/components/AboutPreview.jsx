@@ -5,10 +5,13 @@ import ScrollReveal from './ScrollReveal';
 
 export default function AboutPreview() {
   return (
-    <section className="w-screen h-screen flex items-center bg-white relative overflow-hidden">
+    <section className="w-full min-h-screen flex items-center bg-transparent py-20 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-1/4 right-0 w-32 h-32 bg-highlight-yellow border-4 border-primary shadow-neo hidden lg:block transform rotate-12 -z-10 translate-x-12"></div>
+      <div className="absolute bottom-20 left-10 w-24 h-24 bg-highlight-pink border-4 border-primary shadow-neo hidden lg:block transform -rotate-6 -z-10"></div>
+      <div className="absolute top-1/3 left-0 w-12 h-12 bg-highlight-teal border-4 border-primary shadow-neo hidden lg:block transform -translate-x-6 -z-10"></div>
       
-      
-      <div className="container-max mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-max mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <SectionHeading
           subtitle="About CID"
           title="Structured Platform for Innovation"

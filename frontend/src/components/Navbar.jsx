@@ -26,9 +26,9 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b-3 ${scrolled
-          ? 'bg-transparent border-transparent shadow-none py-1'
-          : 'bg-transparent border-transparent shadow-none py-3'
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
+          ? 'bg-white border-b-4 border-primary shadow-sm py-1'
+          : 'bg-transparent border-b-4 border-transparent shadow-none py-3'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,17 +51,17 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav - Centered */}
-          <div className="hidden xl:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center">
-            <div className="flex items-center bg-white/50 border-2 border-primary/20 rounded-xl px-1 py-1 shadow-sm">
+          <div className="hidden xl:flex flex-1 justify-center items-center px-4">
+            <div className="flex items-center bg-white border-4 border-primary shadow-neo px-1 py-1">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={link.path}
                   className={({ isActive }) =>
-                    `px-3 lg:px-4 py-2 font-bold uppercase text-[12px] lg:text-sm transition-all rounded-lg border-2 ${isActive
+                    `px-3 lg:px-4 py-2 font-bold uppercase text-[12px] lg:text-sm transition-all border-2 ${isActive
                       ? 'bg-highlight-purple border-primary shadow-neo-sm -translate-y-[2px]'
-                      : 'border-transparent text-primary hover:bg-highlight-blue/50 hover:border-primary/40'
-                    } ${link.name === 'Developers' && !isActive ? 'animate-pulse bg-highlight-pink/80 border-primary text-black' : ''}`
+                      : 'border-transparent text-primary hover:bg-highlight-yellow hover:border-primary hover:shadow-neo-sm hover:-translate-y-[2px]'
+                    } ${link.name === 'Developers' && !isActive ? 'animate-pulse bg-highlight-pink border-primary text-black shadow-neo-sm' : ''}`
                   }
                 >
                   {link.name}
@@ -71,7 +71,7 @@ export default function Navbar() {
           </div>
             
           {/* Actions - Right side */}
-          <div className="hidden md:flex items-center gap-2 pl-2 z-10">
+          <div className="hidden md:flex items-center gap-2 pl-2 z-10 shrink-0">
             <Link
               to="/contact"
               className="btn-neo py-2 px-4 text-xs lg:text-sm whitespace-nowrap bg-highlight-yellow"

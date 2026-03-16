@@ -31,8 +31,14 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <section className="w-screen h-screen flex items-center bg-bg relative overflow-hidden">
-      <div className="container-max mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full min-h-screen flex items-center bg-transparent relative overflow-hidden py-20 z-0">
+      
+      {/* Background Decor */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-40 bg-highlight-yellow transform -rotate-3 border-y-4 border-primary z-0 opacity-30"></div>
+      <div className="absolute right-0 top-0 w-64 h-64 border-[16px] border-primary rounded-full opacity-10 translate-x-1/2 -translate-y-1/2 z-0 hidden md:block"></div>
+      <div className="absolute left-10 bottom-20 font-heading font-black text-6xl md:text-8xl text-primary opacity-5 transform -rotate-90 origin-bottom-left pointer-events-none z-0 hidden sm:block">GROWTH</div>
+
+      <div className="container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         <SectionHeading
           subtitle="Why Join"
           title="Benefits of CID-Cell"
@@ -40,17 +46,17 @@ export default function Benefits() {
           compact
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {benefits.map(({ icon: Icon, title, desc, color }, idx) => (
-            <ScrollReveal key={title} delay={idx * 100}>
+            <ScrollReveal key={title} delay={idx * 100} className="h-full">
             <div
-              className="neo-card p-6 flex flex-col items-center text-center group bg-white border-3 border-primary h-full"
+              className={`p-8 flex flex-col items-center text-center group bg-white border-4 border-primary shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all h-full relative z-10`}
             >
-              <div className={`w-20 h-20 ${color} border-3 border-primary rounded-full flex items-center justify-center mb-5 shadow-neo group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all`}>
-                <Icon size={34} className="text-primary" />
+              <div className={`w-24 h-24 ${color} border-4 border-primary bg-highlight-color flex items-center justify-center mb-6 shadow-neo-sm group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all`}>
+                <Icon size={44} className="text-primary stroke-[3px]" />
               </div>
-              <h3 className="font-heading text-xl font-black uppercase text-primary mb-3 leading-none">{title}</h3>
-              <p className="text-primary text-sm font-medium leading-relaxed">{desc}</p>
+              <h3 className="font-heading text-2xl font-black uppercase text-primary mb-4 leading-tight tracking-wider">{title}</h3>
+              <p className="text-primary text-base font-bold leading-relaxed">{desc}</p>
             </div>
             </ScrollReveal>
           ))}

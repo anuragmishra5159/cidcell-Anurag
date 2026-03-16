@@ -44,17 +44,28 @@ const semesters = [
 
 export default function Timeline() {
   return (
-    <section className="section-padding bg-white relative overflow-hidden border-t-3 border-b-3 border-black">
-      {/* Decorative background grid */}
+    <section className="section-padding bg-transparent relative overflow-hidden z-0">
+      {/* Decorative background grid and shapes */}
       <div 
-        className="absolute inset-0 opacity-10 pointer-events-none" 
+        className="absolute inset-0 opacity-10 pointer-events-none z-0" 
         style={{ 
-          backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', 
-          backgroundSize: '20px 20px' 
+          backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', 
+          backgroundSize: '32px 32px' 
         }} 
       ></div>
+      
+      {/* Massive Background Text */}
+      <div className="absolute top-[20%] left-[-10%] font-heading font-black text-6xl md:text-9xl lg:text-[14rem] text-primary opacity-5 transform -rotate-12 pointer-events-none z-0 whitespace-nowrap">ROADMAP</div>
+      <div className="absolute bottom-[10%] right-[-5%] font-heading font-black text-6xl md:text-9xl lg:text-[14rem] text-primary opacity-5 transform rotate-6 pointer-events-none z-0 whitespace-nowrap">JOURNEY</div>
 
-      <div className="container-max mx-auto relative z-10">
+      {/* Heavy Floating Neo-brutalist Shapes */}
+      <div className="absolute top-[10%] left-[5%] w-32 h-32 bg-highlight-teal border-4 border-primary shadow-neo hidden md:block transform rotate-12 z-0"></div>
+      <div className="absolute top-[30%] right-[5%] w-48 h-48 bg-highlight-yellow border-[12px] border-primary rounded-full hidden md:block opacity-30 z-0"></div>
+      <div className="absolute top-[60%] left-[-2%] w-40 h-40 bg-highlight-purple border-4 border-primary shadow-neo hidden xl:block transform -rotate-6 z-0"></div>
+      <div className="absolute bottom-[20%] right-[10%] w-24 h-24 bg-highlight-pink border-4 border-primary shadow-neo hidden md:block transform -rotate-12 z-0"></div>
+      <div className="absolute bottom-[5%] left-[20%] w-32 h-32 border-[8px] border-primary rounded-none hidden lg:block opacity-20 transform -rotate-45 z-0"></div>
+
+      <div className="container-max mx-auto relative z-10 w-full">
         <SectionHeading
           subtitle="Learning Roadmap"
           title="Academic to Industry Journey"
@@ -63,17 +74,17 @@ export default function Timeline() {
 
         <div className="relative mt-24">
           {/* Vertical central line (Desktop) */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-black -translate-x-1/2"></div>
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-2 bg-primary -translate-x-1/2 rounded-full"></div>
           
           {/* Vertical line (Mobile) */}
-          <div className="md:hidden absolute left-8 top-0 bottom-0 w-1 bg-black"></div>
+          <div className="md:hidden absolute left-8 top-0 bottom-0 w-2 bg-primary rounded-full"></div>
 
           <div className="space-y-24">
             {semesters.map((item, idx) => {
               const isLeft = idx % 2 === 0;
               return (
                 <ScrollReveal key={item.sem} delay={idx * 50} className="w-full">
-                <div className="relative flex flex-col md:flex-row items-center justify-center w-full">
+                <div className="relative flex flex-col md:flex-row items-center justify-center w-full group">
                   
                   {/* Desktop: Left Side Content */}
                   <div className={`hidden md:block w-1/2 pr-16 text-right`}>
@@ -81,9 +92,10 @@ export default function Timeline() {
                   </div>
 
                   {/* Center/Left Marker */}
-                  <div className="absolute left-8 md:left-1/2 top-0 md:top-1/2 -translate-x-1/2 md:-translate-y-1/2 flex items-center justify-center z-10">
-                    <div className="w-12 h-12 bg-black border-4 border-white flex items-center justify-center shadow-neo">
-                       <span className="text-white font-bold text-lg font-heading">{idx + 1}</span>
+                  <div className="absolute left-8 md:left-1/2 top-0 md:top-1/2 -translate-x-1/2 md:-translate-y-1/2 flex items-center justify-center z-10 transition-transform group-hover:scale-110">
+                    <div className="w-14 h-14 bg-white border-4 border-primary flex items-center justify-center shadow-neo-sm transform rotate-3 group-hover:rotate-0 transition-neo">
+                       <span className="text-primary font-black text-2xl font-heading absolute z-10">{idx + 1}</span>
+                       <div className={`absolute inset-0 opacity-50 ${item.color}`}></div>
                     </div>
                   </div>
                   
@@ -93,7 +105,7 @@ export default function Timeline() {
                   </div>
                   
                    {/* Mobile Content Display */}
-                   <div className="md:hidden w-full pl-24 pr-4">
+                   <div className="md:hidden w-full pl-24 pr-4 py-2">
                       <TimelineCard item={item} align="left" />
                    </div>
 
@@ -113,23 +125,23 @@ function TimelineCard({ item, align }) {
   
   return (
     <div className={`
-      relative bg-white border-3 border-black p-6 shadow-neo 
+      relative bg-white border-4 border-primary p-6 lg:p-8 shadow-neo 
       hover:translate-x-1 hover:translate-y-1 hover:shadow-none 
-      transition-all duration-200 group
+      transition-neo
     `}>
       {/* Heavy Colored Side Bar */}
-      <div className={`absolute top-0 bottom-0 w-4 ${item.color} border-r-3 border-black left-0 border-r-black`}></div>
+      <div className={`absolute top-0 bottom-0 w-6 ${item.color} border-r-4 border-primary left-0`}></div>
       
-      <div className="pl-6">
-        <span className={`inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase mb-3 transform -rotate-1`}>
+      <div className="pl-6 md:pl-8">
+        <span className={`inline-block px-4 py-1.5 bg-primary text-white text-xs font-black uppercase mb-4 shadow-neo-sm transform -rotate-1`}>
           {item.sem}
         </span>
         
-        <h3 className="font-heading font-black text-2xl text-black uppercase mb-2 leading-tight">
+        <h3 className="font-heading font-black text-3xl text-primary uppercase mb-3 leading-none tracking-tight">
           {item.title}
         </h3>
         
-        <p className="text-black font-medium text-sm leading-relaxed border-t-2 border-black pt-2 mt-2">
+        <p className="text-primary/80 font-bold text-base leading-relaxed border-t-4 border-primary pt-3 mt-3">
           {item.desc}
         </p>
       </div>
