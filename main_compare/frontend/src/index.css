@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-primary antialiased font-body;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading uppercase tracking-wide leading-tight;
+  }
+  .admin-panel h1, .admin-panel h2, .admin-panel h3, .admin-panel h4, .admin-panel h5, .admin-panel h6 {
+    @apply font-sans normal-case tracking-normal leading-normal;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 md:py-32;
+  }
+  .container-max {
+    @apply max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .neo-card {
+    @apply bg-white border-2 lg:border-3 border-primary rounded-neo shadow-neo transition-all duration-300;
+  }
+  .neo-card:hover {
+    @apply shadow-none translate-x-[4px] translate-y-[4px];
+  }
+  .btn-neo {
+    @apply px-6 py-3 bg-highlight-yellow border-2 border-primary rounded-full font-bold text-primary shadow-neo transition-all duration-200 inline-flex items-center gap-2 uppercase tracking-wide cursor-pointer select-none;
+  }
+  .btn-neo:hover {
+    @apply shadow-none translate-x-[2px] translate-y-[2px] bg-highlight-orange;
+  }
+  .btn-neo-secondary {
+    @apply px-6 py-3 bg-white border-2 border-primary rounded-full font-bold text-primary shadow-neo transition-all duration-200 inline-flex items-center gap-2 uppercase tracking-wide cursor-pointer select-none;
+  }
+  .btn-neo-secondary:hover {
+    @apply shadow-none translate-x-[2px] translate-y-[2px] bg-highlight-blue;
+  }
+  .neo-badge {
+    @apply px-3 py-1 bg-white border-2 border-primary rounded-full text-xs font-bold uppercase shadow-neo-sm inline-block;
+  }
+  .bg-hazard {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #FFD700,
+      #FFD700 15px,
+      #1a1a1a 15px,
+      #1a1a1a 30px
+    );
+  }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-bg border-l-2 border-primary;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded-full border-2 border-bg;
+}
+
+/* Admin Global Scrollbar for Modals and Lists */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: none;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 10px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+.custom-scrollbar-dark:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+

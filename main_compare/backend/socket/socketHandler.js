@@ -1,0 +1,131 @@
+const Message = require('../models/Message');
+const User = require('../models/User');
+
+// Simple online users store (Map: userId -> Set of socketIds)
+const onlineUsers = new Map();
+
+const socketHandler = (io) => {
+    return (socket) => {
+        const userId = socket.user.id; // From middleware
+        
+        // Track connection
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set());
+        }
+        onlineUsers.get(userId).add(socket.id);
+        
+        // Join personal room for private messaging
+        socket.join(userId);
+        
+        // Broadcast user is online
+        io.emit('user_online', { userId });
+        
+        // Send initial online list
+        socket.emit('online_users', Array.from(onlineUsers.keys()));
+
+        // --- Private Chat Events ---
+
+        socket.on('send_message', async (data, callback) => {
+            try {
+                const { receiverId, text } = data;
+                if (!receiverId || !text) return;
+
+                const newMessage = await Message.create({
+                    senderId: userId,
+                    receiverId,
+                    text,
+                    status: onlineUsers.has(String(receiverId)) ? 'delivered' : 'sent'
+                });
+
+                // Populate and format for frontend
+                const populatedMessage = {
+                    _id: newMessage._id,
+                    senderId: userId,
+                    receiverId,
+                    text: newMessage.text,
+                    createdAt: newMessage.createdAt,
+                    status: newMessage.status,
+                    isEdited: false,
+                    isDeleted: false
+                };
+
+                // Emit to receiver and other sender sockets
+                io.to(receiverId).emit('receive_message', populatedMessage);
+                io.to(userId).emit('receive_message', populatedMessage);
+
+                if (callback) callback({ success: true, data: populatedMessage });
+            } catch (err) {
+                console.error('Socket send_message error:', err);
+                if (callback) callback({ success: false });
+            }
+        });
+
+        socket.on('typing', (data) => {
+            const { receiverId } = data;
+            io.to(receiverId).emit('user_typing', { userId });
+        });
+
+        socket.on('stop_typing', (data) => {
+            const { receiverId } = data;
+            io.to(receiverId).emit('user_stop_typing', { userId });
+        });
+
+        socket.on('edit_message', async (data, callback) => {
+            try {
+                const { messageId, newText } = data;
+                const message = await Message.findById(messageId);
+                
+                if (!message || String(message.senderId) !== userId) {
+                    return callback && callback({ success: false, error: 'Unauthorized' });
+                }
+
+                message.text = newText;
+                message.isEdited = true;
+                await message.save();
+
+                io.to(String(message.receiverId)).emit('message_updated', message);
+                io.to(userId).emit('message_updated', message);
+
+                if (callback) callback({ success: true });
+            } catch (err) {
+                if (callback) callback({ success: false });
+            }
+        });
+
+        socket.on('delete_message', async (data, callback) => {
+            try {
+                const { messageId } = data;
+                const message = await Message.findById(messageId);
+                
+                if (!message || String(message.senderId) !== userId) {
+                    return callback && callback({ success: false });
+                }
+
+                message.isDeleted = true;
+                message.text = "This message was deleted";
+                await message.save();
+
+                io.to(String(message.receiverId)).emit('message_deleted', { messageId });
+                io.to(userId).emit('message_deleted', { messageId });
+
+                if (callback) callback({ success: true });
+            } catch (err) {
+                if (callback) callback({ success: false });
+            }
+        });
+
+        // --- Disconnect ---
+        socket.on('disconnect', () => {
+            const sockets = onlineUsers.get(userId);
+            if (sockets) {
+                sockets.delete(socket.id);
+                if (sockets.size === 0) {
+                    onlineUsers.delete(userId);
+                    io.emit('user_offline', { userId });
+                }
+            }
+        });
+    };
+};
+
+module.exports = socketHandler;
