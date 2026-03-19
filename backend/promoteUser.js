@@ -29,7 +29,7 @@ const promoteUser = async (email) => {
 
 const email = process.argv[2];
 if (!email) {
-  console.log('Please provide an email: node promoteUser.js your-email@example.com');
+  console.log('Please provide an email: node promoteUser.js [24cs10ne83@mitsgwl.ac.in]');
   process.exit(1);
 }
 
