@@ -6,8 +6,28 @@ const EventRegistration = require('../models/EventRegistration');
 // @access  Public
 const getEvents = async (req, res) => {
     try {
-        // Exclude sensitive link from public list
-        const events = await Event.find({}).select('-whatsappGroupLink').sort({ date: 1 });
+        const page = parseInt(req.query.page, 10);
+        const limit = parseInt(req.query.limit, 10);
+
+        if (page && limit) {
+            const skip = (page - 1) * limit;
+            const total = await Event.countDocuments();
+            const events = await Event.find({})
+                .select('-whatsappGroupLink')
+                .sort({ date: -1 })
+                .skip(skip)
+                .limit(limit);
+            
+            return res.json({
+                data: events,
+                total,
+                page,
+                pages: Math.ceil(total / limit)
+            });
+        }
+
+        // Backward compatibility: send plain array if no pagination requested
+        const events = await Event.find({}).select('-whatsappGroupLink').sort({ date: -1 });
         res.json(events);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { validate, schemas } = require('../middleware/validate');
 const {
     getEvents,
     getEventById,
@@ -11,8 +12,8 @@ const {
 const { protect, admin, optionalProtect } = require('../middleware/authMiddleware');
 
 router.route('/')
-    .get(getEvents)
-    .post(protect, admin, createEvent);
+    .get(validate(schemas.paginationSchema), getEvents)
+    .post(protect, admin, validate(schemas.createEventSchema), createEvent);
 
 router.route('/:id')
     .get(optionalProtect, getEventById)
