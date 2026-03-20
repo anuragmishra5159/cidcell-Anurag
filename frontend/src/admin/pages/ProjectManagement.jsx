@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Modal from '../components/Modal';
@@ -167,7 +169,30 @@ const ProjectManagement = () => {
     finally { setDeleteConfirm({ isOpen: false, id: null }); }
   };
 
-  const filteredProjects = projects.filter(p => 
+const handleDownloadCSV = () => {
+    const csvRows = [
+      ['Name', 'Status', 'Creator', 'Email', 'Tech Stack']
+    ];
+    projects.forEach(p => {
+      csvRows.push([
+        `"${p.name.replace(/"/g, '""')}"`,
+        p.isApproved ? 'Approved' : 'Pending',
+        `"${p.creatorName || (p.createdBy?.name || 'Unknown')}"`,
+        `"${p.creatorEmail || (p.createdBy?.email || '')}"`,
+        `"${(p.techStack || []).join(', ')}"`
+      ]);
+    });
+    const csvString = csvRows.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Projects-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const filteredProjects = projects.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -179,13 +204,14 @@ const ProjectManagement = () => {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-800">Projects</h1>
             <p className="text-slate-500 text-sm mt-1">Review, approve, and manage cell project submissions.</p>
           </div>
-          <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
-            <Plus size={16} /> Add Project
-          </button>
-        </div>
-
-        <div className="p-3 sm:p-4 rounded-xl border shadow-sm bg-white border-slate-200">
-          <div className="relative w-full max-w-md">
+            <div className="flex gap-2">
+              <button onClick={handleDownloadCSV} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 shadow-sm transition-colors flex items-center gap-2">
+                Download CSV
+              </button>
+              <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
+                <Plus size={16} /> Add Project
+              </button>
+            </div>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input 
               type="text" placeholder="Search projects by name..." 
@@ -309,7 +335,14 @@ const ProjectManagement = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Description*</label>
-              <textarea required rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-slate-400" placeholder="Project description..."></textarea>
+                <div className="bg-white rounded-md h-[250px] mb-12">
+                  <ReactQuill 
+                    theme="snow" 
+                    value={formData.description} 
+                    onChange={(val) => setFormData({ ...formData, description: val })} 
+                    style={{ height: '200px' }} 
+                  />
+                </div>
             </div>
           </div>
 

@@ -155,10 +155,10 @@ export default function EventDetail() {
                </h2>
 
                <div className="prose prose-slate max-w-none">
-                 <p className="text-slate-700 text-lg font-medium leading-relaxed whitespace-pre-wrap">
-                   {event.description}
-                 </p>
-               </div>
+                  <div 
+                    className="text-slate-700 text-lg leading-relaxed space-y-4"
+                    dangerouslySetInnerHTML={{ __html: event.description }}
+                  />
                
                {event.whatsappGroupLink && isRegistered && (
                   <div className="mt-12 p-8 bg-green-50 border-3 border-dashed border-green-200 rounded-2xl flex flex-col md:flex-row items-center gap-6">

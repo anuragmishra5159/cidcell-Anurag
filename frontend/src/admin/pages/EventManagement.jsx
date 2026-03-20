@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Modal from '../components/Modal';
@@ -159,6 +161,30 @@ const EventManagement = () => {
     finally { setDeleteConfirm({ isOpen: false, id: null }); }
   };
 
+  const handleDownloadCSV = () => {
+    const csvRows = [
+      ['Title', 'Date', 'Type', 'Organizer', 'Max Attendees', 'Status']
+    ];
+    events.forEach(event => {
+      csvRows.push([
+        `"${event.title.replace(/"/g, '""')}"`,
+        new Date(event.date).toLocaleDateString(),
+        event.type || 'N/A',
+        `"${event.organizer || ''}"`,
+        event.maxAttendees || 'Unlimited',
+        event.isScheduled ? 'Scheduled' : 'Draft'
+      ]);
+    });
+    const csvString = csvRows.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Events-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const filteredEvents = events.filter(ev =>
     ev.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -171,13 +197,14 @@ const EventManagement = () => {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-800">Event Management</h1>
             <p className="text-slate-500 text-sm mt-1">Organize and track CID Cell activities.</p>
           </div>
-          <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
-            <Plus size={16} /> Create Event
-          </button>
-        </div>
-
-        <div className="p-3 sm:p-4 rounded-xl border shadow-sm bg-white border-slate-200">
-          <div className="relative w-full max-w-md">
+            <div className="flex gap-2">
+              <button onClick={handleDownloadCSV} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 shadow-sm transition-colors flex items-center gap-2">
+                Download CSV
+              </button>
+              <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
+                <Plus size={16} /> Create Event
+              </button>
+            </div>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text" placeholder="Filter events by title..."
@@ -338,7 +365,14 @@ const EventManagement = () => {
             </div>
             <div className="space-y-1 pt-2">
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Description*</label>
-              <textarea required rows="4" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none" placeholder="Provide event itinerary and description..."></textarea>
+                <div className="bg-white rounded-md h-[250px] mb-12">
+                  <ReactQuill 
+                    theme="snow" 
+                    value={formData.description} 
+                    onChange={(val) => setFormData({ ...formData, description: val })} 
+                    style={{ height: '200px' }} 
+                  />
+                </div>
             </div>
             <div className="flex items-center gap-2 pt-2">
               <input type="checkbox" id="scheduled" checked={formData.isScheduled} onChange={e => setFormData({ ...formData, isScheduled: e.target.checked })} className="w-4 h-4 rounded text-indigo-600 border border-slate-300 focus:ring-indigo-500" />
