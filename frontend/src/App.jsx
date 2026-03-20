@@ -26,6 +26,8 @@ import UserManagement from './admin/pages/UserManagement';
 import ProjectManagement from './admin/pages/ProjectManagement';
 import EventManagement from './admin/pages/EventManagement';
 import MemberManagement from './admin/pages/MemberManagement';
+import MentorDashboard from './mentor/pages/MentorDashboard';
+import MentorChat from './mentor/pages/MentorChat';
 
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
@@ -45,6 +47,9 @@ const PrivateRoute = ({ children }) => {
 // Check if a user's profile meets ALL required fields
 const isProfileComplete = (user) => {
   if (!user) return false;
+  if (user.userType === 'mentor') {
+    return !!(user.domainOfExpertise && user.department && user.aboutMentor);
+  }
   return (
     user.branch &&
     user.batch &&
@@ -74,6 +79,18 @@ const AdminRoute = ({ children }) => {
 
   if (loading) return null;
   if (!user || user.userType?.toLowerCase() !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+// Component to protect routes that require mentor role
+const MentorRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return null;
+  if (!user || user.userType !== 'mentor') {
     return <Navigate to="/" replace />;
   }
 
@@ -128,6 +145,18 @@ function App() {
             <PrivateRoute>
               <Chat />
             </PrivateRoute>
+          } />
+
+          {/* Mentor Routes */}
+          <Route path="/mentor/dashboard" element={
+            <MentorRoute>
+              <MentorDashboard />
+            </MentorRoute>
+          } />
+          <Route path="/mentor/chat" element={
+            <MentorRoute>
+              <MentorChat />
+            </MentorRoute>
           } />
 
           {/* Admin Routes */}

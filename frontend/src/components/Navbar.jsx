@@ -7,13 +7,14 @@ const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Dashboard', path: '/dashboard', authRequired: true },
   { name: 'Admin', path: '/admin/dashboard', authRequired: true, adminRequired: true },
+  { name: 'Mentor', path: '/mentor/dashboard', authRequired: true, mentorRequired: true },
   { name: 'About', path: '/about' },
   { name: 'Projects', path: '/projects' },
   { name: 'Roadmap', path: '/roadmap' },
   { name: 'Events', path: '/events' },
   { name: 'Team', path: '/team' },
   { name: 'Developers', path: '/developers' },
-  { name: 'Chat', path: '/chat', authRequired: true },
+  { name: 'Chat', path: '/chat', authRequired: true, hideForMentor: true },
 ];
 
 export default function Navbar() {
@@ -70,6 +71,8 @@ export default function Navbar() {
             <div className="flex items-center bg-white border-4 border-primary shadow-neo px-1 py-1">
               {navLinks.filter(link => {
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;
+                if (link.mentorRequired && user?.userType !== 'mentor') return false;
+                if (link.hideForMentor && user?.userType === 'mentor') return false;
                 if (link.authRequired && !user) return false;
                 return true;
               }).map((link) => (
@@ -135,6 +138,8 @@ export default function Navbar() {
             <div className="bg-white border-3 border-primary shadow-neo rounded-xl p-4 space-y-2 mt-4">
               {navLinks.filter(link => {
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;
+                if (link.mentorRequired && user?.userType !== 'mentor') return false;
+                if (link.hideForMentor && user?.userType === 'mentor') return false;
                 if (link.authRequired && !user) return false;
                 return true;
               }).map((link) => (

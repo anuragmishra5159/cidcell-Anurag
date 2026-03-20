@@ -66,7 +66,10 @@ export default function Onboarding() {
             github: user?.socialLinks?.github || '',
             leetcode: user?.socialLinks?.leetcode || '',
             other: user?.socialLinks?.other || ''
-        }
+        },
+        domainOfExpertise: user?.domainOfExpertise || '',
+        department: user?.department || '',
+        aboutMentor: user?.aboutMentor || ''
     });
 
     const [customSkill, setCustomSkill] = useState('');
@@ -75,7 +78,7 @@ export default function Onboarding() {
 
     if (!user) return <Navigate to="/auth" />;
 
-    const isEditing = !!user?.branch;
+    const isEditing = user?.userType === 'mentor' ? !!user?.domainOfExpertise : !!user?.branch;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -100,7 +103,7 @@ export default function Onboarding() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.skills.length === 0) {
+        if (user?.userType !== 'mentor' && formData.skills.length === 0) {
             alert('Please add at least one skill before saving.');
             return;
         }
@@ -111,7 +114,11 @@ export default function Onboarding() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUser(res.data.user);
-            navigate('/profile');
+            if (res.data.user?.userType === 'mentor') {
+                navigate('/mentor/dashboard');
+            } else {
+                navigate('/profile');
+            }
         } catch (error) {
             console.error('Error saving profile:', error);
             alert('Failed to save profile. Please try again.');
@@ -173,6 +180,62 @@ export default function Onboarding() {
                         </div>
                     </div>
 
+                    {user?.userType === 'mentor' ? (
+                        <div className="bg-white border-4 border-primary rounded-none p-6 shadow-neo relative">
+                            <div className="absolute -top-3 right-4 bg-highlight-teal border-2 border-primary px-3 py-1 font-heading uppercase text-xs shadow-neo-sm transform rotate-1">
+                                Mentor Profile <span className="text-primary">*</span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-2">
+                                <div className="sm:col-span-2">
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">
+                                        About You <span className="text-red-500">*</span>
+                                    </label>
+                                    <textarea
+                                        name="aboutMentor"
+                                        value={formData.aboutMentor}
+                                        onChange={handleChange}
+                                        placeholder="Write a brief bio about your experience..."
+                                        required
+                                        rows="3"
+                                        className={inputCls + " resize-none"}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">
+                                        Domain of Interest <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="domainOfExpertise"
+                                        value={formData.domainOfExpertise}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Web Dev, Machine Learning"
+                                        required
+                                        className={inputCls}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">
+                                        Department <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            name="department"
+                                            value={formData.department}
+                                            onChange={handleChange}
+                                            required
+                                            className={inputCls + " appearance-none pr-8"}
+                                        >
+                                            <option value="">Select your department</option>
+                                            {branches.map(b => <option key={b} value={b}>{b}</option>)}
+                                        </select>
+                                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
                     {/* ── Academic ── */}
                     <div className="bg-white border-4 border-primary rounded-none p-6 shadow-neo relative">
                         <div className="absolute -top-3 right-4 bg-highlight-teal border-2 border-primary px-3 py-1 font-heading uppercase text-xs shadow-neo-sm transform rotate-1">
@@ -307,6 +370,9 @@ export default function Onboarding() {
                             ))}
                         </div>
                     </div>
+
+                        </>
+                    )}
 
                     {/* ── Submit ── */}
                     <button

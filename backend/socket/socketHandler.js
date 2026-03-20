@@ -114,6 +114,23 @@ const socketHandler = (io) => {
             }
         });
 
+        // --- Doubt Session Events ---
+        socket.on('join_doubt_session', (data) => {
+            const { sessionId } = data;
+            if (sessionId) socket.join(`doubt_${sessionId}`);
+        });
+
+        socket.on('leave_doubt_session', (data) => {
+            const { sessionId } = data;
+            if (sessionId) socket.leave(`doubt_${sessionId}`);
+        });
+
+        socket.on('send_doubt_message', (data) => {
+            // Expects complete message object from REST API
+            const { sessionId, message } = data;
+            socket.to(`doubt_${sessionId}`).emit('receive_doubt_message', message);
+        });
+
         // --- Disconnect ---
         socket.on('disconnect', () => {
             const sockets = onlineUsers.get(userId);

@@ -133,7 +133,7 @@ export default function Profile() {
   if (!user) return <Navigate to="/auth" />;
 
   const { enrollmentNo, displayName } = parseUserIdentity(user);
-  const profileIncomplete = !user.branch;
+  const profileIncomplete = user?.userType === 'mentor' ? !(user.domainOfExpertise && user.department && user.aboutMentor) : !user.branch;
   const matchedRoadmaps = getMatchedRoadmaps(user.skills || []);
 
   const handleLogout = () => {
@@ -191,6 +191,7 @@ export default function Profile() {
               </span>
             )}
             {/* Branch + Batch pills */}
+            {user.userType !== 'mentor' && (
             <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
               <span className="bg-highlight-blue/30 border border-primary/30 font-body text-xs px-2 py-1 rounded-full">
                 {user.branch || 'No branch'}
@@ -199,6 +200,7 @@ export default function Profile() {
                 {user.batch || 'No batch'}
               </span>
             </div>
+            )}
           </div>
 
           {/* RIGHT — Action buttons */}
@@ -225,6 +227,42 @@ export default function Profile() {
             ────────────────────────────────────────────────── */}
         <div className="grid lg:grid-cols-2 gap-6">
 
+          {user.userType === 'mentor' ? (
+              <div className="bg-white border-3 border-primary shadow-neo p-6 lg:col-span-2">
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Mentor Details
+                  </span>
+                  <button
+                    onClick={() => navigate('/onboarding')}
+                    className="text-[10px] font-bold text-primary underline hover:text-gray-600"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-3">About You</span>
+                    <p className="font-body text-sm font-bold text-slate-700 leading-relaxed max-w-3xl bg-bg border-3 border-primary shadow-neo-sm p-5 rounded-2xl">
+                        {user.aboutMentor || 'No bio provided.'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-3">Domain of Interest</span>
+                    <span className="bg-highlight-teal border-2 border-primary font-bold font-body text-xs px-3 py-1 shadow-[2px_2px_0_#1A1A1A] rounded-full inline-block">
+                       {user.domainOfExpertise || 'Not specified'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-3">Department</span>
+                    <span className="bg-highlight-yellow border-2 border-primary font-bold font-body text-xs px-3 py-1 shadow-[2px_2px_0_#1A1A1A] rounded-full inline-block">
+                       {user.department || 'Not specified'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+          ) : (
+            <>
           {/* ────────────────────────────────────────
               CARD 1 — Skills & Expertise (left column)
               ──────────────────────────────────────── */}
@@ -327,6 +365,8 @@ export default function Profile() {
               </div>
             )}
           </div>
+          </>
+          )}
 
           {/* ────────────────────────────────────────
               CARD 3 — Guidance Hub (left column, row 2)

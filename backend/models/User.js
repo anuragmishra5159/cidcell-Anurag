@@ -44,8 +44,20 @@ const userSchema = mongoose.Schema(
         },
         userType: {
             type: String,
-            enum: ['student', 'faculty', 'HOD', 'Admin', 'member'],
+            enum: ['student', 'faculty', 'HOD', 'Admin', 'member', 'mentor'],
             default: 'student',
+        },
+        domainOfExpertise: {
+            type: String,
+            default: '',
+        },
+        department: {
+            type: String,
+            default: '',
+        },
+        aboutMentor: {
+            type: String,
+            default: '',
         }
     },
     {
