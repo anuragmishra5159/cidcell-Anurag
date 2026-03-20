@@ -10,7 +10,7 @@ import Team from './pages/Team';
 import Contact from './pages/Contact';
 import Developers from './pages/Developers';
 import Roadmap from './pages/Roadmap';
-import MentorHub from './pages/MentorHub';
+import MentorHub from './pages/FindMentor';
 import { AuthProvider } from './context/AuthContext';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
@@ -29,7 +29,6 @@ import EventManagement from './admin/pages/EventManagement';
 import MemberManagement from './admin/pages/MemberManagement';
 import MentorDashboard from './mentor/pages/MentorDashboard';
 import MentorChat from './mentor/pages/MentorChat';
-import FindMentor from './pages/FindMentor';
 import StudentChat from './student/pages/StudentChat';
 
 import { useContext } from 'react';
@@ -153,7 +152,7 @@ function App() {
 
           <Route path="/find-mentor" element={
             <PrivateRoute>
-              <FindMentor />
+              <MentorHub />
             </PrivateRoute>
           } />
 
