@@ -5,9 +5,28 @@ const Project = require('../models/Project');
 // @access  Public
 const getProjects = async (req, res) => {
     try {
+        const page = parseInt(req.query.page, 10);
+        const limit = parseInt(req.query.limit, 10);
         // If query param 'all' is true and user is admin, return everything
         // Otherwise only return approved ones
         const filter = (req.query.all === 'true') ? {} : { isApproved: true };
+
+        if (page && limit) {
+            const skip = (page - 1) * limit;
+            const total = await Project.countDocuments(filter);
+            const projects = await Project.find(filter)
+                .populate('createdBy', 'username email')
+                .skip(skip)
+                .limit(limit);
+            
+            return res.json({
+                data: projects,
+                total,
+                page,
+                pages: Math.ceil(total / limit)
+            });
+        }
+
         const projects = await Project.find(filter).populate('createdBy', 'username email');
         res.json(projects);
     } catch (error) {
