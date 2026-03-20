@@ -10,6 +10,7 @@ import Team from './pages/Team';
 import Contact from './pages/Contact';
 import Developers from './pages/Developers';
 import Roadmap from './pages/Roadmap';
+import MentorHub from './pages/MentorHub';
 import { AuthProvider } from './context/AuthContext';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
@@ -116,6 +117,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/mentors" element={<MentorHub />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/developers" element={<Developers />} />

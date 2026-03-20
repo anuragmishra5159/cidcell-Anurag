@@ -294,7 +294,7 @@ export default function Team() {
                   <div className={`absolute top-0 right-0 w-32 h-32 ${accent} rounded-bl-full -mr-8 -mt-8 opacity-20 transition-transform duration-700 group-hover:scale-[3]`}></div>
                   
                   <div className="flex items-center gap-4 mb-8 relative z-10">
-                    <h3 className="font-heading text-3xl md:text-4xl font-black text-black uppercase tracking-tight">
+                    <h3 className="font-heading text-3xl md:text-4xl font-black text-black uppercase tracking-widest">
                       {domain} Team
                     </h3>
                   </div>

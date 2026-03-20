@@ -53,7 +53,7 @@ export default function CTASection() {
           </div>
         </div>
         
-        <h2 className="font-heading text-5xl md:text-7xl lg:text-9xl font-black text-black mb-10 uppercase leading-[0.85] tracking-wider relative">
+        <h2 className="font-heading text-5xl md:text-7xl lg:text-9xl font-black text-black mb-10 uppercase leading-[0.85] tracking-widest relative">
           Ready to <br/><span className="text-white text-shadow-[4px_4px_0_#000] md:text-shadow-[8px_8px_0_#000] z-10 relative">Innovate?</span>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-1/2 bg-highlight-pink -z-10 transform -rotate-2 mix-blend-screen opacity-50"></div>
         </h2>

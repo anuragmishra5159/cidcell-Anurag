@@ -55,7 +55,7 @@ export default function Benefits() {
               <div className={`w-24 h-24 ${color} border-4 border-primary bg-highlight-color flex items-center justify-center mb-6 shadow-neo-sm group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all`}>
                 <Icon size={44} className="text-primary stroke-[3px]" />
               </div>
-              <h3 className="font-heading text-2xl font-black uppercase text-primary mb-4 leading-tight tracking-wider">{title}</h3>
+              <h3 className="font-heading text-2xl font-black uppercase text-primary mb-4 leading-tight tracking-widest">{title}</h3>
               <p className="text-primary text-base font-bold leading-relaxed font-body">{desc}</p>
             </div>
             </ScrollReveal>

@@ -112,7 +112,7 @@ export default function Roadmap() {
               Developer Growth Hub
             </span>
           </div>
-          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight leading-none mb-6 text-primary">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl uppercase tracking-widest leading-none mb-6 text-primary">
             Learning <br className="md:hidden" />
             <span className="bg-highlight-yellow px-4 py-1 border-2 border-primary inline-block shadow-neo mt-2 md:mt-0">Roadmaps</span>
           </h1>
@@ -178,7 +178,7 @@ export default function Roadmap() {
                   <div className={`p-3 border-2 border-primary shadow-neo transition-neo ${section.iconClass}`}>
                     <section.icon size={24} strokeWidth={2} />
                   </div>
-                  <h2 className="font-heading text-2xl md:text-3xl uppercase tracking-tight text-primary bg-white px-4 py-2 border-2 border-primary shadow-neo transition-neo">
+                  <h2 className="font-heading text-2xl md:text-3xl uppercase tracking-widest text-primary bg-white px-4 py-2 border-2 border-primary shadow-neo transition-neo">
                     {section.title}
                   </h2>
                 </div>

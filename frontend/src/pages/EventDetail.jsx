@@ -105,7 +105,7 @@ export default function EventDetail() {
                   {event.type}
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black text-primary tracking-tight uppercase leading-[0.85]">
+              <h1 className="text-5xl md:text-7xl font-black text-primary tracking-widest uppercase leading-[0.85]">
                 {event.title}
               </h1>
             </div>

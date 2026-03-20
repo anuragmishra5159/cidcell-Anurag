@@ -77,7 +77,7 @@ export default function HeroSection() {
               </div>
             </div>
             
-            <h1 className="font-heading text-[2.8rem] sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[5rem] mb-3 md:mb-4 uppercase tracking-tighter leading-[0.85] text-black">
+            <h1 className="font-heading text-[2.8rem] sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[5rem] mb-3 md:mb-4 uppercase tracking-widest leading-[0.85] text-black">
               <span className="block mb-1 md:mb-2">Bridging</span>
               <span className="bg-highlight-yellow px-3 py-0 md:px-4 md:py-1 border-3 border-primary shadow-[6px_6px_0_0_#1a1a1a] transform -skew-x-6 inline-block mb-1 md:mb-2 mt-1 md:mt-2 text-black">ACADEMICS</span> <br />
               <span className="block mt-2 md:mt-3 text-black">WITH INDUSTRY</span>

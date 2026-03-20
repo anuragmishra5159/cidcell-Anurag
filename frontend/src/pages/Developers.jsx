@@ -103,7 +103,7 @@ export default function Developers() {
           <div className="absolute -top-6 -right-6 w-12 h-12 bg-highlight-pink border-4 border-primary shadow-neo rounded-full z-10 transform translate-x-2 -translate-y-2"></div>
           <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-highlight-yellow border-4 border-primary shadow-neo z-10 transform rotate-12"></div>
           
-          <h4 className="font-heading text-4xl md:text-5xl uppercase tracking-tighter text-primary mb-4 leading-none">Want to <br/> Contribute?</h4>
+          <h4 className="font-heading text-4xl md:text-5xl uppercase tracking-widest text-primary mb-4 leading-none">Want to <br/> Contribute?</h4>
           <p className="text-primary font-bold text-lg mb-8 max-w-xl">
             CID-Cell is an open community. Whether you're interested in making modifications to this site, or starting a new project, we're always looking for collaborators.
           </p>

@@ -38,7 +38,7 @@ export default function About() {
           <span className="inline-flex items-center px-4 py-1.5 bg-primary text-white text-sm font-bold tracking-widest uppercase mb-6 shadow-neo transform -rotate-2">
             About Us
           </span>
-          <h1 className="font-heading text-5xl md:text-7xl lg:text-[80px] text-primary mb-6 uppercase leading-none tracking-tight drop-shadow-sm">
+          <h1 className="font-heading text-5xl md:text-7xl lg:text-[80px] text-primary mb-6 uppercase leading-none tracking-widest drop-shadow-sm">
             About <span className="px-3 bg-highlight-yellow text-primary inline-block transform rotate-2 border-4 border-primary shadow-neo">CID-Cell</span>
           </h1>
           <p className="text-primary text-lg md:text-xl font-bold max-w-2xl mx-auto border-l-4 border-primary pl-6 py-2 bg-white/50 backdrop-blur-sm shadow-sm md:shadow-none md:bg-transparent">
@@ -97,7 +97,7 @@ export default function About() {
               <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-highlight-pink border-4 border-primary shadow-neo transform rotate-6 hidden md:block z-0"></div>
               
               <div className="bg-highlight-blue border-4 border-primary p-8 lg:p-10 shadow-neo transform -rotate-1 hover:rotate-0 transition-neo relative z-10">
-                <h3 className="font-heading text-3xl md:text-4xl text-primary mb-8 uppercase tracking-normal">Purpose of CID-Cell</h3>
+                <h3 className="font-heading text-3xl md:text-4xl text-primary mb-8 uppercase tracking-widest">Purpose of CID-Cell</h3>
                 <ul className="space-y-5">
                   {[
                     'Create an innovation-driven learning ecosystem',
@@ -124,7 +124,7 @@ export default function About() {
       <section className="section-padding bg-highlight-cream border-b-4 border-primary relative overflow-hidden">
         {/* Large purely aesthetic background text */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full overflow-hidden flex justify-center pointer-events-none opacity-5 -z-0">
-          <span className="font-heading text-[20vw] text-primary whitespace-nowrap leading-none tracking-normal">
+          <span className="font-heading text-[20vw] text-primary whitespace-nowrap leading-none tracking-widest">
             VISION
           </span>
         </div>
@@ -136,7 +136,7 @@ export default function About() {
               <div className="w-16 h-16 bg-highlight-teal border-4 border-primary flex items-center justify-center mb-8 shadow-neo-sm transform -rotate-3">
                 <Eye size={32} className="text-primary" strokeWidth={3} />
               </div>
-              <h3 className="font-heading text-4xl text-primary mb-6 uppercase tracking-normal">Our Vision</h3>
+              <h3 className="font-heading text-4xl text-primary mb-6 uppercase tracking-widest">Our Vision</h3>
               <p className="text-primary font-bold leading-relaxed text-lg border-t-4 border-primary pt-6">
                 To establish a dynamic, innovation-driven ecosystem within the Department of Computer Science & Engineering
                 that empowers students to bridge the gap between academic learning and real-world industry requirements
@@ -148,7 +148,7 @@ export default function About() {
               <div className="w-16 h-16 bg-highlight-orange border-4 border-primary flex items-center justify-center mb-8 shadow-neo-sm transform rotate-3">
                 <Target size={32} className="text-primary" strokeWidth={3} />
               </div>
-              <h3 className="font-heading text-4xl text-primary mb-6 uppercase tracking-normal">Our Mission</h3>
+              <h3 className="font-heading text-4xl text-primary mb-6 uppercase tracking-widest">Our Mission</h3>
               <ul className="space-y-4 text-primary font-bold">
                 {[
                   'Facilitate project-based, hands-on learning experiences.',

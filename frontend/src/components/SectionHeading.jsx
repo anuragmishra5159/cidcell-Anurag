@@ -44,7 +44,7 @@ export default function SectionHeading({ subtitle, title, description, light = f
           {subtitle}
         </span>
       )}
-      <h2 className={`font-heading ${compact ? 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-5' : 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8'} font-black uppercase tracking-tight leading-none ${light ? 'text-white' : 'text-primary'}`}>
+      <h2 className={`font-heading ${compact ? 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-5' : 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8'} font-black uppercase tracking-widest leading-none ${light ? 'text-white' : 'text-primary'}`}>
         {title}
       </h2>
       {description && (

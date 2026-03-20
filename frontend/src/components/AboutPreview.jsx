@@ -50,7 +50,7 @@ export default function AboutPreview() {
                 <card.icon size={28} className="text-primary" />
               </div>
               
-              <h3 className="font-heading text-2xl font-black text-primary mb-3 uppercase leading-none relative z-10">{card.title}</h3>
+              <h3 className="font-heading text-2xl font-black text-primary mb-3 uppercase leading-none relative z-10 tracking-widest">{card.title}</h3>
               <p className="text-primary font-medium text-base leading-relaxed relative z-10 border-l-4 border-gray-200 pl-4 font-body">{card.desc}</p>
             </div>
             </ScrollReveal>

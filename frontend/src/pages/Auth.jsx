@@ -43,7 +43,7 @@ const Auth = () => {
                         <img src="/logo.png" alt="CID-Cell Logo" className="w-24 h-24 object-contain" />
                     </div>
 
-                    <h1 className="font-heading text-[60px] xl:text-[80px] uppercase text-primary leading-[0.9] tracking-tighter mb-6 relative">
+                    <h1 className="font-heading text-[60px] xl:text-[80px] uppercase text-primary leading-[0.9] tracking-widest mb-6 relative">
                         Collaborative <br />
                         <span className="bg-highlight-teal inline-block px-4 py-1 transform -skew-x-3 my-2 border-4 border-primary shadow-neo">
                             Innovation
@@ -82,7 +82,7 @@ const Auth = () => {
                                 <img src="/logo.png" alt="CID-Cell Logo" className="w-16 h-16 object-contain" />
                             </div>
                             <div className="text-center mt-2">
-                                <span className="font-heading text-4xl sm:text-5xl uppercase tracking-tighter text-primary block leading-none drop-shadow-sm">
+                                <span className="font-heading text-4xl sm:text-5xl uppercase tracking-widest text-primary block leading-none drop-shadow-sm">
                                     CID-Cell
                                 </span>
                                 <span className="font-black text-xs uppercase tracking-widest bg-highlight-teal inline-block px-3 py-1 border-2 border-primary transform rotate-1 mt-2 shadow-neo-sm">
@@ -101,7 +101,7 @@ const Auth = () => {
                             <div className="inline-block bg-highlight-purple border-4 border-primary px-4 py-1.5 shadow-neo transform -skew-x-3 -rotate-1">
                                 <span className="font-heading uppercase text-sm tracking-widest text-primary">Member Portal</span>
                             </div>
-                            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-tighter text-primary leading-none">
+                            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-widest text-primary leading-none">
                                 Sign In To<br />Your Account
                             </h2>
                             <p className="font-bold text-sm md:text-base text-primary/80 uppercase tracking-wide">

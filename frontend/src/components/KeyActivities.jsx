@@ -71,7 +71,7 @@ export default function KeyActivities() {
               >
                 <Icon size={36} className="text-primary stroke-[3px]" />
               </div>
-              <h3 className="font-heading font-black text-3xl uppercase text-primary mb-4 tracking-wider">{title}</h3>
+              <h3 className="font-heading font-black text-3xl uppercase text-primary mb-4 tracking-widest">{title}</h3>
               <p className="text-primary font-bold text-base leading-relaxed border-l-4 border-primary pl-4">{desc}</p>
             </div>
             </ScrollReveal>
@@ -85,7 +85,7 @@ export default function KeyActivities() {
             <div className="w-20 h-20 bg-white border-4 border-primary flex items-center justify-center mb-6 group-hover:scale-110 shadow-neo transition-transform">
                <ArrowRight size={36} className="text-primary stroke-[4px]" />
             </div>
-            <h3 className="font-heading font-black text-3xl uppercase mb-3 tracking-wider">
+            <h3 className="font-heading font-black text-3xl uppercase mb-3 tracking-widest">
               Explore All Events
             </h3>
             <p className="text-white border-2 border-white px-4 py-2 font-bold text-sm shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">See our upcoming and past events</p>

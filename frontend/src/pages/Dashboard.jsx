@@ -128,7 +128,7 @@ const Dashboard = () => {
 
                         <div className="text-left space-y-1 md:space-y-2">
                             <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-                                <h1 className="text-xl md:text-5xl font-black text-primary uppercase leading-none tracking-tight">
+                                <h1 className="text-xl md:text-5xl font-black text-primary uppercase leading-none tracking-widest">
                                     {user?.username}
                                 </h1>
                                 <span className="w-fit bg-highlight-purple text-primary border-2 border-primary px-2 py-0.5 font-black uppercase text-[8px] md:text-[10px] shadow-neo-sm">
@@ -204,7 +204,7 @@ const Dashboard = () => {
                     {/* Roadmaps - Skills Based */}
                     <div className="lg:col-span-4 space-y-6">
                         <div className="flex items-center justify-between px-2">
-                             <h2 className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
+                             <h2 className="text-2xl font-black uppercase tracking-widest flex items-center gap-3">
                                 <span className="w-10 h-10 bg-highlight-purple border-3 border-primary rounded-xl flex items-center justify-center shadow-neo-sm">
                                     <Map size={20} />
                                 </span>
@@ -243,7 +243,7 @@ const Dashboard = () => {
                         {/* Projects */}
                         <div className="space-y-6">
                             <div className="flex items-center justify-between px-2">
-                                <h2 className="text-2xl font-black uppercase tracking-tight">Active Projects</h2>
+                                <h2 className="text-2xl font-black uppercase tracking-widest">Active Projects</h2>
                                 <Link to="/projects" className="text-[10px] font-black uppercase tracking-widest text-primary/40 hover:text-primary flex items-center gap-2">View Full Directory <ArrowRight size={14} /></Link>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -270,7 +270,7 @@ const Dashboard = () => {
 
                         {/* Events Lineup */}
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-black uppercase tracking-tight px-2">Upcoming Events</h2>
+                            <h2 className="text-2xl font-black uppercase tracking-widest px-2">Upcoming Events</h2>
                             <div className="space-y-4">
                                 {upcomingEvents.map(event => (
                                     <div key={event._id} className="bg-white border-3 border-primary p-4 rounded-2xl shadow-neo group hover:translate-x-2 transition-all flex items-center gap-6">
