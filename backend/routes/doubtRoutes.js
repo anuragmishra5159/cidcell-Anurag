@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
+const { writeLimiter, chatLimiter } = require('../middleware/rateLimiters');
 const DoubtSession = require('../models/DoubtSession');
 const DoubtMessage = require('../models/DoubtMessage');
 
-// Student: Create a new doubt session
-router.post('/sessions', protect, async (req, res) => {
+// Student: Create a new doubt session (write — rate limited)
+router.post('/sessions', writeLimiter, protect, async (req, res) => {
     try {
         const { mentorId, domain } = req.body;
         
@@ -31,7 +32,7 @@ router.post('/sessions', protect, async (req, res) => {
 });
 
 // Get sessions for logged in user (Mentor or Student)
-router.get('/sessions', protect, async (req, res) => {
+router.get('/sessions', chatLimiter, protect, async (req, res) => {
     try {
         const isMentor = req.user.userType === 'mentor';
         const query = isMentor ? { mentorId: req.user._id } : { studentId: req.user._id };
@@ -56,8 +57,8 @@ router.put('/sessions/:id/status', protect, async (req, res) => {
     }
 });
 
-// Get messages for a session
-router.get('/sessions/:id/messages', protect, async (req, res) => {
+// Get messages for a session (chat — high volume)
+router.get('/sessions/:id/messages', chatLimiter, protect, async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
@@ -74,8 +75,8 @@ router.get('/sessions/:id/messages', protect, async (req, res) => {
     }
 });
 
-// Send a message to a session
-router.post('/sessions/:id/messages', protect, async (req, res) => {
+// Send a message to a session (write — rate limited)
+router.post('/sessions/:id/messages', writeLimiter, protect, async (req, res) => {
     try {
         const { content, senderType } = req.body;
         const newMessage = await DoubtMessage.create({

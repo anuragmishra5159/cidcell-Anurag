@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+const { globalLimiter } = require('./middleware/rateLimiters');
 const http = require('http'); // Import HTTP for Socket.io
 const { Server } = require('socket.io'); // Import Socket.io
 const connectDB = require('./config/db');
@@ -41,13 +41,8 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Global Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window`
-  message: { message: "Too many requests from this IP, please try again later." }
-});
-app.use(limiter);
+// Global Fallback Rate Limiting (generous — per-route limits handle hot paths)
+app.use(globalLimiter);
 
 // Connect to database
 console.log('Using MONGO_URI:', process.env.MONGO_URI);

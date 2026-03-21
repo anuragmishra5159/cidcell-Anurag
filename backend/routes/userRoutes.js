@@ -8,12 +8,13 @@ const {
     getMentors
 } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/authMiddleware');
+const { readLimiter, writeLimiter } = require('../middleware/rateLimiters');
 
 router.route('/')
-    .get(protect, getUsers);
+    .get(readLimiter, protect, getUsers);
 
 router.route('/mentors')
-    .get(getMentors);
+    .get(readLimiter, getMentors);
 
 router.route('/:id')
     .get(protect, admin, getUserById)

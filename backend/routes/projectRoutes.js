@@ -8,15 +8,16 @@ const {
     deleteProject
 } = require('../controllers/projectController');
 const { protect, admin } = require('../middleware/authMiddleware');
+const { readLimiter, writeLimiter } = require('../middleware/rateLimiters');
 
 router.route('/')
-    .get(getProjects)
-    .post(protect, createProject); // Removed mandatory admin for creation
+    .get(readLimiter, getProjects)
+    .post(writeLimiter, protect, createProject);
 
 router.route('/:id')
-    .put(protect, admin, updateProject)
-    .delete(protect, admin, deleteProject);
+    .put(writeLimiter, protect, admin, updateProject)
+    .delete(writeLimiter, protect, admin, deleteProject);
 
-router.patch('/:id/approve', protect, admin, approveProject);
+router.patch('/:id/approve', writeLimiter, protect, admin, approveProject);
 
 module.exports = router;

@@ -244,8 +244,15 @@ function MentorCard({ mentor, delay }) {
   const accentClass = accentColors[Math.abs(name.charCodeAt(0) % accentColors.length)];
 
   const handleChat = async () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      alert('Login first to chat with mentor..');
+      navigate('/auth');
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/doubts/sessions`, {
         mentorId: mentorId,
         domain: domain

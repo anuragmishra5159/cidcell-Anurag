@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { googleLogin, getProfile, updateProfile } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiters');
 
-// Google Authentication Route
-router.post('/google', googleLogin);
+// Google Authentication Route — strict limiter to prevent brute force
+router.post('/google', authLimiter, googleLogin);
 
 // Protected routes
 router.route('/profile')

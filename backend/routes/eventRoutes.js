@@ -10,16 +10,17 @@ const {
     registerForEvent
 } = require('../controllers/eventController');
 const { protect, admin, optionalProtect } = require('../middleware/authMiddleware');
+const { readLimiter, writeLimiter } = require('../middleware/rateLimiters');
 
 router.route('/')
-    .get(validate(schemas.paginationSchema), getEvents)
-    .post(protect, admin, validate(schemas.createEventSchema), createEvent);
+    .get(readLimiter, validate(schemas.paginationSchema), getEvents)
+    .post(writeLimiter, protect, admin, validate(schemas.createEventSchema), createEvent);
 
 router.route('/:id')
-    .get(optionalProtect, getEventById)
-    .put(protect, admin, updateEvent)
-    .delete(protect, admin, deleteEvent);
+    .get(readLimiter, optionalProtect, getEventById)
+    .put(writeLimiter, protect, admin, updateEvent)
+    .delete(writeLimiter, protect, admin, deleteEvent);
 
-router.post('/:id/register', protect, registerForEvent);
+router.post('/:id/register', writeLimiter, protect, registerForEvent);
 
 module.exports = router;
