@@ -8,6 +8,7 @@ const navLinks = [
   { name: 'Dashboard', path: '/dashboard', authRequired: true },
   { name: 'Admin', path: '/admin/dashboard', authRequired: true, adminRequired: true },
   { name: 'Mentor', path: '/mentor/dashboard', authRequired: true, mentorRequired: true },
+  { name: 'Faculty Portal', path: '/faculty/dashboard', authRequired: true, facultyRequired: true },
   { name: 'About', path: '/about' },
   { name: 'Projects', path: '/projects' },
   { name: 'Mentors', path: '/mentors' },
@@ -72,6 +73,7 @@ export default function Navbar() {
               {navLinks.filter(link => {
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;
                 if (link.mentorRequired && user?.userType !== 'mentor') return false;
+                if (link.facultyRequired && user?.userType !== 'faculty') return false;
                 if (link.studentRequired && user?.userType !== 'student') return false;
                 if (link.hideForMentor && user?.userType === 'mentor') return false;
                 if (link.authRequired && !user) return false;
@@ -140,6 +142,7 @@ export default function Navbar() {
               {navLinks.filter(link => {
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;
                 if (link.mentorRequired && user?.userType !== 'mentor') return false;
+                if (link.facultyRequired && user?.userType !== 'faculty') return false;
                 if (link.studentRequired && user?.userType !== 'student') return false;
                 if (link.hideForMentor && user?.userType === 'mentor') return false;
                 if (link.authRequired && !user) return false;

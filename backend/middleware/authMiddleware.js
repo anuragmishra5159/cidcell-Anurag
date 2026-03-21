@@ -34,7 +34,7 @@ const protect = async (req, res, next) => {
 };
 
 const admin = (req, res, next) => {
-    if (req.user && req.user.userType === 'Admin') {
+    if (req.user && req.user.userType?.toLowerCase() === 'admin') {
         next();
     } else {
         res.status(401).json({ message: 'Not authorized as an admin' });
@@ -62,4 +62,12 @@ const optionalProtect = async (req, res, next) => {
     }
 };
 
-module.exports = { protect, admin, optionalProtect };
+const isFaculty = (req, res, next) => {
+    if (req.user && req.user.userType === 'faculty') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Faculty access only' });
+    }
+};
+
+module.exports = { protect, admin, isFaculty, optionalProtect };

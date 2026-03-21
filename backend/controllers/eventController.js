@@ -11,8 +11,8 @@ const getEvents = async (req, res) => {
 
         if (page && limit) {
             const skip = (page - 1) * limit;
-            const total = await Event.countDocuments();
-            const events = await Event.find({})
+            const total = await Event.countDocuments({ status: 'approved' });
+            const events = await Event.find({ status: 'approved' })
                 .select('-whatsappGroupLink')
                 .sort({ date: -1 })
                 .skip(skip)
@@ -27,7 +27,7 @@ const getEvents = async (req, res) => {
         }
 
         // Backward compatibility: send plain array if no pagination requested
-        const events = await Event.find({}).select('-whatsappGroupLink').sort({ date: -1 });
+        const events = await Event.find({ status: 'approved' }).select('-whatsappGroupLink').sort({ date: -1 });
         res.json(events);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
@@ -169,11 +169,93 @@ const registerForEvent = async (req, res) => {
     }
 };
 
+// @desc    Faculty submits an event proposal
+// @route   POST /api/events/proposals
+// @access  Private/Faculty
+const createProposal = async (req, res) => {
+    try {
+        const event = await Event.create({
+            ...req.body,
+            status: 'proposal',
+            proposedBy: req.user._id,
+            createdBy: req.user._id,
+        });
+        res.status(201).json(event);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// @desc    Faculty sees their own proposals
+// @route   GET /api/events/my-proposals
+// @access  Private/Faculty
+const getMyProposals = async (req, res) => {
+    try {
+        const proposals = await Event.find({ proposedBy: req.user._id }).sort({ createdAt: -1 });
+        res.json(proposals);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Admin views all pending proposals
+// @route   GET /api/events/proposals
+// @access  Private/Admin
+const getProposals = async (req, res) => {
+    try {
+        const proposals = await Event.find({ status: 'proposal' })
+            .populate('proposedBy', 'username email')
+            .sort({ createdAt: -1 });
+        res.json(proposals);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Admin approves a proposal
+// @route   PATCH /api/events/proposals/:id/approve
+// @access  Private/Admin
+const approveProposal = async (req, res) => {
+    try {
+        const event = await Event.findByIdAndUpdate(
+            req.params.id,
+            { status: 'approved' },
+            { new: true }
+        );
+        if (!event) return res.status(404).json({ message: 'Proposal not found' });
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Admin rejects a proposal
+// @route   PATCH /api/events/proposals/:id/reject
+// @access  Private/Admin
+const rejectProposal = async (req, res) => {
+    try {
+        const event = await Event.findByIdAndUpdate(
+            req.params.id,
+            { status: 'rejected' },
+            { new: true }
+        );
+        if (!event) return res.status(404).json({ message: 'Proposal not found' });
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getEvents,
     getEventById,
     createEvent,
     updateEvent,
     deleteEvent,
-    registerForEvent
+    registerForEvent,
+    createProposal,
+    getMyProposals,
+    getProposals,
+    approveProposal,
+    rejectProposal,
 };

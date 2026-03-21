@@ -31,6 +31,10 @@ import MentorDashboard from './mentor/pages/MentorDashboard';
 import MentorChat from './mentor/pages/MentorChat';
 import StudentChat from './student/pages/StudentChat';
 
+// Faculty Imports
+import FacultyDashboard from './faculty/pages/FacultyDashboard';
+import ProposeEvent from './faculty/pages/ProposeEvent';
+
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
@@ -93,6 +97,18 @@ const MentorRoute = ({ children }) => {
 
   if (loading) return null;
   if (!user || user.userType !== 'mentor') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+// Component to protect routes that require faculty role
+const FacultyRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return null;
+  if (!user || user.userType !== 'faculty') {
     return <Navigate to="/" replace />;
   }
 
@@ -172,6 +188,18 @@ function App() {
             <MentorRoute>
               <MentorChat />
             </MentorRoute>
+          } />
+
+          {/* Faculty Routes */}
+          <Route path="/faculty/dashboard" element={
+            <FacultyRoute>
+              <FacultyDashboard />
+            </FacultyRoute>
+          } />
+          <Route path="/faculty/propose-event" element={
+            <FacultyRoute>
+              <ProposeEvent />
+            </FacultyRoute>
           } />
 
           {/* Admin Routes */}

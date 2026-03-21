@@ -26,8 +26,11 @@ const EventManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isViewOnly, setIsViewOnly] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('events');
+  const [proposals, setProposals] = useState([]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -62,16 +65,23 @@ const EventManagement = () => {
   const userTypes = ["student", "member", "faculty", "HOD", "admin"];
   const eventTypes = ["virtual", "in-person"];
 
-  useEffect(() => { fetchEvents(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const fetchEvents = async () => {
+  const fetchData = async () => {
     setLoading(true);
+    const token = localStorage.getItem('token');
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/events`);
-      setEvents(res.data);
+      const [eventsRes, proposalsRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/events`),
+        axios.get(`${import.meta.env.VITE_API_URL}/events/proposals`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+      setEvents(eventsRes.data);
+      setProposals(proposalsRes.data);
     } catch (err) { 
         console.error(err); 
-        showToast('Failed to load events', 'error');
+        showToast('Failed to load data', 'error');
     } finally {
         setLoading(false);
     }
@@ -82,7 +92,8 @@ const EventManagement = () => {
     setTimeout(() => setToast({ message: '', type: null }), 3000);
   };
 
-  const handleOpenModal = (event = null) => {
+  const handleOpenModal = (event = null, viewOnly = false) => {
+    setIsViewOnly(viewOnly);
     if (event) {
       setIsEditMode(true);
       setSelectedId(event._id);
@@ -101,7 +112,9 @@ const EventManagement = () => {
         maxAttendees: event.maxAttendees || 30,
         image: event.image || '',
         whatsappGroupLink: event.whatsappGroupLink || '',
-        isScheduled: event.isScheduled ?? true
+        isScheduled: event.isScheduled ?? true,
+        isPaid: event.isPaid || false,
+        price: event.price || 0,
       });
     } else {
       setIsEditMode(false);
@@ -120,7 +133,9 @@ const EventManagement = () => {
         maxAttendees: 30,
         image: '',
         whatsappGroupLink: '',
-        isScheduled: true
+        isScheduled: true,
+        isPaid: false,
+        price: 0,
       });
     }
     setIsModalOpen(true);
@@ -159,6 +174,29 @@ const EventManagement = () => {
       showToast('Event deleted successfully');
     } catch (err) { showToast('Delete failed', 'error'); }
     finally { setDeleteConfirm({ isOpen: false, id: null }); }
+  };
+
+  const handleApprove = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await axios.patch(`${import.meta.env.VITE_API_URL}/events/proposals/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setProposals(proposals.filter(p => p._id !== id));
+      setEvents([res.data, ...events]);
+      showToast('Proposal approved');
+    } catch (err) { showToast('Approval failed', 'error'); }
+  };
+
+  const handleReject = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/events/proposals/${id}/reject`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setProposals(proposals.filter(p => p._id !== id));
+      showToast('Proposal rejected');
+    } catch (err) { showToast('Rejection failed', 'error'); }
   };
 
   const handleDownloadCSV = () => {
@@ -206,14 +244,38 @@ const EventManagement = () => {
             </button>
           </div>
         </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text" placeholder="Filter events by title..."
-            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 pr-4 py-2 border rounded-lg w-full outline-none text-sm transition-all bg-white border-slate-200 text-slate-700 focus:ring-2 focus:ring-indigo-500"
-          />
+
+        {/* Tabs */}
+        <div className="flex gap-4 border-b border-slate-200">
+          <button 
+            onClick={() => setActiveTab('events')} 
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'events' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          >
+            All Events
+          </button>
+          <button 
+            onClick={() => setActiveTab('proposals')} 
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'proposals' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          >
+            Pending Proposals
+            {proposals.length > 0 && (
+              <span className="bg-amber-100 text-amber-700 text-xs py-0.5 px-2 rounded-full hidden sm:inline-block">
+                {proposals.length}
+              </span>
+            )}
+          </button>
         </div>
+
+        {activeTab === 'events' && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text" placeholder="Filter events by title..."
+              value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-4 py-2 border rounded-lg w-full outline-none text-sm transition-all bg-white border-slate-200 text-slate-700 focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -234,40 +296,83 @@ const EventManagement = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredEvents.length > 0 ? filteredEvents.map((ev) => (
-                  <tr key={ev._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-4">
-                      <div className="font-semibold text-sm text-slate-800">{ev.title}</div>
-                      <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mt-0.5">{ev.category}</div>
-                    </td>
-                    <td className="px-5 py-4 text-center">
-                      <div className="text-sm font-medium text-slate-700">{ev.date}</div>
-                      <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
-                          <Clock className="w-3 h-3" /> {formatTime12h(ev.time)}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-center">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider border ${ev.type === 'virtual' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                        {ev.type}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => handleOpenModal(ev)} className="px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-indigo-50 text-indigo-600 hover:bg-indigo-100">
-                              <Edit2 className="w-3.5 h-3.5" /> Edit
-                          </button>
-                          <button onClick={() => setDeleteConfirm({ isOpen: true, id: ev._id })} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-white text-rose-600 border-rose-200 hover:bg-rose-50">
-                              <Trash2 className="w-3.5 h-3.5" /> Delete
-                          </button>
-                      </div>
-                    </td>
-                  </tr>
-                )) : (
-                  <tr>
-                      <td colSpan="4" className="px-5 py-12 text-center text-slate-500">
-                          No events found matching your search.
+                {activeTab === 'events' ? (
+                  filteredEvents.length > 0 ? filteredEvents.map((ev) => (
+                    <tr key={ev._id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-4">
+                        <div className="font-semibold text-sm text-slate-800">{ev.title}</div>
+                        <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mt-0.5">{ev.category}</div>
                       </td>
-                  </tr>
+                      <td className="px-5 py-4 text-center">
+                        <div className="text-sm font-medium text-slate-700">{ev.date}</div>
+                        <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
+                            <Clock className="w-3 h-3" /> {formatTime12h(ev.time)}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider border ${ev.type === 'virtual' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                          {ev.type}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => handleOpenModal(ev)} className="px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-indigo-50 text-indigo-600 hover:bg-indigo-100">
+                                <Edit2 className="w-3.5 h-3.5" /> Edit
+                            </button>
+                            <button onClick={() => setDeleteConfirm({ isOpen: true, id: ev._id })} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-white text-rose-600 border-rose-200 hover:bg-rose-50">
+                                <Trash2 className="w-3.5 h-3.5" /> Delete
+                            </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                        <td colSpan="4" className="px-5 py-12 text-center text-slate-500">
+                            No events found matching your search.
+                        </td>
+                    </tr>
+                  )
+                ) : (
+                  proposals.length > 0 ? proposals.map((ev) => (
+                    <tr key={ev._id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-4">
+                        <div className="font-semibold text-sm text-slate-800">{ev.title}</div>
+                        <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mt-0.5">
+                          {ev.category} • Proposed by: {ev.proposedBy?.username || 'Unknown'}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <div className="text-sm font-medium text-slate-700">{ev.date}</div>
+                        <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
+                            <Clock className="w-3 h-3" /> {formatTime12h(ev.time)}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider border ${ev.type === 'virtual' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                          {ev.type}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => handleOpenModal(ev, true)} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50">
+                                <ExternalLink className="w-3.5 h-3.5" /> View
+                            </button>
+                            <button onClick={() => handleApprove(ev._id)} className="px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-emerald-50 text-emerald-600 hover:bg-emerald-100">
+                                <CheckCircle className="w-3.5 h-3.5" /> Approve
+                            </button>
+                            <button onClick={() => handleReject(ev._id)} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100">
+                                <X className="w-3.5 h-3.5" /> Reject
+                            </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                        <td colSpan="4" className="px-5 py-12 text-center text-slate-500">
+                            No pending proposals.
+                        </td>
+                    </tr>
+                  )
                 )}
               </tbody>
             </table>
@@ -279,15 +384,18 @@ const EventManagement = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title={isEditMode ? 'Edit Event' : 'Create New Event'}
+        title={isViewOnly ? 'Proposal Details' : isEditMode ? 'Edit Event' : 'Create New Event'}
         footer={
           <>
-            <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-medium hover:bg-slate-50 transition-colors text-sm">Cancel</button>
-            <button form="eventForm" type="submit" className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 shadow-sm transition-colors text-sm">Save Event Info</button>
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-medium hover:bg-slate-50 transition-colors text-sm">{isViewOnly ? 'Close' : 'Cancel'}</button>
+            {!isViewOnly && (
+              <button form="eventForm" type="submit" className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 shadow-sm transition-colors text-sm">Save Event Info</button>
+            )}
           </>
         }
       >
         <form id="eventForm" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-6">
+          <fieldset disabled={isViewOnly} className="space-y-6">
           <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
             <h3 className="text-sm font-semibold text-indigo-600 uppercase tracking-wider border-b pb-2">Event Details</h3>
             
@@ -325,6 +433,19 @@ const EventManagement = () => {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Max Attendees</label>
                 <input type="number" value={formData.maxAttendees} onChange={e => setFormData({ ...formData, maxAttendees: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
               </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Event Type (Free/Paid)</label>
+                <div className="flex items-center gap-2 pt-2">
+                  <input type="checkbox" id="isPaidAdmin" checked={formData.isPaid} onChange={e => setFormData({ ...formData, isPaid: e.target.checked, price: e.target.checked ? formData.price : 0 })} className="w-4 h-4 rounded text-indigo-600 border border-slate-300 focus:ring-indigo-500" />
+                  <label htmlFor="isPaidAdmin" className="text-sm font-medium text-slate-700 cursor-pointer">Paid Event</label>
+                </div>
+              </div>
+              {formData.isPaid && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Price (₹)*</label>
+                  <input type="number" required min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. 500" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -369,6 +490,7 @@ const EventManagement = () => {
                 <div className="bg-white rounded-md h-[250px] mb-12">
                   <ReactQuill 
                     theme="snow" 
+                    readOnly={isViewOnly}
                     value={formData.description} 
                     onChange={(val) => setFormData({ ...formData, description: val })} 
                     style={{ height: '200px' }} 
@@ -380,6 +502,7 @@ const EventManagement = () => {
               <label htmlFor="scheduled" className="text-sm font-medium text-slate-700 cursor-pointer">Publish Event Immediately</label>
             </div>
           </div>
+          </fieldset>
         </form>
       </Modal>
 

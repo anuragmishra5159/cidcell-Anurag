@@ -37,12 +37,20 @@ const eventSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
-      enum: ["alumni", "student", "admin"],
+      enum: ["alumni", "student", "member", "faculty", "HOD", "admin"],
       default: "alumni",
     },
     isScheduled: {
       type: Boolean,
       default: false,
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    price: {
+      type: Number,
+      default: 0,
     },
     category: {
       type: String,
@@ -81,7 +89,17 @@ const eventSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
-    }
+    },
+    status: {
+      type: String,
+      enum: ['proposal', 'approved', 'rejected'],
+      default: 'approved', // keeps all existing admin-created events visible
+    },
+    proposedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
   },
   { timestamps: true }
 );
