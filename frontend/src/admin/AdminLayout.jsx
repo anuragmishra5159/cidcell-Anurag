@@ -201,42 +201,43 @@ const AdminLayout = () => {
     ];
 
     return (
-        <div className="admin-panel min-h-screen flex flex-col font-sans transition-colors duration-300 bg-slate-50">
+        <div className="admin-panel min-h-screen flex flex-col font-sans transition-colors duration-300 bg-bg">
             {/* Header */}
-            <header className="h-16 border-b fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 lg:px-8 shadow-sm bg-white border-slate-200">
+            <header className="h-20 border-b-4 border-primary fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 lg:px-8 bg-white overflow-hidden">
                 <div className="flex items-center gap-2 sm:gap-4 flex-none">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="p-2 rounded-lg transition-all flex items-center justify-center w-10 h-10 text-slate-600 hover:bg-slate-100"
+                        className="p-2 border-2 border-primary rounded-lg transition-all flex items-center justify-center w-10 h-10 text-primary hover:bg-highlight-yellow shadow-neo-mini"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
                     <div className="flex items-center gap-3">
                         <div className="hidden sm:block">
-                            <h1 className="text-lg font-semibold text-slate-800">CID Cell</h1>
-                            <p className="text-xs font-medium text-slate-500">Admin Panel</p>
+                            <h1 className="text-xl font-black text-primary uppercase tracking-widest leading-none">CID CELL</h1>
+                            <div className="inline-block bg-highlight-purple border border-primary px-1 transform -rotate-1 mt-0.5">
+                                <p className="text-[10px] font-black text-primary uppercase tracking-tighter">Admin Panel</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="hidden lg:flex items-center gap-1.5 2xl:gap-3">
+                <div className="hidden lg:flex items-center gap-2">
                     <Link
                         to="/"
-                        className="px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-indigo-600"
+                        className="px-4 py-2 border-2 border-transparent rounded-xl text-xs font-black uppercase transition-all text-primary hover:bg-highlight-blue hover:border-primary hover:shadow-neo-mini"
                     >
                         Home
                     </Link>
 
                     <div className="relative" ref={usersDropdownRef} onMouseEnter={() => handleMouseEnter("users")} onMouseLeave={() => handleMouseLeave("users")}>
-                        <button className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${showUsersDropdown ? "bg-slate-100 text-indigo-600" : "text-slate-600 hover:bg-slate-100 hover:text-indigo-600"}`}>
+                        <button className={`flex items-center gap-1 px-4 py-2 border-2 rounded-xl text-xs font-black uppercase transition-all ${showUsersDropdown ? "bg-highlight-teal border-primary shadow-neo-mini" : "border-transparent text-primary hover:bg-highlight-yellow hover:border-primary hover:shadow-neo-mini"}`}>
                             Users <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showUsersDropdown ? "rotate-180" : ""}`} />
                         </button>
                         {showUsersDropdown && (
-                            <div className="absolute top-full left-0 w-52 rounded-xl shadow-xl border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200 mt-1 bg-white border-slate-200">
-                                <div className="absolute -top-4 left-0 right-0 h-4 bg-transparent" />
+                            <div className="absolute top-full left-0 w-52 bg-white border-3 border-primary shadow-neo rounded-xl overflow-hidden z-[60] mt-2">
                                 <div className="py-1">
                                     {usersOptions.map((opt, i) => (
-                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-4 py-2.5 text-sm transition-colors text-slate-600 hover:bg-slate-50 hover:text-indigo-600">
+                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase transition-colors text-primary border-b-2 border-slate-100 last:border-0 hover:bg-highlight-teal">
                                             {opt.label}
                                         </button>
                                     ))}
@@ -246,15 +247,14 @@ const AdminLayout = () => {
                     </div>
 
                     <div className="relative" ref={eventsDropdownRef} onMouseEnter={() => handleMouseEnter("events")} onMouseLeave={() => handleMouseLeave("events")}>
-                        <button className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${showEventsDropdown ? "bg-slate-100 text-indigo-600" : "text-slate-600 hover:bg-slate-100 hover:text-indigo-600"}`}>
+                        <button className={`flex items-center gap-1 px-4 py-2 border-2 rounded-xl text-xs font-black uppercase transition-all ${showEventsDropdown ? "bg-highlight-yellow border-primary shadow-neo-mini" : "border-transparent text-primary hover:bg-highlight-yellow hover:border-primary hover:shadow-neo-mini"}`}>
                             Events <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showEventsDropdown ? "rotate-180" : ""}`} />
                         </button>
                         {showEventsDropdown && (
-                            <div className="absolute top-full left-0 w-52 rounded-xl shadow-xl border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200 mt-1 bg-white border-slate-200">
-                                <div className="absolute -top-4 left-0 right-0 h-4 bg-transparent" />
+                            <div className="absolute top-full left-0 w-52 bg-white border-3 border-primary shadow-neo rounded-xl overflow-hidden z-[60] mt-2">
                                 <div className="py-1">
                                     {eventsOptions.map((opt, i) => (
-                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-4 py-2.5 text-sm transition-colors text-slate-600 hover:bg-slate-50 hover:text-indigo-600">
+                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase transition-colors text-primary border-b-2 border-slate-100 last:border-0 hover:bg-highlight-yellow">
                                             {opt.label}
                                         </button>
                                     ))}
@@ -264,15 +264,14 @@ const AdminLayout = () => {
                     </div>
 
                     <div className="relative" ref={projectsDropdownRef} onMouseEnter={() => handleMouseEnter("projects")} onMouseLeave={() => handleMouseLeave("projects")}>
-                        <button className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${showProjectsDropdown ? "bg-slate-100 text-indigo-600" : "text-slate-600 hover:bg-slate-100 hover:text-indigo-600"}`}>
+                        <button className={`flex items-center gap-1 px-4 py-2 border-2 rounded-xl text-xs font-black uppercase transition-all ${showProjectsDropdown ? "bg-highlight-blue border-primary shadow-neo-mini" : "border-transparent text-primary hover:bg-highlight-yellow hover:border-primary hover:shadow-neo-mini"}`}>
                             Projects <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showProjectsDropdown ? "rotate-180" : ""}`} />
                         </button>
                         {showProjectsDropdown && (
-                            <div className="absolute top-full left-0 w-52 rounded-xl shadow-xl border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200 mt-1 bg-white border-slate-200">
-                                <div className="absolute -top-4 left-0 right-0 h-4 bg-transparent" />
+                            <div className="absolute top-full left-0 w-52 bg-white border-3 border-primary shadow-neo rounded-xl overflow-hidden z-[60] mt-2">
                                 <div className="py-1">
                                     {projectsOptions.map((opt, i) => (
-                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-4 py-2.5 text-sm transition-colors text-slate-600 hover:bg-slate-50 hover:text-indigo-600">
+                                        <button key={i} onClick={() => handleDropdownItemClick(opt.path)} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase transition-colors text-primary border-b-2 border-slate-100 last:border-0 hover:bg-highlight-blue">
                                             {opt.label}
                                         </button>
                                     ))}
@@ -326,16 +325,16 @@ const AdminLayout = () => {
                         </button>
 
                         {showNotifications && (
-                            <div className="fixed right-2 left-2 top-16 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl shadow-xl border animate-in slide-in-from-top-2 fade-in-0 z-50 overflow-hidden bg-white border-slate-200">
-                                <div className="p-4 border-b flex justify-between items-center border-slate-100">
-                                    <h3 className="font-semibold text-sm text-slate-900">
-                                        Notifications
+                            <div className="fixed right-2 left-2 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-4 w-auto sm:w-96 bg-white border-4 border-primary shadow-neo animate-in slide-in-from-top-4 fade-in-0 z-50 overflow-hidden rounded-3xl">
+                                <div className="p-5 border-b-4 border-primary flex justify-between items-center bg-highlight-blue">
+                                    <h3 className="font-black text-xs text-primary uppercase tracking-widest">
+                                        Neural Alerts
                                     </h3>
                                     <button
                                         onClick={() => showNotificationInput ? handleCancelInput() : setShowNotificationInput(true)}
-                                        className="text-xs px-2 py-1 rounded transition font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
+                                        className="text-[10px] px-3 py-1.5 border-2 border-primary rounded-xl font-black uppercase transition-all bg-white hover:bg-highlight-yellow shadow-neo-mini"
                                     >
-                                        {showNotificationInput ? "Cancel" : "+ New"}
+                                        {showNotificationInput ? "Abort" : "+ Push"}
                                     </button>
                                 </div>
 
@@ -407,7 +406,7 @@ const AdminLayout = () => {
 
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition font-medium text-sm"
+                        className="flex items-center gap-2 px-4 py-2 border-2 border-primary bg-white text-primary hover:bg-highlight-pink rounded-xl shadow-neo-mini transition-all font-black text-xs uppercase"
                     >
                         <LogOut className="w-4 h-4" />
                         <span className="hidden sm:inline">Logout</span>
@@ -427,7 +426,7 @@ const AdminLayout = () => {
                         `}
                     >
                         <div className="h-full flex flex-col">
-                            <nav className="overflow-y-auto space-y-1 px-4 pt-4">
+                            <nav className="overflow-y-auto space-y-2 px-4 pt-6">
                                 {navItems.map((item) => {
                                     const isActive = location.pathname === item.path || (item.path === "/admin/dashboard" && location.pathname === "/admin");
                                     return (
@@ -437,31 +436,31 @@ const AdminLayout = () => {
                                                 navigate(item.path);
                                                 if (isMobile) setIsSidebarOpen(false);
                                             }}
-                                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group ${isActive
-                                                ? "bg-indigo-50 text-indigo-700 font-semibold"
-                                                : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 font-medium"
+                                            className={`w-full flex items-center justify-between px-5 py-4 rounded-xl transition-all border-2 group ${isActive
+                                                ? "bg-white border-primary text-primary font-black shadow-neo-mini translate-x-[1px] translate-y-[1px]"
+                                                : "border-transparent text-primary/60 hover:bg-highlight-blue hover:text-primary hover:border-primary font-black animate-none"
                                                 }`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <item.icon className={`w-5 h-5 ${isActive ? "text-indigo-600" : "group-hover:text-indigo-600"}`} />
-                                                <span className="text-sm">{item.label}</span>
+                                            <div className="flex items-center gap-4">
+                                                <item.icon className={`w-5 h-5 ${isActive ? "text-primary" : "group-hover:text-primary"}`} />
+                                                <span className="text-[10px] uppercase tracking-wider">{item.label}</span>
                                             </div>
-                                            {isActive && <ChevronRight className="w-4 h-4 text-indigo-500" />}
+                                            {isActive && <ChevronRight className="w-4 h-4 text-primary" />}
                                         </button>
                                     );
                                 })}
                             </nav>
 
-                            <div className="mt-6 mb-8 mx-4 p-4 rounded-2xl border transition-colors bg-slate-50 border-slate-100">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center border border-slate-200 shadow-sm overflow-hidden">
-                                        <UserCog size={20} className="text-slate-500" />
+                            <div className="mt-auto mb-8 mx-4 p-5 rounded-2xl border-3 bg-white border-primary shadow-neo-mini">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-highlight-blue flex items-center justify-center border-2 border-primary shadow-neo-mini overflow-hidden flex-none">
+                                        <UserCog size={24} className="text-primary" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-sm font-semibold truncate text-slate-800 capitalize">{user?.username || "Admin User"}</p>
-                                        <p className="text-xs font-medium text-slate-500">
-                                            Super Admin
-                                        </p>
+                                        <p className="text-xs font-black uppercase truncate text-primary leading-tight">{user?.username || "Admin User"}</p>
+                                        <div className="inline-block bg-highlight-yellow border border-primary px-1 mt-1">
+                                            <p className="text-[8px] font-black uppercase tracking-tighter text-primary">Super Admin</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

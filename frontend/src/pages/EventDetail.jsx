@@ -111,7 +111,16 @@ export default function EventDetail() {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              {!isRegistered ? (
+              {event.registrationType === 'external' ? (
+                 <a 
+                  href={event.externalLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block px-10 py-4 font-bold uppercase text-sm shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all border-3 border-primary bg-highlight-yellow text-primary text-center cursor-pointer"
+                 >
+                   Register Now (External)
+                 </a>
+              ) : !isRegistered ? (
                  <button 
                   onClick={handleRegister}
                   disabled={isFull || registrationStatus.submitting}
@@ -182,46 +191,69 @@ export default function EventDetail() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-8">
-            <div className="bg-primary text-white p-8 border-3 border-primary shadow-neo">
-              <h3 className="text-xs font-bold uppercase tracking-widest mb-10 text-white/50 flex items-center gap-2">
-                Event Info
+           {/* Sidebar */}
+           <div className="space-y-8">
+            <div className="bg-white p-8 border-3 border-primary shadow-neo">
+              <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-10 text-primary flex items-center gap-2 border-b-2 border-primary/10 pb-4">
+                <FileText size={18} className="text-highlight-purple" /> Event Specifications
               </h3>
               
               <div className="space-y-8">
                 <div className="flex items-start gap-4">
-                  <Calendar className="text-highlight-yellow shrink-0" size={24} />
+                  <div className="w-10 h-10 rounded-xl bg-highlight-yellow border-2 border-primary flex items-center justify-center shrink-0 shadow-neo-sm">
+                    <Calendar className="text-primary" size={20} />
+                  </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase text-white/40 mb-1 tracking-widest">Date</p>
-                    <p className="font-bold text-lg">{event.date}</p>
-                    <p className="text-xs text-white/60 mt-1">{formatTime12h(event.time) || 'Time TBD'}</p>
+                    <p className="text-[10px] font-black uppercase text-primary/40 mb-1 tracking-widest">Temporal Marker</p>
+                    <p className="font-black text-lg text-primary uppercase leading-tight">{event.date}</p>
+                    <p className="text-xs font-bold text-primary/60 mt-1 uppercase italic">{formatTime12h(event.time) || 'SYNC PENDING'}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <MapPin className="text-highlight-teal shrink-0" size={24} />
+                  <div className="w-10 h-10 rounded-xl bg-highlight-teal border-2 border-primary flex items-center justify-center shrink-0 shadow-neo-sm">
+                    <MapPin className="text-primary" size={20} />
+                  </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase text-white/40 mb-1 tracking-widest">Location</p>
-                    <p className="font-bold text-lg">{event.type === 'virtual' ? 'Online' : event.location}</p>
-                    <p className="text-xs text-white/60 mt-1 uppercase italic">{event.type} Session</p>
+                    <p className="text-[10px] font-black uppercase text-primary/40 mb-1 tracking-widest">Deployment Zone</p>
+                    <p className="font-black text-lg text-primary uppercase leading-tight">{event.type === 'virtual' ? 'VIRTUAL DEPLOYMENT' : event.location}</p>
+                    <p className="text-xs font-bold text-primary/60 mt-1 uppercase italic tracking-wider">{event.type} Session</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <Users className="text-highlight-blue shrink-0" size={24} />
+                  <div className="w-10 h-10 rounded-xl bg-highlight-blue border-2 border-primary flex items-center justify-center shrink-0 shadow-neo-sm">
+                    <Users className="text-primary" size={20} />
+                  </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase text-white/40 mb-1 tracking-widest">Capacity</p>
-                    <p className="font-bold text-lg">{event.registeredCount} / {event.maxAttendees} Registered</p>
-                    <div className="w-full h-1.5 bg-white/10 mt-3 rounded-full overflow-hidden">
-                       <div className="h-full bg-highlight-blue" style={{ width: `${(event.registeredCount / event.maxAttendees) * 100}%` }}></div>
+                    <p className="text-[10px] font-black uppercase text-primary/40 mb-1 tracking-widest">Operational Capacity</p>
+                    {event.registrationType === 'external' ? (
+                      <p className="font-black text-lg text-primary uppercase leading-tight">Public Access Access</p>
+                    ) : (
+                      <>
+                        <p className="font-black text-lg text-primary uppercase leading-tight">{event.registeredCount} / {event.maxAttendees} SLOTS FILLED</p>
+                        <div className="w-full h-2 bg-primary/10 mt-3 border border-primary rounded-full overflow-hidden">
+                           <div className="h-full bg-highlight-blue border-r border-primary" style={{ width: `${(event.registeredCount / event.maxAttendees) * 100}%` }}></div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t-2 border-primary/10">
+                  <p className="text-[10px] font-black uppercase text-primary/30 mb-4 tracking-widest">Mission Coordinator</p>
+                  <div className="flex flex-col gap-2">
+                    <div className="inline-flex items-center gap-2 bg-highlight-pink/10 border-2 border-primary/20 px-4 py-2 rounded-xl">
+                      <User size={16} className="text-primary" />
+                      <p className="font-black text-sm text-primary uppercase">{event.organizer}</p>
                     </div>
+                    {event.organizerEmail && (
+                      <div className="inline-flex items-center gap-2 px-1">
+                        <Mail size={14} className="text-primary/40" />
+                        <p className="text-xs font-black text-primary/40 uppercase tracking-tighter lowercase">{event.organizerEmail}</p>
+                      </div>
+                    )}
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/5">
-                  <p className="text-[10px] font-bold uppercase text-white/30 mb-4 tracking-widest">Organized By</p>
-                  <p className="font-bold text-sm">{event.organizer}</p>
                 </div>
               </div>
             </div>

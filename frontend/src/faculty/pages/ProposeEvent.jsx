@@ -36,6 +36,8 @@ const ProposeEvent = () => {
     isScheduled: true,
     isPaid: false,
     price: 0,
+    registrationType: 'platform',
+    externalLink: '',
   });
   const [toast, setToast] = useState({ message: '', type: null });
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -158,6 +160,22 @@ const ProposeEvent = () => {
                   <input type="number" required min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. 500" />
                 </div>
               )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200">
+                <div>
+                  <label className="block text-sm font-bold uppercase tracking-wide mb-1">Registration Type</label>
+                  <select value={formData.registrationType} onChange={e => setFormData({ ...formData, registrationType: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white text-slate-800">
+                    <option value="platform">Via Platform (Internal)</option>
+                    <option value="external">External Link (Unstop, GForms)</option>
+                  </select>
+                </div>
+                {formData.registrationType === 'external' && (
+                  <div>
+                    <label className="block text-sm font-bold uppercase tracking-wide mb-1">Registration URL*</label>
+                    <input type="url" required value={formData.externalLink} onChange={e => setFormData({ ...formData, externalLink: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="https://..." />
+                  </div>
+                )}
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>

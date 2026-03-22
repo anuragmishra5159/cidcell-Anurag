@@ -51,7 +51,6 @@ app.use(express.json());
 app.use(globalLimiter);
 
 // Connect to database
-console.log('Using MONGO_URI:', process.env.MONGO_URI);
 connectDB();
 
 // API Routes
@@ -159,8 +158,13 @@ app.use(require('./middleware/errorHandler'));
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log('✅ Socket.IO Initialized');
+    console.log('\x1b[36m%s\x1b[0m', '--------------------------------------------------');
+    console.log('\x1b[1m\x1b[32m%s\x1b[0m', '  🚀 CID-CELL BACKEND IS LIVE');
+    console.log('\x1b[36m%s\x1b[0m', '--------------------------------------------------');
+    console.log(`  📍  \x1b[33mPort:\x1b[0m      ${PORT}`);
+    console.log(`  🌐  \x1b[33mClient:\x1b[0m    ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
+    console.log(`  ⚡  \x1b[33mReal-time:\x1b[0m \x1b[32mSocket.IO Initialized\x1b[0m`);
+    // The Database log will come from the async connectDB() function
   });
 }
 

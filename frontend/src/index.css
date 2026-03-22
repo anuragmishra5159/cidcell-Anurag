@@ -10,9 +10,10 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading uppercase tracking-widest leading-tight;
   }
-  .admin-panel h1, .admin-panel h2, .admin-panel h3, .admin-panel h4, .admin-panel h5, .admin-panel h6 {
+  /* Custom override for admin panel removed to match main project theme */
+  /* .admin-panel h1, .admin-panel h2, .admin-panel h3, .admin-panel h4, .admin-panel h5, .admin-panel h6 {
     @apply font-sans normal-case tracking-normal leading-normal;
-  }
+  } */
 }
 
 @layer components {

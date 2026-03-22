@@ -47,18 +47,12 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[90vh] flex items-center pt-32 md:pt-36 lg:pt-40 pb-8 lg:pb-12 overflow-hidden bg-bg text-primary">
+    <section className="relative w-full min-h-[85vh] lg:h-screen flex items-center pt-24 md:pt-28 lg:pt-24 pb-4 lg:pb-8 overflow-hidden bg-bg text-primary">
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none -z-10"></div>
-      
+
       {/* Floating Tech Warnings & Badges */}
-      <div className={`absolute top-24 left-4 xl:left-12 bg-black text-white font-mono text-xs px-3 py-1 font-bold tracking-widest border-2 border-black transform -rotate-6 shadow-[4px_4px_0_0_#FFD700] hidden lg:block transition-all duration-1000 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'}`}>
-        [ /&gt; INIT_SYSTEM ]
-      </div>
-      <div className={`absolute bottom-24 right-10 xl:right-1/4 w-32 h-6 bg-hazard border-2 border-primary transform rotate-45 hidden lg:block z-0 transition-all duration-1000 delay-500 ${isVisible ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}></div>
-      <div className={`absolute top-1/3 right-12 bg-white text-primary font-mono text-[10px] px-2 py-1 font-bold tracking-widest border-2 border-primary transform rotate-12 shadow-[2px_2px_0_0_#1a1a1a] hidden xl:block transition-all duration-1000 delay-700 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0'}`}>
-        SYS.V.2.4
-      </div>
+
 
       {/* Abstract Background Shapes */}
       <div className={`absolute top-[25%] -right-8 w-28 h-28 md:w-36 md:h-36 bg-highlight-yellow border-4 border-primary shadow-neo hidden lg:block transition-all duration-1000 ${isVisible ? 'transform translate-y-0 opacity-100' : 'transform -translate-y-12 opacity-0'}`}></div>
@@ -76,11 +70,11 @@ export default function HeroSection() {
                 </span>
               </div>
             </div>
-            
-            <h1 className="font-heading text-[2.8rem] sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[5rem] mb-3 md:mb-4 uppercase tracking-widest leading-[0.85] text-black">
-              <span className="block mb-1 md:mb-2">Bridging</span>
-              <span className="bg-highlight-yellow px-3 py-0 md:px-4 md:py-1 border-3 border-primary shadow-[6px_6px_0_0_#1a1a1a] transform -skew-x-6 inline-block mb-1 md:mb-2 mt-1 md:mt-2 text-black">ACADEMICS</span> <br />
-              <span className="block mt-2 md:mt-3 text-black">WITH INDUSTRY</span>
+
+            <h1 className="font-heading text-[2.2rem] sm:text-5xl md:text-6xl lg:text-[3.2rem] xl:text-[4rem] mb-2 md:mb-3 uppercase tracking-widest leading-[0.85] text-black">
+              <span className="block mb-1">Bridging</span>
+              <span className="bg-highlight-yellow px-3 py-0 md:px-4 md:py-1 border-3 border-primary shadow-[6px_6px_0_0_#1a1a1a] transform -skew-x-6 inline-block mb-1 mt-1 text-black">ACADEMICS</span> <br />
+              <span className="block mt-1 md:mt-2 text-black">WITH INDUSTRY</span>
             </h1>
 
             <p className="text-sm sm:text-base lg:text-lg font-bold mb-5 md:mb-6 max-w-xl mx-auto lg:mx-0 leading-relaxed border-l-4 border-primary pl-4 text-black">
@@ -95,7 +89,7 @@ export default function HeroSection() {
                 EXPLORE PROJECTS
               </Link>
             </div>
-            
+
             {/* Stats */}
             <div className="mt-6 md:mt-8 flex items-center justify-center lg:justify-start gap-4 md:gap-6">
               {[
@@ -112,10 +106,10 @@ export default function HeroSection() {
           </div>
 
           {/* Visual/Image */}
-          <div className="flex-[1.2] relative w-full max-w-xl lg:max-w-none z-10 hidden md:block">
+          <div className="flex-1 lg:max-w-[48%] relative w-full max-w-lg z-10 hidden md:block">
             {/* Background Offset Shadow */}
             <div className="absolute top-4 -right-4 md:top-6 md:-right-6 w-full h-full bg-[#1a1a1a] -z-10"></div>
-            
+
             {/* Main Carousel Container */}
             <div className="relative bg-white border-4 border-primary p-3 md:p-4 transform rotate-2 hover:rotate-1 transition-transform duration-500">
               <div className="relative overflow-hidden aspect-[16/10] bg-gray-100 border-[3px] border-primary">
