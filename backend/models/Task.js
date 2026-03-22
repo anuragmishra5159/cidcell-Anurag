@@ -29,6 +29,11 @@ const taskSchema = new mongoose.Schema({
         enum: ['todo', 'in_progress', 'review', 'done'],
         default: 'todo',
     },
+    difficulty: {
+        type: String,
+        enum: ['small', 'medium', 'large', 'critical'],
+        default: 'small',
+    },
     prLink: { type: String, default: '' },
     reviewedBy: {
         type: mongoose.Schema.Types.ObjectId,

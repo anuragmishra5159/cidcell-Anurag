@@ -34,10 +34,10 @@ const protect = async (req, res, next) => {
 };
 
 const admin = (req, res, next) => {
-    if (req.user && req.user.userType?.toLowerCase() === 'admin') {
+    if (req.user && ['admin', 'hod'].includes(req.user.userType?.toLowerCase())) {
         next();
     } else {
-        res.status(401).json({ message: 'Not authorized as an admin' });
+        res.status(401).json({ message: 'Not authorized as an admin or HOD' });
     }
 };
 
@@ -63,7 +63,7 @@ const optionalProtect = async (req, res, next) => {
 };
 
 const isFaculty = (req, res, next) => {
-    if (req.user && req.user.userType === 'faculty') {
+    if (req.user && req.user.userType?.toLowerCase() === 'faculty') {
         next();
     } else {
         res.status(403).json({ message: 'Faculty access only' });
@@ -71,20 +71,19 @@ const isFaculty = (req, res, next) => {
 };
 
 const isMentor = (req, res, next) => {
-    if (req.user && req.user.userType === 'mentor') {
+    if (req.user && req.user.userType?.toLowerCase() === 'mentor') {
         next();
     } else {
         res.status(403).json({ message: 'Mentor access required' });
     }
 };
 
-const isStudentOrMentor = (req, res, next) => {
-    const role = req.user?.userType;
-    if (role === 'student' || role === 'mentor') {
+const isStudent = (req, res, next) => {
+    if (req.user && req.user.userType?.toLowerCase() === 'student') {
         next();
     } else {
-        res.status(403).json({ message: 'Student or Mentor access required' });
+        res.status(403).json({ message: 'Student access required' });
     }
 };
 
-module.exports = { protect, admin, isFaculty, isMentor, isStudentOrMentor, optionalProtect };
+module.exports = { protect, admin, isFaculty, isMentor, isStudent, optionalProtect };

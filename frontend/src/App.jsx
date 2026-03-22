@@ -22,6 +22,7 @@ import EventDetail from './pages/EventDetail';
 import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
+import ProjectChat from './pages/ProjectChat';
 
 // Admin Imports
 import AdminLayout from './admin/AdminLayout';
@@ -146,6 +147,13 @@ function App() {
             </PrivateRoute>
           } />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/projects/:id/chat" element={
+            <PrivateRoute>
+              <OnboardingGuard>
+                <ProjectChat />
+              </OnboardingGuard>
+            </PrivateRoute>
+          } />
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/team" element={<Team />} />

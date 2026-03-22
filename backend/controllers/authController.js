@@ -145,7 +145,10 @@ const getProfile = async (req, res) => {
  */
 const updateProfile = async (req, res) => {
     try {
-        const { enrollmentNo, branch, batch, skills, socialLinks } = req.body;
+        const { 
+            enrollmentNo, branch, batch, skills, socialLinks,
+            profilePicture, domainOfExpertise, department, aboutMentor, expertise
+        } = req.body;
 
         const user = await User.findById(req.user.id);
 
@@ -153,13 +156,27 @@ const updateProfile = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Update fields if provided
+        // Update basic fields if provided
         if (enrollmentNo !== undefined) user.enrollmentNo = enrollmentNo;
         if (branch !== undefined) user.branch = branch;
         if (batch !== undefined) user.batch = batch;
         if (skills !== undefined) user.skills = skills;
         if (socialLinks !== undefined) {
             user.socialLinks = { ...user.socialLinks, ...socialLinks };
+        }
+        
+        // Update new profile pieces
+        if (profilePicture !== undefined) user.profilePicture = profilePicture;
+        if (domainOfExpertise !== undefined) user.domainOfExpertise = domainOfExpertise;
+        if (department !== undefined) user.department = department;
+        if (aboutMentor !== undefined) user.aboutMentor = aboutMentor;
+        
+        if (expertise !== undefined) {
+             if (typeof expertise === 'string') {
+                 user.expertise = expertise.split(',').map(e => e.trim()).filter(Boolean);
+             } else {
+                 user.expertise = expertise;
+             }
         }
 
         await user.save();

@@ -51,9 +51,17 @@ const pickTask = async (req, res) => {
             return res.status(400).json({ message: 'Task is not available' });
         }
 
+
         task.assignedTo = req.user._id;
         task.status = 'in_progress';
         await task.save();
+
+        // Update contributor lastActive
+        await Project.findOneAndUpdate(
+            { _id: task.projectId, 'contributors.userId': req.user._id },
+            { $set: { 'contributors.$.lastActive': new Date() } }
+        );
+
         res.json(task);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -75,9 +83,17 @@ const submitPR = async (req, res) => {
             return res.status(400).json({ message: 'Task must be in progress to submit a PR' });
         }
 
+
         task.prLink = prLink;
         task.status = 'review';
         await task.save();
+
+        // Update contributor lastActive
+        await Project.findOneAndUpdate(
+            { _id: task.projectId, 'contributors.userId': req.user._id },
+            { $set: { 'contributors.$.lastActive': new Date() } }
+        );
+
         res.json(task);
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -101,8 +117,24 @@ const reviewTask = async (req, res) => {
 
         if (action === 'approve') {
             task.status = 'done';
-            // Update project's lastActivityAt
-            await Project.findByIdAndUpdate(task.projectId, { lastActivityAt: new Date() });
+            if (task.assignedTo) {
+                const project = await Project.findById(task.projectId);
+                if (project) {
+                    project.lastActivityAt = new Date();
+                    const contributor = project.contributors.find(c => c.userId.toString() === task.assignedTo.toString());
+                    if (contributor) {
+                        contributor.score += 10;
+                        contributor.lastActive = new Date();
+                        
+                        // Auto-promotion based on score (only to active_contributor)
+                        // core_member requires owner confirmation
+                        if (contributor.score >= 50 && contributor.level === 'new_contributor') {
+                            contributor.level = 'active_contributor';
+                        }
+                    }
+                    await project.save();
+                }
+            }
         } else {
             task.status = 'in_progress'; // send back for revision
             task.prLink = '';

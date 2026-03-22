@@ -15,7 +15,10 @@ import {
   CheckCircle,
   Loader,
   AlertTriangle,
-  X
+  X,
+  Send,
+  Plus,
+  MessageSquare
 } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL;
@@ -41,6 +44,14 @@ export default function ProjectDetail() {
   const [joining, setJoining] = useState(false);
   const [toast, setToast] = useState({ message: '', type: null });
 
+  // ── Join Request State ──
+  const [joinStatus, setJoinStatus] = useState(null); // null | 'pending' | 'accepted' | 'rejected'
+  const [reapplyAfter, setReapplyAfter] = useState(null);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [joinMessage, setJoinMessage] = useState('');
+  const [joinSkills, setJoinSkills] = useState([]);
+  const [skillInput, setSkillInput] = useState('');
+
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: '', type: null }), 4000);
@@ -60,6 +71,25 @@ export default function ProjectDetail() {
     fetchProject();
   }, [id]);
 
+  // Fetch join request status for logged-in students
+  useEffect(() => {
+    if (user && project?.status === 'active' && project?.type === 'collaborative') {
+      axios.get(`${API}/join-requests/my-status/${id}`, authHeaders())
+        .then(res => {
+          setJoinStatus(res.data.status);
+          setReapplyAfter(res.data.reapplyAfter);
+        })
+        .catch(() => {});
+    }
+  }, [user, project, id]);
+
+  // Pre-fill skills from user profile
+  useEffect(() => {
+    if (user?.skills?.length > 0 && joinSkills.length === 0) {
+      setJoinSkills([...user.skills]);
+    }
+  }, [user]);
+
   // Fetch tasks when project is active and we're logged in
   useEffect(() => {
     if (project?.status === 'active' && user) {
@@ -71,26 +101,84 @@ export default function ProjectDetail() {
     }
   }, [project, user, id]);
 
-  const handleJoin = async () => {
+  // ── Manage Requests State (for Creator) ──
+  const [projectRequests, setProjectRequests] = useState({ pending: [], reviewed: [] });
+  const [loadingRequests, setLoadingRequests] = useState(false);
+
+  // Fetch join requests if creator
+  useEffect(() => {
+    if (project && user && project.createdBy?._id === user._id) {
+      setLoadingRequests(true);
+      axios.get(`${API}/join-requests/project/${id}`, authHeaders())
+        .then(res => setProjectRequests(res.data))
+        .catch(err => console.error("Error fetching project requests:", err))
+        .finally(() => setLoadingRequests(false));
+    }
+  }, [project, user, id]);
+
+  // ── Manage Requests Handlers ──
+  const handleAcceptRequest = async (reqId) => {
+    try {
+      await axios.patch(`${API}/join-requests/${reqId}/accept`, {}, authHeaders());
+      showToast('Request accepted successfully!');
+      // Refresh requests list
+      const res = await axios.get(`${API}/join-requests/project/${id}`, authHeaders());
+      setProjectRequests(res.data);
+      // Optionally refresh the whole project to update contributors count instantly
+      const projRes = await axios.get(`${API}/projects/${id}`);
+      setProject(projRes.data);
+    } catch (err) { showToast(err.response?.data?.message || 'Failed to accept', 'error'); }
+  };
+
+  const handleRejectRequest = async (reqId) => {
+    try {
+      await axios.patch(`${API}/join-requests/${reqId}/reject`, {}, authHeaders());
+      showToast('Request rejected.');
+      const res = await axios.get(`${API}/join-requests/project/${id}`, authHeaders());
+      setProjectRequests(res.data);
+    } catch (err) { showToast(err.response?.data?.message || 'Failed to reject', 'error'); }
+  };
+
+  // ── Join Request Handlers ──
+  const handleSubmitJoinRequest = async () => {
+    if (joinMessage.length < 30) {
+      showToast('Message must be at least 30 characters.', 'error');
+      return;
+    }
     setJoining(true);
     try {
-      await axios.post(`${API}/projects/${id}/join`, {}, authHeaders());
-      showToast('Successfully joined the project!');
-      // Refresh project data
-      const res = await axios.get(`${API}/projects/${id}`);
-      setProject(res.data);
+      await axios.post(`${API}/join-requests`, {
+        projectId: id,
+        message: joinMessage,
+        skills: joinSkills,
+      }, authHeaders());
+      setJoinStatus('pending');
+      setShowJoinModal(false);
+      setJoinMessage('');
+      showToast('Join request sent! The project creator will review it.');
     } catch (err) {
-      showToast(err.response?.data?.message || 'Failed to join.', 'error');
+      showToast(err.response?.data?.message || 'Failed to send request.', 'error');
     } finally {
       setJoining(false);
     }
+  };
+
+  const handleAddSkill = () => {
+    const trimmed = skillInput.trim();
+    if (trimmed && !joinSkills.includes(trimmed)) {
+      setJoinSkills([...joinSkills, trimmed]);
+      setSkillInput('');
+    }
+  };
+
+  const handleRemoveSkill = (skill) => {
+    setJoinSkills(joinSkills.filter(s => s !== skill));
   };
 
   const handlePickTask = async (taskId) => {
     try {
       await axios.patch(`${API}/tasks/${taskId}/pick`, {}, authHeaders());
       showToast('Task picked! Start working on it.');
-      // Refresh tasks
       const res = await axios.get(`${API}/tasks/project/${id}`, authHeaders());
       setTasks(res.data);
     } catch (err) {
@@ -109,9 +197,50 @@ export default function ProjectDetail() {
     }
   };
 
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      await axios.patch(`${API}/projects/${id}/contributors/${userId}/role`, { role: newRole }, authHeaders());
+      setProject(prev => ({
+        ...prev,
+        contributors: prev.contributors.map(c => 
+          (c.userId?._id === userId || c.userId === userId) ? { ...c, role: newRole } : c
+        )
+      }));
+      showToast('Contributor role updated successfully');
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to update role.', 'error');
+    }
+  };
+
+  const handleLevelChange = async (userId, newLevel) => {
+    try {
+      await axios.patch(`${API}/projects/${id}/contributors/${userId}/level`, { level: newLevel }, authHeaders());
+      setProject(prev => ({
+        ...prev,
+        contributors: prev.contributors.map(c => 
+          (c.userId?._id === userId || c.userId === userId) ? { ...c, level: newLevel } : c
+        )
+      }));
+      showToast('Contributor level updated successfully');
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to update level.', 'error');
+    }
+  };
+
   const isContributor = user && project?.contributors?.some(c => c.userId?._id === user._id || c.userId === user._id);
   const isCreator = user && project?.createdBy?._id === user._id;
-  const canJoin = user && project?.status === 'active' && project?.type === 'collaborative' && !isContributor && !isCreator && user.userType === 'student';
+
+  const canRequestJoin = user
+    && user.userType === 'student'
+    && project?.status === 'active'
+    && project?.type === 'collaborative'
+    && !isContributor
+    && !isCreator;
+
+  const canReapply = joinStatus === 'rejected' && reapplyAfter && new Date(reapplyAfter) <= new Date();
+  const daysUntilReapply = reapplyAfter
+    ? Math.max(0, Math.ceil((new Date(reapplyAfter) - new Date()) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   if (loading) return (
     <div className="min-h-screen pt-40 flex items-center justify-center font-bold text-primary animate-pulse">
@@ -163,6 +292,12 @@ export default function ProjectDetail() {
                   Live Demo <ExternalLink size={16} />
                 </a>
               )}
+              {(isCreator || isContributor) && (
+                <Link to={`/projects/${id}/chat`}
+                  className="flex items-center gap-2 px-6 py-3 bg-highlight-purple text-primary border-2 border-primary font-black uppercase text-xs shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                  Project Chat <MessageSquare size={16} />
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -194,41 +329,219 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            {/* Tech Stack + Contributors */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
-                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 border-b-2 border-slate-50 pb-2">Technical Stack</h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack?.map((skill, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-slate-50 border-2 border-slate-200 text-slate-600 text-[11px] font-bold uppercase rounded">
-                      {skill}
-                    </span>
-                  ))}
-                  {(!project.techStack || project.techStack.length === 0) && <p className="text-slate-300 italic text-sm">Not specified</p>}
-                </div>
-              </div>
-              <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
-                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 border-b-2 border-slate-50 pb-2">Contributors</h3>
-                <div className="space-y-3">
-                  {project.contributors?.map((c, i) => (
-                    <div key={i} className="flex items-center gap-3 text-slate-700 font-bold text-sm">
-                      <div className="w-2 h-2 rounded-full bg-highlight-teal"></div>
-                      {c.userId?.username || 'Unknown'}
-                    </div>
-                  ))}
-                  {(!project.contributors || project.contributors.length === 0) && (
-                    <p className="text-slate-300 italic text-sm">No contributors yet</p>
-                  )}
-                </div>
+            {/* Tech Stack */}
+            <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
+              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 border-b-2 border-slate-50 pb-2">Technical Stack</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.techStack?.map((skill, i) => (
+                  <span key={i} className="px-3 py-1.5 bg-slate-50 border-2 border-slate-200 text-slate-600 text-[11px] font-bold uppercase rounded">
+                    {skill}
+                  </span>
+                ))}
+                {(!project.techStack || project.techStack.length === 0) && <p className="text-slate-300 italic text-sm">Not specified</p>}
               </div>
             </div>
 
-            {/* Join Button */}
-            {canJoin && (
-              <button onClick={handleJoin} disabled={joining}
-                className="w-full py-4 bg-highlight-green border-3 border-primary font-black uppercase text-sm shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50">
-                {joining ? 'Joining...' : 'Join This Project as Contributor'}
-              </button>
+            {/* Team Leaderboard */}
+            <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b-2 border-slate-50 pb-4">
+                <h3 className="text-xl font-black text-primary uppercase flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-highlight-green border-2 border-primary flex items-center justify-center -rotate-3"><Users size={16} className="text-green-900" /></span>
+                  Team Leaderboard
+                </h3>
+              </div>
+              
+              <div className="space-y-4">
+                {project.contributors?.map((c, i) => {
+                  const daysSinceActive = Math.floor((new Date() - new Date(c.lastActive || c.joinedAt)) / (1000 * 60 * 60 * 24));
+                  const isActive = daysSinceActive < 7;
+                  
+                  return (
+                    <div key={i} className={`flex items-center justify-between p-4 border-2 rounded-xl transition-all ${isActive ? 'border-primary shadow-neo-sm bg-white' : 'border-slate-100 bg-slate-50 opacity-80'}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="relative">
+                          <img src={c.userId?.profilePicture || `https://ui-avatars.com/api/?name=${c.userId?.username}`} className="w-10 h-10 rounded-full border-2 border-primary object-cover" />
+                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center ${isActive ? 'bg-green-500' : 'bg-red-400'}`} title={isActive ? 'Active recently' : 'Inactive'}></div>
+                        </div>
+                        <div>
+                          <p className="font-black text-sm text-primary uppercase">{c.userId?.username || 'Unknown'}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            {isCreator ? (
+                              <div className="flex flex-col gap-1">
+                                <select 
+                                  value={c.role || 'developer'}
+                                  onChange={(e) => handleRoleChange(c.userId?._id || c.userId, e.target.value)}
+                                  className="text-[9px] font-black uppercase tracking-widest bg-highlight-blue border border-primary px-1 py-0.5 text-primary outline-none cursor-pointer hover:bg-white transition-colors"
+                                >
+                                  <option value="developer">Developer</option>
+                                  <option value="tester">Tester</option>
+                                  <option value="designer">Designer</option>
+                                  <option value="viewer">Viewer</option>
+                                </select>
+                                <select 
+                                  value={c.level || 'new_contributor'}
+                                  onChange={(e) => handleLevelChange(c.userId?._id || c.userId, e.target.value)}
+                                  className="text-[9px] font-black uppercase tracking-widest bg-highlight-purple border border-primary px-1 py-0.5 text-white outline-none cursor-pointer hover:bg-white hover:text-primary transition-colors"
+                                >
+                                  <option value="new_contributor">New Contributor</option>
+                                  <option value="active_contributor">Active Contributor</option>
+                                  <option value="core_member">Core Member</option>
+                                </select>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-1">
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-highlight-blue border border-primary px-2 py-0.5 text-primary text-center">
+                                  {c.role || 'Developer'}
+                                </span>
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-highlight-purple border border-primary px-2 py-0.5 text-white text-center">
+                                  {(c.level || 'new_contributor').replace('_', ' ')}
+                                </span>
+                              </div>
+                            )}
+                            <span className="text-[9px] font-bold text-slate-400 italic">
+                              {isActive ? 'Active' : `Inactive (${daysSinceActive}d)`}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-black text-2xl text-primary leading-none">{c.score || 0}</p>
+                        <p className="text-[9px] font-bold text-highlight-purple uppercase tracking-widest">Points</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {(!project.contributors || project.contributors.length === 0) && (
+                  <p className="text-sm font-bold text-slate-400 italic text-center py-6 border-2 border-dashed border-slate-200 rounded-xl">No contributors yet. Be the first!</p>
+                )}
+              </div>
+            </div>
+
+            {/* ── Join Request Section ── */}
+            {canRequestJoin && (
+              <div>
+                {/* Never requested OR rejected + can re-apply */}
+                {(joinStatus === null || canReapply) && (
+                  <button onClick={() => setShowJoinModal(true)}
+                    className="w-full py-4 bg-highlight-green border-3 border-primary font-black uppercase text-sm shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2">
+                    <Send size={16} /> Request to Join This Project
+                  </button>
+                )}
+
+                {/* Pending */}
+                {joinStatus === 'pending' && (
+                  <div className="w-full py-4 bg-highlight-yellow border-3 border-primary font-black uppercase text-sm text-center opacity-80 cursor-not-allowed"
+                    title="The project creator is reviewing your request">
+                    ⏳ Request Pending — Awaiting Creator Review
+                  </div>
+                )}
+
+                {/* Rejected + cooldown active */}
+                {joinStatus === 'rejected' && !canReapply && (
+                  <div className="w-full py-4 bg-red-100 border-3 border-red-300 font-bold text-sm text-red-700 text-center">
+                    ❌ Request Rejected — Re-apply in {daysUntilReapply} day{daysUntilReapply !== 1 ? 's' : ''}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Accepted badge */}
+            {joinStatus === 'accepted' && isContributor && (
+              <div className="w-full py-4 bg-green-100 border-3 border-green-400 font-black uppercase text-sm text-green-800 text-center flex items-center justify-center gap-2 mb-6">
+                <CheckCircle size={16} /> You are a Contributor
+              </div>
+            )}
+
+            {/* ── Manage Requests Section (Visible only to Creator) ── */}
+            {isCreator && project.type === 'collaborative' && (
+              <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
+                <h3 className="text-xl font-black text-primary uppercase mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-highlight-purple border-2 border-primary flex items-center justify-center -rotate-3"><Users size={16} className="text-white" /></span>
+                  Manage Join Requests
+                </h3>
+
+                {loadingRequests ? (
+                  <Loader className="animate-spin text-primary" size={24} />
+                ) : (
+                  <div className="space-y-4">
+                    {projectRequests.pending.length === 0 && projectRequests.reviewed.length === 0 ? (
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-center py-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 italic">No join requests yet.</p>
+                    ) : (
+                      <>
+                        {projectRequests.pending.length > 0 && (
+                          <div className="mb-6">
+                            <h4 className="text-xs font-black uppercase text-slate-400 tracking-widest mb-3 border-b-2 border-slate-50 pb-2">Pending Review ({projectRequests.pending.length})</h4>
+                            <div className="space-y-4">
+                              {projectRequests.pending.map(request => {
+                                const projectSkills = project.techStack?.map(s => s.toLowerCase()) || [];
+                                const applicantSkills = [...(request.skills || []), ...(request.userId?.skills || [])].map(s => s.toLowerCase());
+                                const uniqueApplicantSkills = [...new Set(applicantSkills)];
+                                const matchedSkills = uniqueApplicantSkills.filter(s => projectSkills.includes(s));
+                                const matchPercentage = projectSkills.length > 0 ? Math.round((matchedSkills.length / projectSkills.length) * 100) : null;
+                                
+                                return (
+                                <div key={request._id} className="p-5 border-3 border-primary bg-highlight-yellow/10 rounded-xl relative overflow-hidden shadow-neo-sm transform hover:-translate-y-1 transition-transform">
+                                  <div className="absolute top-0 left-0 w-2 h-full bg-highlight-yellow border-r-2 border-primary"></div>
+                                  <div className="flex flex-col md:flex-row justify-between gap-6 pl-2">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-3 mb-3">
+                                        <img src={request.userId?.profilePicture || `https://ui-avatars.com/api/?name=${request.userId?.username}`} className="w-8 h-8 rounded-full border-2 border-primary object-cover shadow-neo-sm" />
+                                        <span className="font-black text-base text-primary uppercase">{request.userId?.username}</span>
+                                        {matchPercentage !== null && (
+                                          <span className={`text-[9px] font-black uppercase text-white px-2 py-0.5 shadow-neo-sm border-2 border-primary ${matchPercentage >= 70 ? 'bg-green-500' : matchPercentage >= 40 ? 'bg-orange-400' : 'bg-red-400'}`}>
+                                            {matchPercentage}% Skill Match
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="bg-white p-3 border-2 border-primary shadow-neo-sm rounded-lg relative">
+                                        <div className="absolute -left-2 top-4 w-3 h-3 bg-white border-l-2 border-b-2 border-primary rotate-45 transform"></div>
+                                        <p className="text-xs text-slate-700 font-bold italic relative z-10 leading-relaxed">"{request.message}"</p>
+                                      </div>
+                                      {request.skills && request.skills.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5 mt-4">
+                                          {request.skills.map((s, i) => <span key={i} className="text-[10px] font-black uppercase bg-highlight-blue border-2 border-primary px-2 py-1 text-primary shadow-neo-sm">{s}</span>)}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex flex-row md:flex-col gap-3 shrink-0 justify-center">
+                                      <button onClick={() => handleAcceptRequest(req._id)} className="px-4 py-3 bg-highlight-green text-green-900 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
+                                        <CheckCircle size={14} /> Accept
+                                      </button>
+                                      <button onClick={() => handleRejectRequest(req._id)} className="px-4 py-3 bg-red-100 text-red-700 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
+                                        <X size={14} /> Reject
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                )})}
+                            </div>
+                          </div>
+                        )}
+
+                        {projectRequests.reviewed.length > 0 && (
+                          <div>
+                            <h4 className="text-[10px] font-black uppercase text-slate-300 tracking-widest mb-3 border-b-2 border-slate-50 pb-2">Previously Reviewed ({projectRequests.reviewed.length})</h4>
+                            <div className="space-y-2">
+                              {projectRequests.reviewed.map(req => (
+                                <div key={req._id} className={`p-3 border-2 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2 opacity-60 hover:opacity-100 transition-opacity ${req.status === 'accepted' ? 'border-highlight-green bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                                  <div className="flex items-center gap-3">
+                                    <img src={req.userId?.profilePicture || `https://ui-avatars.com/api/?name=${req.userId?.username}`} className="w-6 h-6 rounded-full border border-primary object-cover grayscale" />
+                                    <span className="font-bold text-xs text-slate-700">{req.userId?.username}</span>
+                                    <span className="hidden md:inline-block text-[10px] text-slate-500 italic max-w-[200px] truncate">"{req.message}"</span>
+                                  </div>
+                                  <span className={`text-[9px] font-black uppercase px-2 py-1 border-2 self-start sm:self-auto ${req.status === 'accepted' ? 'bg-highlight-green text-green-900 border-primary' : 'bg-red-200 text-red-800 border-red-300'}`}>
+                                    {req.status}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Task Section (visible if logged in and project is active) */}
@@ -246,6 +559,8 @@ export default function ProjectDetail() {
                         key={task._id}
                         task={task}
                         user={user}
+                        isCreator={isCreator}
+                        userRole={project.contributors?.find(c => (c.userId?._id || c.userId) === user._id)?.role}
                         onPick={handlePickTask}
                         onSubmitPR={handleSubmitPR}
                       />
@@ -320,6 +635,68 @@ export default function ProjectDetail() {
         </div>
       </div>
 
+      {/* ── Join Request Modal ── */}
+      {showJoinModal && (
+        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+          <div className="bg-white border-3 border-primary shadow-neo rounded-2xl w-full max-w-lg p-8 relative">
+            <button onClick={() => setShowJoinModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-primary">
+              <X size={20} />
+            </button>
+            <h3 className="text-xl font-black text-primary uppercase mb-6">Request to Join</h3>
+
+            {/* Message */}
+            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">
+              Why do you want to join? <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={joinMessage}
+              onChange={e => setJoinMessage(e.target.value)}
+              placeholder="Explain your motivation, relevant experience, and what you can contribute... (min 30 characters)"
+              className="w-full h-28 border-2 border-primary p-3 text-sm font-medium outline-none resize-none mb-1"
+            />
+            <p className="text-[10px] text-slate-400 mb-4">{joinMessage.length}/30 min characters</p>
+
+            {/* Skills */}
+            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">
+              Skills you bring
+            </label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={skillInput}
+                onChange={e => setSkillInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+                placeholder="e.g. React, Python..."
+                className="flex-1 border-2 border-primary px-3 py-2 text-sm outline-none"
+              />
+              <button onClick={handleAddSkill} className="px-3 py-2 bg-primary text-white border-2 border-primary">
+                <Plus size={16} />
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {joinSkills.map((skill, i) => (
+                <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-highlight-blue border border-primary text-[11px] font-bold uppercase">
+                  {skill}
+                  <button onClick={() => handleRemoveSkill(skill)} className="text-slate-500 hover:text-red-500">
+                    <X size={10} />
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            {/* Submit */}
+            <button
+              onClick={handleSubmitJoinRequest}
+              disabled={joining || joinMessage.length < 30}
+              className="w-full py-3 bg-highlight-green border-3 border-primary font-black uppercase text-sm shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {joining ? <Loader size={16} className="animate-spin" /> : <Send size={16} />}
+              {joining ? 'Sending...' : 'Send Request'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Toast */}
       {toast.message && (
         <div className="fixed bottom-6 right-6 z-[9999]">
@@ -335,9 +712,11 @@ export default function ProjectDetail() {
 }
 
 // ── Sub-component for task cards on the detail page ──
-function TaskCard({ task, user, onPick, onSubmitPR }) {
+function TaskCard({ task, user, isCreator, userRole, onPick, onSubmitPR }) {
   const [prLink, setPrLink] = useState('');
   const isAssigned = task.assignedTo?._id === user._id;
+  
+  const canInteract = isCreator || (userRole && userRole !== 'viewer');
 
   return (
     <div className="border-2 border-primary p-4 rounded-xl bg-slate-50">
@@ -351,14 +730,14 @@ function TaskCard({ task, user, onPick, onSubmitPR }) {
       {task.assignedTo && <p className="text-[10px] font-bold text-slate-400 mb-1">Assigned to: <span className="text-primary">{task.assignedTo.username}</span></p>}
 
       {/* Pick button */}
-      {task.status === 'todo' && user.userType === 'student' && (
+      {task.status === 'todo' && user.userType === 'student' && canInteract && (
         <button onClick={() => onPick(task._id)} className="mt-2 px-4 py-2 bg-highlight-blue border-2 border-primary text-[10px] font-black uppercase shadow-neo-sm hover:shadow-none transition-all">
           Pick This Task
         </button>
       )}
 
       {/* Submit PR */}
-      {task.status === 'in_progress' && isAssigned && (
+      {task.status === 'in_progress' && isAssigned && canInteract && (
         <div className="mt-2 flex gap-2">
           <input type="text" placeholder="PR Link..." value={prLink} onChange={e => setPrLink(e.target.value)} className="flex-1 px-2 py-1 border border-primary text-xs outline-none" />
           <button onClick={() => { onSubmitPR(task._id, prLink); setPrLink(''); }} className="px-3 py-1 bg-primary text-white text-[10px] font-black uppercase border border-primary">

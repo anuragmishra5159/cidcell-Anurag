@@ -9,11 +9,17 @@ import {
   User,
   Users,
   Plus,
+  Bell,
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import ScrollReveal from '../components/ScrollReveal';
 
 const typeFilters = ['All', 'independent', 'collaborative'];
+
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+};
 
 export default function Projects() {
   const { user } = useContext(AuthContext);
@@ -29,7 +35,7 @@ export default function Projects() {
   const fetchActiveProjects = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/projects`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/projects`, authHeaders());
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -125,11 +131,28 @@ export default function Projects() {
                         <span className="text-[10px] font-black uppercase px-2 py-1 border-2 border-primary bg-highlight-yellow shadow-neo-sm">
                           {project.type}
                         </span>
-                        {project.contributors && project.contributors.length > 0 && (
-                          <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400">
-                            <Users size={12} /> {project.contributors.length} contributors
-                          </div>
-                        )}
+                        
+                        <div className="flex items-center gap-2">
+                          {project.createdBy?._id === user?._id && project.pendingJoinRequests > 0 && (
+                            <div 
+                              className="flex items-center gap-1.5 px-2 py-1 bg-red-100 border-2 border-red-300 text-red-700 text-[10px] font-black uppercase rounded-full shadow-neo-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/projects/${project._id}`); // Or to owner dashboard tab in phase 2
+                              }}
+                              title="Pending Join Requests"
+                            >
+                              <Bell size={12} className="animate-pulse" />
+                              {project.pendingJoinRequests}
+                            </div>
+                          )}
+                          
+                          {project.contributors && project.contributors.length > 0 && (
+                            <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400">
+                              <Users size={12} /> {project.contributors.length}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       <h3 className="font-heading text-xl font-black text-primary mb-3 leading-tight group-hover:underline decoration-2 underline-offset-4 transition-all">

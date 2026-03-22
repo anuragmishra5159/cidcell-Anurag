@@ -36,14 +36,35 @@ const getUsers = async (req, res) => {
 // @access  Private/Admin
 const getUserById = async (req, res) => {
     try {
-        console.log('Fetching user by ID:', req.params.id);
         const user = await User.findById(req.params.id);
-        if (user) {
-            res.json(user);
-        } else {
-            console.warn('User not found:', req.params.id);
-            res.status(404).json({ message: 'User not found' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
+
+        // Check if requester is Admin
+        if (req.user && req.user.userType?.toLowerCase() === 'admin') {
+            return res.json(user);
+        }
+
+        // Otherwise return filtered "Public" profile
+        const publicUser = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            enrollmentNo: user.enrollmentNo,
+            branch: user.branch,
+            batch: user.batch,
+            skills: user.skills,
+            socialLinks: user.socialLinks,
+            userType: user.userType,
+            domainOfExpertise: user.domainOfExpertise,
+            department: user.department,
+            aboutMentor: user.aboutMentor,
+            expertise: user.expertise
+        };
+
+        res.json(publicUser);
     } catch (error) {
         console.error('Error fetching user:', req.params.id, error);
         res.status(500).json({ message: error.message });

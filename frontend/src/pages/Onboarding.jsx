@@ -29,6 +29,26 @@ const predefinedSkills = [
     "Data Analysis", "UI/UX Design", "Figma", "Docker", "AWS", "SQL", "MongoDB"
 ];
 
+const predefinedDomains = [
+    "Web Development",
+    "App Development",
+    "Artificial Intelligence",
+    "Data Science",
+    "Cloud & DevOps",
+    "Cybersecurity",
+    "UI/UX Design",
+    "Hardware & IoT",
+    "Blockchain"
+];
+
+const predefinedExpertise = [
+    "Frontend (React/Next)", "Backend (Node/Express)", "Full Stack", 
+    "Machine Learning", "Deep Learning", "Data Analytics", 
+    "Cloud Architecture (AWS/Azure)", "DevOps (Docker/K8s)", 
+    "Cybersecurity", "UI/UX Design", "Mobile App Dev", "Embedded Systems",
+    "System Design", "Agile & Product Management"
+];
+
 const generateBatches = () => {
     const currentYear = new Date().getFullYear();
     const batches = [];
@@ -271,29 +291,35 @@ export default function Onboarding() {
                                     <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">
                                         Domain of Interest <span className="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="text"
+                                    <select
                                         name="domainOfExpertise"
                                         value={formData.domainOfExpertise}
                                         onChange={handleChange}
-                                        placeholder="e.g. Web Dev, Machine Learning"
                                         required
                                         className={inputCls}
-                                    />
+                                    >
+                                        <option value="" disabled>Select Domain</option>
+                                        {predefinedDomains.map(d => (
+                                            <option key={d} value={d}>{d}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">
-                                        Expertise Tags (comma-separated) <span className="text-red-500">*</span>
+                                        Expertise Tag <span className="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="text"
+                                    <select
                                         name="expertise"
                                         value={formData.expertise}
                                         onChange={handleChange}
-                                        placeholder="e.g. React, UX, Cloud"
                                         required
                                         className={inputCls}
-                                    />
+                                    >
+                                        <option value="" disabled>Select Primary Expertise</option>
+                                        {predefinedExpertise.map(e => (
+                                            <option key={e} value={e}>{e}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-1.5 normal-case">

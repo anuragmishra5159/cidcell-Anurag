@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const contributorSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    role: { type: String, enum: ['developer', 'tester', 'designer', 'viewer'], default: 'developer' },
+    level: { type: String, enum: ['new_contributor', 'active_contributor', 'core_member'], default: 'new_contributor' },
+    score: { type: Number, default: 0 },
+    lastActive: { type: Date, default: Date.now },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     joinedAt: { type: Date, default: Date.now },
 }, { _id: false });
 

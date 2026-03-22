@@ -17,7 +17,7 @@ router.route('/mentors')
     .get(readLimiter, getMentors);
 
 router.route('/:id')
-    .get(protect, admin, getUserById)
+    .get(protect, getUserById)
     .put(protect, admin, updateUser)
     .delete(protect, admin, deleteUser);
 

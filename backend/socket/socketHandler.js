@@ -131,6 +131,50 @@ const socketHandler = (io) => {
             socket.to(`doubt_${sessionId}`).emit('receive_doubt_message', message);
         });
 
+        // --- Project Chat Events ---
+        socket.on('join_project_room', (data) => {
+            const { projectId } = data;
+            if (projectId) socket.join(`project_${projectId}`);
+        });
+
+        socket.on('leave_project_room', (data) => {
+            const { projectId } = data;
+            if (projectId) socket.leave(`project_${projectId}`);
+        });
+
+        socket.on('send_project_message', async (data, callback) => {
+            try {
+                const { projectId, text, chatType, recipientId } = data;
+                if (!projectId || !text) return;
+                
+                const ProjectMessage = require('../models/ProjectMessage');
+                const newMessage = await ProjectMessage.create({
+                    projectId,
+                    senderId: userId,
+                    chatType: chatType || 'group',
+                    recipientId: recipientId || null,
+                    text
+                });
+
+                const populatedMessage = await ProjectMessage.findById(newMessage._id).populate('senderId', 'username profilePicture');
+
+                if (chatType === 'private' && recipientId) {
+                    io.to(String(recipientId)).emit('receive_project_message', populatedMessage);
+                    // Also emit to sender so other tabs update
+                    if (String(recipientId) !== String(userId)) {
+                        io.to(String(userId)).emit('receive_project_message', populatedMessage);
+                    }
+                } else {
+                    io.to(`project_${projectId}`).emit('receive_project_message', populatedMessage);
+                }
+                
+                if (callback) callback({ success: true, data: populatedMessage });
+            } catch (err) {
+                console.error('Project Message Error:', err);
+                if (callback) callback({ success: false, error: err.message });
+            }
+        });
+
         // --- Disconnect ---
         socket.on('disconnect', () => {
             const sockets = onlineUsers.get(userId);

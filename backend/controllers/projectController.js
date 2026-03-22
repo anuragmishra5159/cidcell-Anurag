@@ -14,10 +14,17 @@ const submitProject = async (req, res) => {
             return res.status(400).json({ message: 'Independent projects require a GitHub repo or deployed link' });
         }
 
-        // Independent projects skip mentor review → go straight to faculty
-        const initialStatus = type === 'independent'
-            ? 'pending_faculty_review'
-            : 'pending_mentor_review';
+        // Trusted users (faculty, admin, HOD) skip reviews and go straight to active
+        let initialStatus;
+        const userType = req.user.userType;
+
+        if (['faculty', 'Admin', 'HOD'].includes(userType)) {
+            initialStatus = 'active';
+        } else {
+            initialStatus = type === 'independent'
+                ? 'pending_faculty_review'
+                : 'pending_mentor_review';
+        }
 
         const project = await Project.create({
             title,
@@ -37,6 +44,8 @@ const submitProject = async (req, res) => {
     }
 };
 
+const JoinRequest = require('../models/JoinRequest');
+
 // @desc    Get all active (public) projects
 // @route   GET /api/projects
 // @access  Public
@@ -46,7 +55,16 @@ const getActiveProjects = async (req, res) => {
             .populate('createdBy', 'username email')
             .populate('contributors.userId', 'username')
             .populate('mentors.userId', 'username')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
+            
+        if (req.user) {
+            for (let p of projects) {
+                if (p.createdBy && p.createdBy._id.toString() === req.user._id.toString() && p.type === 'collaborative') {
+                    p.pendingJoinRequests = await JoinRequest.countDocuments({ projectId: p._id, status: 'pending' });
+                }
+            }
+        }
         res.json(projects);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -59,7 +77,14 @@ const getActiveProjects = async (req, res) => {
 const getMyProjects = async (req, res) => {
     try {
         const projects = await Project.find({ createdBy: req.user._id })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
+            
+        for (let p of projects) {
+            if (p.type === 'collaborative') {
+                p.pendingJoinRequests = await JoinRequest.countDocuments({ projectId: p._id, status: 'pending' });
+            }
+        }
         res.json(projects);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -72,9 +97,9 @@ const getMyProjects = async (req, res) => {
 const getProjectById = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id)
-            .populate('createdBy', 'username email socialLinks')
-            .populate('contributors.userId', 'username email')
-            .populate('mentors.userId', 'username email')
+            .populate('createdBy', 'username email userType profilePicture socialLinks')
+            .populate('contributors.userId', 'username email userType profilePicture')
+            .populate('mentors.userId', 'username email userType profilePicture')
             .populate('facultyReviewer', 'username')
             .populate('adminApprover', 'username');
         if (!project) return res.status(404).json({ message: 'Project not found' });
@@ -282,6 +307,76 @@ const deleteProject = async (req, res) => {
     }
 };
 
+// @desc    Update a contributor's role (creator only)
+// @route   PATCH /api/projects/:id/contributors/:userId/role
+// @access  Private
+const updateContributorRole = async (req, res) => {
+    try {
+        const { id, userId } = req.params;
+        const { role } = req.body;
+        
+        const validRoles = ['developer', 'tester', 'designer', 'viewer'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        const project = await Project.findById(id);
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+        
+        // Only creator can update roles
+        if (project.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Only the project creator can update roles' });
+        }
+
+        const contributorIndex = project.contributors.findIndex(c => c.userId.toString() === userId);
+        if (contributorIndex === -1) {
+            return res.status(404).json({ message: 'Contributor not found' });
+        }
+
+        project.contributors[contributorIndex].role = role;
+        await project.save();
+
+        res.json({ success: true, project });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// @desc    Update a contributor's level (creator only)
+// @route   PATCH /api/projects/:id/contributors/:userId/level
+// @access  Private
+const updateContributorLevel = async (req, res) => {
+    try {
+        const { id, userId } = req.params;
+        const { level } = req.body;
+        
+        const validLevels = ['new_contributor', 'active_contributor', 'core_member'];
+        if (!validLevels.includes(level)) {
+            return res.status(400).json({ message: 'Invalid level' });
+        }
+
+        const project = await Project.findById(id);
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+        
+        // Only creator can update levels
+        if (project.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Only the project creator can update levels' });
+        }
+
+        const contributorIndex = project.contributors.findIndex(c => c.userId.toString() === userId);
+        if (contributorIndex === -1) {
+            return res.status(404).json({ message: 'Contributor not found' });
+        }
+
+        project.contributors[contributorIndex].level = level;
+        await project.save();
+
+        res.json({ success: true, project });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 module.exports = {
     submitProject,
     getActiveProjects,
@@ -293,8 +388,9 @@ module.exports = {
     mentorReview,
     facultyReview,
     adminReview,
-    joinProject,
     addMentorToProject,
     getAllProjects,
     deleteProject,
+    updateContributorRole,
+    updateContributorLevel,
 };
