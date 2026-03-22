@@ -232,6 +232,7 @@ function App() {
             <Route path="events" element={<EventManagement />} />
             <Route path="members" element={<MemberManagement />} />
           </Route>
+          <Route path="/login" element={<Navigate to="/auth" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
