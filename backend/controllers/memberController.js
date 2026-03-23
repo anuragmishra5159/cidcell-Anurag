@@ -112,7 +112,10 @@ const reorderMembers = async (req, res) => {
         const { memberOrders } = req.body; // Array of { id: string, order: number }
         
         const updatePromises = memberOrders.map(async (item) => {
-            return Member.findByIdAndUpdate(item.id, { order: item.order });
+            return Member.findByIdAndUpdate(item.id, { 
+                order: item.order,
+                team: item.team 
+            });
         });
         
         await Promise.all(updatePromises);

@@ -504,10 +504,10 @@ export default function ProjectDetail() {
                                       )}
                                     </div>
                                     <div className="flex flex-row md:flex-col gap-3 shrink-0 justify-center">
-                                      <button onClick={() => handleAcceptRequest(req._id)} className="px-4 py-3 bg-highlight-green text-green-900 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
+                                      <button onClick={() => handleAcceptRequest(request._id)} className="px-4 py-3 bg-highlight-green text-green-900 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
                                         <CheckCircle size={14} /> Accept
                                       </button>
-                                      <button onClick={() => handleRejectRequest(req._id)} className="px-4 py-3 bg-red-100 text-red-700 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
+                                      <button onClick={() => handleRejectRequest(request._id)} className="px-4 py-3 bg-red-100 text-red-700 border-2 border-primary text-[10px] font-black uppercase shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 w-full">
                                         <X size={14} /> Reject
                                       </button>
                                     </div>

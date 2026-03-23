@@ -14,7 +14,10 @@ const validate = (schema) => (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 message: 'Data validation failed',
-                errors: err.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
+                errors: (err.issues || []).map(e => ({ 
+                    field: Array.isArray(e.path) ? e.path.join('.') : 'unknown', 
+                    message: e.message 
+                }))
             });
         }
         next(err);
@@ -51,7 +54,7 @@ const createEventSchema = z.object({
         location: z.string().min(2, "Location is required"),
         organizer: z.string(),
         organizerEmail: z.string().email("Invalid organizer email"),
-        maxAttendees: z.number().int().positive().optional(),
+        maxAttendees: z.coerce.number().int().positive().optional(),
         category: z.string().optional(),
         type: z.enum(["virtual", "in-person"]).optional()
     }).passthrough() // Allow other fields like image, whatsappGroupLink

@@ -47,7 +47,9 @@ const EventManagement = () => {
     maxAttendees: 30,
     image: '',
     whatsappGroupLink: '',
-    isScheduled: true
+    isScheduled: true,
+    registrationType: 'platform',
+    externalLink: ''
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -141,6 +143,8 @@ const EventManagement = () => {
         isScheduled: event.isScheduled ?? true,
         isPaid: event.isPaid || false,
         price: event.price || 0,
+        registrationType: event.registrationType || 'platform',
+        externalLink: event.externalLink || ''
       });
     } else {
       setIsEditMode(false);
@@ -162,6 +166,8 @@ const EventManagement = () => {
         isScheduled: true,
         isPaid: false,
         price: 0,
+        registrationType: 'platform',
+        externalLink: ''
       });
     }
     setIsModalOpen(true);
@@ -254,38 +260,54 @@ const EventManagement = () => {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto font-sans">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-10 max-w-7xl mx-auto font-sans pb-8">
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b-4 border-primary pb-8">
           <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-slate-800">Event Management</h1>
-            <p className="text-slate-500 text-sm mt-1">Organize and track CID Cell activities.</p>
+            <h1 className="text-3xl lg:text-3xl font-black text-primary uppercase tracking-tight">Event Oversight</h1>
+            <div className="inline-block bg-highlight-blue border-2 border-primary px-3 py-0.5 mt-2 transform -rotate-1">
+              <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Global Activity Command</p>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button onClick={handleDownloadCSV} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 shadow-sm transition-colors flex items-center gap-2">
-              Download CSV
+          <div className="flex flex-wrap gap-3">
+            <button 
+              onClick={handleDownloadCSV} 
+              className="px-6 py-3 bg-highlight-teal border-3 border-primary rounded-2xl text-primary font-black uppercase text-[10px] shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2"
+            >
+              Export Registry
             </button>
-            <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
-              <Plus size={16} /> Create Event
+            <button 
+              onClick={() => handleOpenModal()} 
+              className="px-6 py-3 bg-highlight-blue border-3 border-primary rounded-2xl text-primary font-black uppercase text-[10px] shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2"
+            >
+              <Plus size={18} strokeWidth={3} /> Initiate Event
             </button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-4 border-b border-slate-200">
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap gap-6">
           <button 
             onClick={() => setActiveTab('events')} 
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'events' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+            className={`px-8 py-4 text-xs font-black uppercase border-3 rounded-2xl transition-all shadow-neo-mini ${
+              activeTab === 'events' 
+                ? 'bg-highlight-blue border-primary text-primary translate-x-[2px] translate-y-[2px] shadow-none' 
+                : 'bg-white border-primary text-primary/40 hover:bg-highlight-blue/10'
+            }`}
           >
-            All Events
+            All Managed Events
           </button>
           <button 
             onClick={() => setActiveTab('proposals')} 
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'proposals' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+            className={`px-8 py-4 text-xs font-black uppercase border-3 rounded-2xl transition-all shadow-neo-mini relative overflow-visible ${
+              activeTab === 'proposals' 
+                ? 'bg-highlight-yellow border-primary text-primary translate-x-[2px] translate-y-[2px] shadow-none' 
+                : 'bg-white border-primary text-primary/40 hover:bg-highlight-yellow/10'
+            }`}
           >
-            Pending Proposals
+            Pending Access Proposals
             {proposals.length > 0 && (
-              <span className="bg-amber-100 text-amber-700 text-xs py-0.5 px-2 rounded-full hidden sm:inline-block">
+              <span className="absolute -top-3 -right-3 bg-rose-500 border-2 border-primary text-white text-[10px] font-black w-8 h-8 rounded-full flex items-center justify-center shadow-neo-mini animate-bounce">
                 {proposals.length}
               </span>
             )}
@@ -293,110 +315,122 @@ const EventManagement = () => {
         </div>
 
         {activeTab === 'events' && (
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <div className="relative group max-w-xl">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary opacity-30 group-focus-within:opacity-100 transition-opacity" />
             <input
-              type="text" placeholder="Filter events by title..."
-              value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 border rounded-lg w-full outline-none text-sm transition-all bg-white border-slate-200 text-slate-700 focus:ring-2 focus:ring-indigo-500"
+              type="text" 
+              placeholder="SEARCH THE ACTIVITY CALENDAR..."
+              className="w-full bg-white border-3 border-primary rounded-xl py-3.5 pl-14 pr-6 outline-none shadow-neo-mini focus:shadow-neo transition-all font-black text-[10px] uppercase placeholder:text-primary/20"
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         )}
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 bg-white rounded-xl border border-slate-200 shadow-sm">
-            <Loader className="w-8 h-8 animate-spin text-indigo-600" />
-            <p className="text-slate-500 font-medium text-sm">Loading events...</p>
+        <div className="flex flex-col items-center justify-center p-24 gap-6 bg-white border-4 border-primary shadow-neo rounded-3xl">
+            <div className="relative">
+                <div className="w-16 h-16 border-4 border-primary rounded-full animate-ping opacity-20"></div>
+                <Loader className="w-16 h-16 animate-spin absolute top-0 left-0 text-primary stroke-[3]" />
+            </div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-primary/40">Synchronizing Global Calendar...</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white border-4 border-primary shadow-neo rounded-3xl overflow-hidden flex flex-col mb-12">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 text-slate-600 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
-                  <th className="px-5 py-4 w-[40%]">Event Details</th>
-                  <th className="px-5 py-4 text-center">Date & Time</th>
-                  <th className="px-5 py-4 text-center">Type</th>
-                  <th className="px-5 py-4 text-right">Actions</th>
+                <tr className="bg-highlight-blue border-b-4 border-primary text-primary">
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Activity Identity</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10 text-center">Temporal Marker</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10 text-center">Operational Mode</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-right">Sanctions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y-2 divide-primary/10 font-sans">
                 {activeTab === 'events' ? (
                   filteredEvents.length > 0 ? filteredEvents.map((ev) => (
-                    <tr key={ev._id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="font-semibold text-sm text-slate-800">{ev.title}</div>
-                        <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mt-0.5">{ev.category}</div>
+                    <tr key={ev._id} className="hover:bg-highlight-blue/5 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <p className="font-black text-sm text-primary uppercase leading-tight group-hover:translate-x-1 transition-transform">{ev.title}</p>
+                          <p className="text-[9px] font-black text-primary/40 uppercase tracking-widest">{ev.category}</p>
+                        </div>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <div className="text-sm font-medium text-slate-700">{ev.date}</div>
-                        <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
+                      <td className="px-6 py-4 text-center">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">{ev.date}</p>
+                        <div className="text-[9px] font-black text-primary/40 uppercase mt-1 flex items-center justify-center gap-2">
                             <Clock className="w-3 h-3" /> {formatTime12h(ev.time)}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider border ${ev.type === 'virtual' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-block border-2 border-primary px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-neo-mini ${ev.type === 'virtual' ? 'bg-highlight-pink' : 'bg-highlight-teal'}`}>
                           {ev.type}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => handleOpenModal(ev)} className="px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-indigo-50 text-indigo-600 hover:bg-indigo-100">
-                                <Edit2 className="w-3.5 h-3.5" /> Edit
+                            <button onClick={() => handleOpenModal(ev)} className="w-9 h-9 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-primary shadow-neo-mini hover:bg-highlight-yellow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+                                <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button onClick={() => setDeleteConfirm({ isOpen: true, id: ev._id })} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-white text-rose-600 border-rose-200 hover:bg-rose-50">
-                                <Trash2 className="w-3.5 h-3.5" /> Delete
+                            <button onClick={() => setDeleteConfirm({ isOpen: true, id: ev._id })} className="w-9 h-9 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-rose-500 shadow-neo-mini hover:bg-rose-500 hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+                                <Trash2 className="w-3.5 h-3.5" />
                             </button>
                         </div>
                       </td>
                     </tr>
                   )) : (
                     <tr>
-                        <td colSpan="4" className="px-5 py-12 text-center text-slate-500">
-                            No events found matching your search.
-                        </td>
+                      <td colSpan="4" className="px-8 py-20 text-center text-primary/20">
+                        <Search className="w-14 h-14 mx-auto mb-6 opacity-10" />
+                        <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Activities Found</p>
+                      </td>
                     </tr>
                   )
                 ) : (
                   proposals.length > 0 ? proposals.map((ev) => (
-                    <tr key={ev._id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="font-semibold text-sm text-slate-800">{ev.title}</div>
-                        <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mt-0.5">
-                          {ev.category} • Proposed by: {ev.proposedBy?.username || 'Unknown'}
+                    <tr key={ev._id} className="hover:bg-highlight-yellow/5 transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className="space-y-1.5">
+                          <p className="font-black text-base text-primary uppercase leading-tight group-hover:translate-x-1 transition-transform">{ev.title}</p>
+                          <div className="text-[10px] font-black text-primary/40 uppercase tracking-widest flex items-center gap-2">
+                             <Users className="w-3 h-3" />
+                             CATEGORY: {ev.category} • ORIGIN: {ev.proposedBy?.username || 'ANONYMOUS'}
+                          </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <div className="text-sm font-medium text-slate-700">{ev.date}</div>
-                        <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
-                            <Clock className="w-3 h-3" /> {formatTime12h(ev.time)}
+                      <td className="px-8 py-6 text-center">
+                        <p className="text-xs font-black text-primary uppercase tracking-widest">{ev.date}</p>
+                        <div className="text-[10px] font-black text-primary/40 uppercase mt-2 flex items-center justify-center gap-2">
+                            <Clock className="w-3.5 h-3.5" /> {formatTime12h(ev.time)}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider border ${ev.type === 'virtual' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                      <td className="px-8 py-6 text-center">
+                        <span className={`inline-block border-2 border-primary px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-neo-mini ${ev.type === 'virtual' ? 'bg-highlight-pink' : 'bg-highlight-blue'}`}>
                           {ev.type}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => handleOpenModal(ev, true)} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50">
-                                <ExternalLink className="w-3.5 h-3.5" /> View
+                      <td className="px-8 py-6 text-right">
+                        <div className="flex items-center justify-end gap-3 flex-wrap">
+                            <button onClick={() => handleOpenModal(ev, true)} className="w-10 h-10 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-primary shadow-neo-mini hover:bg-highlight-blue hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" title="Inspect">
+                                <ExternalLink className="w-4 h-4" />
                             </button>
-                            <button onClick={() => handleApprove(ev._id)} className="px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-emerald-50 text-emerald-600 hover:bg-emerald-100">
-                                <CheckCircle className="w-3.5 h-3.5" /> Approve
+                            <button onClick={() => handleApprove(ev._id)} className="w-10 h-10 border-2 border-primary rounded-xl bg-highlight-green flex items-center justify-center text-primary shadow-neo-mini hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" title="Approve">
+                                <CheckCircle className="w-4 h-4" />
                             </button>
-                            <button onClick={() => handleReject(ev._id)} className="px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100">
-                                <X className="w-3.5 h-3.5" /> Reject
+                            <button onClick={() => handleReject(ev._id)} className="w-10 h-10 border-2 border-primary rounded-xl bg-rose-500 flex items-center justify-center text-white shadow-neo-mini hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" title="Discard">
+                                <X className="w-4 h-4" />
                             </button>
                         </div>
                       </td>
                     </tr>
                   )) : (
                     <tr>
-                        <td colSpan="4" className="px-5 py-12 text-center text-slate-500">
-                            No pending proposals.
-                        </td>
+                      <td colSpan="4" className="px-8 py-20 text-center text-primary/20">
+                        <Users className="w-14 h-14 mx-auto mb-6 opacity-10" />
+                        <p className="text-sm font-black uppercase tracking-[0.2em]">Queue Fully Purged</p>
+                      </td>
                     </tr>
                   )
                 )}
@@ -472,6 +506,21 @@ const EventManagement = () => {
                   <input type="number" required min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. 500" />
                 </div>
               )}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-100">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Registration Type</label>
+                  <select value={formData.registrationType} onChange={e => setFormData({ ...formData, registrationType: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white text-slate-800">
+                    <option value="platform">Via Platform (Internal)</option>
+                    <option value="external">External Link (Unstop, GForms)</option>
+                  </select>
+                </div>
+                {formData.registrationType === 'external' && (
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Registration URL*</label>
+                    <input type="url" required value={formData.externalLink} onChange={e => setFormData({ ...formData, externalLink: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="https://..." />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

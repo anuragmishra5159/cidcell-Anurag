@@ -130,140 +130,149 @@ const UserManagement = () => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto font-sans">
-      <div className="flex flex-col gap-6">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-800">User Management</h2>
-            <p className="text-sm text-slate-500 mt-1">Manage and moderate all users across the system.</p>
+      <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between mb-10">
+        <div>
+          <h2 className="text-3xl lg:text-3xl font-black text-primary uppercase tracking-tight">User Directory</h2>
+          <div className="inline-block bg-highlight-blue border-2 border-primary px-3 py-0.5 mt-2 transform -rotate-1">
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Global Identity Hub</p>
           </div>
-
-          <div className="p-3 sm:p-4 rounded-xl border shadow-sm grid grid-cols-1 md:flex md:flex-row gap-3 items-center bg-white border-slate-200">
-              <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                      type="text"
-                      placeholder="Search users by name, email..."
-                      className="pl-9 pr-4 py-2 border rounded-lg w-full outline-none text-sm transition-all bg-white border-slate-200 text-slate-700 focus:ring-2 focus:ring-indigo-500"
-                      value={searchTerm}
-                      onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setCurrentPage(1);
-                      }}
-                  />
-              </div>
-          </div>
+        </div>
+        
+        <div className="relative w-full lg:w-[400px] group">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary opacity-30 group-focus-within:opacity-100 transition-opacity" />
+          <input
+            type="text"
+            placeholder="SEARCH USERS BY IDENTITY..."
+            className="w-full bg-white border-2 border-primary rounded-xl py-3.5 pl-12 pr-6 outline-none shadow-neo-mini focus:shadow-neo transition-all font-black text-[10px] uppercase placeholder:text-primary/20"
+            value={searchTerm}
+            onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+            }}
+          />
+        </div>
       </div>
 
       {loading ? (
-          <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 bg-white rounded-xl border border-slate-200 shadow-sm">
-              <Loader className="w-8 h-8 animate-spin text-indigo-600" />
-              <p className="text-slate-500 font-medium text-sm">Loading users...</p>
-          </div>
+        <div className="flex flex-col items-center justify-center p-24 gap-6 bg-white border-4 border-primary shadow-neo rounded-3xl">
+            <div className="relative">
+                <div className="w-16 h-16 border-4 border-primary rounded-full animate-ping opacity-20"></div>
+                <Loader className="w-16 h-16 animate-spin absolute top-0 left-0 text-primary stroke-[3]" />
+            </div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-primary/40">Fetching Directory Data...</p>
+        </div>
       ) : (
-          <div className="border rounded-xl flex flex-col shadow-sm bg-white border-slate-200 overflow-hidden">
-              <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                      <thead>
-                          <tr className="bg-slate-50 text-slate-600 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
-                              <th className="px-5 py-4 w-[30%]">User Profile</th>
-                              <th className="px-5 py-4">Details</th>
-                              <th className="px-5 py-4 text-center">Identity</th>
-                              <th className="px-5 py-4 text-right">Actions</th>
-                          </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                          {paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
-                              <tr key={user._id} className="hover:bg-slate-50 transition-colors">
-                                  <td className="px-5 py-4">
-                                      <div className="flex items-center gap-3">
-                                          <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 uppercase font-bold text-slate-400 text-xs shrink-0 overflow-hidden">
-                                              {user.profilePic ? <img src={user.profilePic} alt="" className="w-full h-full object-cover" /> : user.username.charAt(0)}
-                                          </div>
-                                          <div className="overflow-hidden">
-                                              <p className="font-semibold text-sm text-slate-800 truncate">{user.username}</p>
-                                              <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  <td className="px-5 py-4">
-                                      <div className="space-y-1">
-                                          <p className="text-xs font-medium text-slate-600 flex items-center gap-1.5">
-                                              <Building className="w-3 h-3" /> {user.branch || "N/A"}
-                                          </p>
-                                          <p className="text-xs text-slate-500 flex items-center gap-1.5">
-                                              <Calendar className="w-3 h-3" /> Batch: {user.batch || "N/A"}
-                                          </p>
-                                      </div>
-                                  </td>
-                                  <td className="px-5 py-4 text-center">
-                                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                                          user.userType === 'admin' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                                          user.userType === 'faculty' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                                          'bg-blue-50 text-blue-700 border-blue-200'
-                                      }`}>
-                                          {user.userType}
-                                      </span>
-                                  </td>
-                                  <td className="px-5 py-4 text-right">
-                                      <div className="flex items-center justify-end gap-2">
-                                          <button 
-                                              onClick={() => { setSelectedUser(user); setIsViewModalOpen(true); }}
-                                              className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100"
-                                              title="View Profile"
-                                          >
-                                              <Eye className="w-4 h-4" />
-                                          </button>
-                                          <button 
-                                              onClick={() => handleEditOpen(user)}
-                                              className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100"
-                                              title="Edit User"
-                                          >
-                                              <Edit2 className="w-4 h-4" />
-                                          </button>
-                                          <button 
-                                              onClick={() => setDeleteConfirm({ isOpen: true, userId: user._id })}
-                                              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors border border-transparent hover:border-rose-100"
-                                              title="Delete User"
-                                          >
-                                              <Trash2 className="w-4 h-4" />
-                                          </button>
-                                      </div>
-                                  </td>
-                              </tr>
-                          )) : (
-                              <tr>
-                                  <td colSpan="4" className="px-5 py-16 text-center text-slate-400">
-                                      <Search className="w-8 h-8 mx-auto mb-3 opacity-20" />
-                                      <p className="text-sm font-medium">No users found matching your search.</p>
-                                  </td>
-                              </tr>
+        <div className="bg-white border-4 border-primary shadow-neo rounded-3xl overflow-hidden mb-12 font-sans">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-highlight-blue border-b-4 border-primary text-primary">
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Member Profile</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Academic Info</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-center border-r-2 border-primary/10">Role</th>
+                  <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-primary/10">
+                {paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
+                  <tr key={user._id} className="hover:bg-highlight-teal/10 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl border-2 border-primary bg-white flex items-center justify-center shadow-neo-mini overflow-hidden group-hover:rotate-3 transition-transform flex-none">
+                          {user.profilePic ? (
+                            <img src={user.profilePic} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-lg font-black text-primary/40 uppercase">{user.username.charAt(0)}</span>
                           )}
-                      </tbody>
-                  </table>
-              </div>
-              
-              {/* Pagination */}
-              <div className="px-5 py-4 border-t border-slate-100 flex items-center justify-between bg-white">
-                  <p className="text-xs font-medium text-slate-500">
-                      Showing {(currentPage - 1) * usersPerPage + 1} to {Math.min(currentPage * usersPerPage, filteredUsers.length)} of {filteredUsers.length} entries
-                  </p>
-                  <div className="flex gap-2">
-                      <button 
-                          disabled={currentPage === 1}
-                          onClick={() => setCurrentPage(prev => prev - 1)}
-                          className="px-3 py-1.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                      >
-                          Previous
-                      </button>
-                      <button 
-                          disabled={currentPage === totalPages}
-                          onClick={() => setCurrentPage(prev => prev + 1)}
-                          className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                          Next
-                      </button>
-                  </div>
-              </div>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-black text-sm text-primary uppercase leading-tight truncate mb-1">{user.username}</p>
+                          <p className="text-[9px] font-black text-primary/40 uppercase truncate flex items-center gap-1.5">
+                            <Mail className="w-3 h-3 text-primary" />
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-black uppercase text-primary/70 flex items-center gap-2">
+                          <Building className="w-3.5 h-3.5 text-primary" /> {user.branch || "NOT ASSIGNED"}
+                        </p>
+                        <p className="text-[10px] font-black uppercase text-primary/40 flex items-center gap-2">
+                          <Calendar className="w-3.5 h-3.5 text-primary/60" /> BATCH: {user.batch || "N/A"}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`inline-block border-2 border-primary px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-neo-mini ${
+                        user.userType === 'admin' ? 'bg-highlight-pink' :
+                        user.userType === 'faculty' ? 'bg-highlight-yellow' :
+                        'bg-highlight-blue'
+                      }`}>
+                        {user.userType}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button 
+                          onClick={() => { setSelectedUser(user); setIsViewModalOpen(true); }}
+                          className="w-10 h-10 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-primary shadow-neo-mini hover:bg-highlight-blue hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                          title="Detailed View"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleEditOpen(user)}
+                          className="w-10 h-10 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-primary shadow-neo-mini hover:bg-highlight-yellow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                          title="Modify Entry"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => setDeleteConfirm({ isOpen: true, userId: user._id })}
+                          className="w-10 h-10 border-2 border-primary rounded-xl bg-white flex items-center justify-center text-rose-500 shadow-neo-mini hover:bg-rose-500 hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                          title="System Purge"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan="4" className="px-8 py-20 text-center text-primary/20">
+                      <Search className="w-14 h-14 mx-auto mb-6 opacity-10" />
+                      <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Records Found</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+          
+          <div className="px-8 py-8 border-t-4 border-primary flex flex-col sm:flex-row items-center justify-between bg-white gap-6">
+            <p className="text-[11px] font-black text-primary/40 uppercase tracking-widest bg-slate-50 border-2 border-primary px-4 py-2 rounded-xl shadow-neo-mini">
+              SHOWING {(currentPage - 1) * usersPerPage + 1} TO {Math.min(currentPage * usersPerPage, filteredUsers.length)} OF {filteredUsers.length} MEMBERS
+            </p>
+            <div className="flex gap-4">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+                className="px-6 py-3 border-2 border-primary rounded-2xl text-xs font-black uppercase bg-white shadow-neo-mini hover:bg-highlight-teal transition-all disabled:opacity-20 disabled:shadow-none"
+              >
+                Prev
+              </button>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="px-6 py-3 border-2 border-primary rounded-2xl text-xs font-black uppercase bg-primary text-white shadow-neo-mini hover:shadow-none transition-all disabled:opacity-20 disabled:shadow-none"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* View User Modal */}
@@ -362,6 +371,7 @@ const UserManagement = () => {
                             <option value="faculty">Faculty</option>
                             <option value="HOD">HOD</option>
                             <option value="admin">Administrator</option>
+                            <option value="mentor">Mentor</option>
                         </select>
                     </div>
                 </div>

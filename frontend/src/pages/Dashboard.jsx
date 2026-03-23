@@ -72,28 +72,38 @@ const Dashboard = () => {
     const [stats, setStats] = useState({ totalProjects: 0, activeEvents: 0, totalMembers: 0, messages: 0 });
     const [loading, setLoading] = useState(true);
     const [recentProjects, setRecentProjects] = useState([]);
+    const [myProjects, setMyProjects] = useState([]);
     const [upcomingEvents, setUpcomingEvents] = useState([]);
+    const [mentors, setMentors] = useState([]);
+    const [activeTab, setActiveTab] = useState('projects');
     const navigate = useNavigate();
     const API_URL = import.meta.env.VITE_API_URL;
+    const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
     const matchedRoadmaps = getMatchedRoadmaps(user?.skills || []);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [projectsRes, eventsRes, membersRes] = await Promise.all([
+                const [projectsRes, eventsRes, membersRes, myProjectsRes, mentorsRes] = await Promise.all([
                     axios.get(`${API_URL}/projects`),
                     axios.get(`${API_URL}/events`),
-                    axios.get(`${API_URL}/members`)
+                    axios.get(`${API_URL}/members`),
+                    axios.get(`${API_URL}/projects/mine/all`, authHeaders()),
+                    axios.get(`${API_URL}/users/mentors`)
                 ]);
                 setStats({
                     totalProjects: projectsRes.data.length,
                     activeEvents: eventsRes.data.length,
                     totalMembers: membersRes.data.length,
+                    totalMentors: mentorsRes.data.length,
+                    myProjectsCount: myProjectsRes.data.length,
                     messages: 0
                 });
-                setRecentProjects(projectsRes.data.slice(0, 2));
-                setUpcomingEvents(eventsRes.data.slice(0, 3));
+                setRecentProjects(projectsRes.data.slice(0, 1));
+                setUpcomingEvents(eventsRes.data.slice(0, 1));
+                setMyProjects(myProjectsRes.data);
+                setMentors(mentorsRes.data);
             } catch (err) { console.error("Dashboard fetch error:", err); }
             finally { setLoading(false); }
         };
@@ -110,19 +120,19 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-bg pt-28 pb-16 px-4 md:px-8 font-body">
-            <div className="max-w-7xl mx-auto space-y-12">
+        <div className="min-h-screen bg-[#F8FAFC] pt-24 md:pt-28 pb-12 md:pb-16 px-3 md:px-8 font-sans">
+            <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
                 
                 {/* 1. TOP PROFILE BANNER - Balanced Layout */}
-                <div className="bg-white border-3 md:border-4 border-primary shadow-neo p-4 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 relative overflow-hidden group">
+                <div className="bg-white border-2 md:border-4 border-primary shadow-neo p-3 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-12 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-highlight-yellow/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                     
-                    <div className="flex items-center gap-6 w-full md:w-auto">
+                    <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto">
                         <div className="relative shrink-0">
                             <img
                                 src={user?.profilePicture || `https://ui-avatars.com/api/?name=${user?.username}&background=random&size=128`}
                                 alt="Profile"
-                                className="w-16 h-16 md:w-28 md:h-28 rounded-2xl md:rounded-3xl border-3 md:border-4 border-primary shadow-neo-sm md:shadow-neo object-cover"
+                                className="w-14 h-14 md:w-28 md:h-28 rounded-xl md:rounded-3xl border-2 md:border-4 border-primary shadow-neo-mini md:shadow-neo object-cover"
                             />
                         </div>
 
@@ -150,8 +160,8 @@ const Dashboard = () => {
                     <div className="w-full md:w-auto flex flex-col items-center md:items-end gap-3 md:gap-4 shrink-0">
                         {/* Mobile Action Button */}
                         <div className="md:hidden w-full">
-                           <button onClick={() => navigate('/onboarding')} className="w-full h-12 bg-highlight-yellow border-3 border-primary rounded-xl flex items-center justify-center gap-2 font-black uppercase text-xs shadow-neo-sm">
-                                <Pencil size={18} /> Edit Profile
+                           <button onClick={() => navigate('/onboarding')} className="w-full h-10 bg-highlight-yellow border-2 border-primary rounded-lg flex items-center justify-center gap-2 font-black uppercase text-[10px] shadow-neo-mini">
+                                <Pencil size={12} /> Edit Profile
                            </button>
                         </div>
 
@@ -165,132 +175,257 @@ const Dashboard = () => {
                         </div>
 
                         {/* Desktop Actions */}
-                        <div className="hidden md:flex items-center gap-3 w-full">
+                        <div className="hidden md:flex items-center gap-2 w-full">
                             <button 
                                 onClick={() => navigate('/onboarding')}
-                                className="bg-highlight-yellow border-3 border-primary px-10 py-4 rounded-2xl font-black uppercase text-xs shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3"
+                                className="bg-highlight-yellow border-2 border-primary px-6 py-2.5 rounded-xl font-black uppercase text-[10px] shadow-neo-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-2"
                             >
-                                <Pencil size={14} /> Edit profile
+                                <Pencil size={12} /> Edit profile
                             </button>
-                            <div className="flex gap-2">
-                                <a href={user?.socialLinks?.github} target="_blank" className="bg-white border-3 border-primary p-3 rounded-xl shadow-neo-sm hover:bg-highlight-blue transition-all"><Github size={18} /></a>
-                                <a href={user?.socialLinks?.linkedin} target="_blank" className="bg-white border-3 border-primary p-3 rounded-xl shadow-neo-sm hover:bg-highlight-blue transition-all"><Linkedin size={18} /></a>
+                            <div className="flex gap-1.5 font-sans">
+                                <a href={user?.socialLinks?.github} target="_blank" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Github size={14} /></a>
+                                <a href={user?.socialLinks?.linkedin} target="_blank" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Linkedin size={14} /></a>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* 2. STATS GRID - Condensed */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {/* 2. STATS GRID - Functional Counts */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     {[
-                        { label: "Our Projects", value: stats.totalProjects, icon: Folder, color: "bg-highlight-blue" },
-                        { label: "Active Events", value: stats.activeEvents, icon: Calendar, color: "bg-highlight-yellow" },
-                        { label: "Community", value: stats.totalMembers, icon: Users, color: "bg-highlight-green" },
-                        { label: "Personal Score", value: "92", icon: Target, color: "bg-highlight-purple" }
+                        { label: "Events", value: upcomingEvents.length, icon: Calendar, color: "bg-highlight-yellow" },
+                        { label: "Community Projects", value: stats.totalProjects, icon: Folder, color: "bg-highlight-blue" },
+                        { label: "Available Mentors", value: stats.totalMentors, icon: Users, color: "bg-highlight-green" },
+                        { label: "My Projects", value: myProjects.length, icon: Target, color: "bg-highlight-purple" }
                     ].map((stat, i) => (
-                        <div key={i} className={`${stat.color} border-3 border-primary p-4 md:p-5 rounded-2xl md:rounded-neo shadow-neo-sm flex flex-col gap-2 md:gap-3 group hover:-translate-y-1 transition-transform`}>
+                        <div key={i} className={`${stat.color} border-2 border-primary p-3 md:p-3.5 rounded-xl shadow-neo-mini md:shadow-neo-sm flex flex-col items-center justify-center text-center gap-2 md:gap-2 group hover:-translate-y-1 transition-transform`}>
                             <stat.icon className="text-primary w-4 h-4 md:w-5 md:h-5" />
-                            <div>
-                                <h3 className="text-2xl md:text-3xl font-black text-primary leading-none">{stat.value}</h3>
-                                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-wider text-primary/60 mt-0.5">{stat.label}</p>
+                            <div className="flex flex-col items-center">
+                                <h3 className="text-xl md:text-3xl font-black text-primary leading-none">{stat.value}</h3>
+                                <p className="text-[10px] md:text-[11px] font-black uppercase tracking-tight md:tracking-wider text-primary/60 mt-0.5 line-clamp-1">{stat.label}</p>
                             </div>
                         </div>
                     ))}
                 </div>
-
-                {/* 3. CORE CONTENT GRID */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                    
-                    {/* Roadmaps - Skills Based */}
-                    <div className="lg:col-span-4 space-y-6">
+                {/* 2. PREVIEWS SECTION (1 PROJECT / 1 EVENT) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Project Preview Card */}
+                    <div className="space-y-4">
                         <div className="flex items-center justify-between px-2">
-                             <h2 className="text-2xl font-black uppercase tracking-widest flex items-center gap-3">
-                                <span className="w-10 h-10 bg-highlight-purple border-3 border-primary rounded-xl flex items-center justify-center shadow-neo-sm">
-                                    <Map size={20} />
-                                </span>
-                                Your Roadmap
+                            <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-3">
+                                <span className="w-8 h-8 bg-highlight-blue border-3 border-primary rounded-xl flex items-center justify-center shadow-neo-sm"><Folder size={16} /></span>
+                                Featured Project
                             </h2>
+                            <Link to="/projects" className="text-[10px] font-black uppercase text-primary/40 hover:text-primary transition-colors flex items-center gap-2">Explore All <ArrowRight size={14} /></Link>
                         </div>
-                        <div className="bg-white border-4 border-primary p-6 rounded-neo shadow-neo space-y-4">
-                            <p className="text-[10px] font-black uppercase text-primary/40 tracking-widest px-1">Curated based on your skills</p>
-                            {matchedRoadmaps.length > 0 ? matchedRoadmaps.map((roadmap, i) => (
-                                <a 
-                                    key={i} 
-                                    href={roadmap.url} 
-                                    target="_blank" 
-                                    className="block p-4 bg-bg border-3 border-primary rounded-2xl hover:bg-highlight-yellow transition-all shadow-neo-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none group"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <Code2 size={16} className="text-primary/40 group-hover:text-primary transition-colors" />
-                                            <span className="font-black uppercase text-xs">{roadmap.label}</span>
+                        {recentProjects.length > 0 ? recentProjects.map(project => (
+                            <div key={project._id} className="bg-white border-2 md:border-3 border-primary rounded-xl shadow-neo group hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all p-3 md:p-4 flex flex-row gap-4 sm:gap-5">
+                                <div className="w-20 h-20 sm:w-28 sm:h-28 bg-slate-100 border-2 border-primary rounded-lg overflow-hidden shrink-0 shadow-neo-mini md:shadow-neo-sm">
+                                    {project.images?.[0] || project.image ? (
+                                        <img src={project.images?.[0] || project.image} className="w-full h-full object-cover" alt={project.title} />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center bg-highlight-blue/5">
+                                            <Zap size={24} className="text-primary/20" />
                                         </div>
-                                        <ExternalLink size={14} className="text-primary/20 group-hover:text-primary transition-colors" />
-                                    </div>
-                                </a>
-                            )) : (
-                                <div className="p-8 text-center bg-bg rounded-2xl border-2 border-dashed border-primary/20">
-                                    <p className="text-[10px] font-black uppercase text-primary/40 leading-loose">Add skills to your profile to unlock personalized career roadmaps.</p>
+                                    )}
                                 </div>
-                            )}
-                            <button onClick={() => navigate('/roadmap')} className="w-full py-4 border-3 border-primary rounded-2xl font-black uppercase text-[10px] hover:bg-primary hover:text-white transition-all">Explore All Guides</button>
+                                <div className="flex-1 min-w-0 flex flex-row items-end justify-between gap-2">
+                                    <div className="space-y-1 overflow-hidden">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="bg-highlight-teal border-2 border-primary px-2 py-0.5 rounded-md text-[7px] font-black uppercase">{project.category || 'Core'}</span>
+                                        </div>
+                                        <h3 className="text-sm md:text-lg font-black uppercase text-primary truncate tracking-tight">{project.title}</h3>
+                                        <p className="text-[9px] md:text-[10px] font-bold text-primary/60 uppercase leading-relaxed line-clamp-2 h-7 md:h-8 mb-2">
+                                            {project.description}
+                                        </p>
+                                        <div className="flex flex-wrap gap-3">
+                                            {project.githubRepo && (
+                                                <a href={project.githubRepo} target="_blank" className="flex items-center gap-1.5 text-[8px] md:text-[10px] font-black uppercase text-primary/40 hover:text-primary transition-colors">
+                                                    <Github size={12} /> Repo
+                                                </a>
+                                            )}
+                                            {project.deployedLink && (
+                                                <a href={project.deployedLink} target="_blank" className="flex items-center gap-1.5 text-[8px] md:text-[10px] font-black uppercase text-primary/40 hover:text-primary transition-colors">
+                                                    <Globe size={12} /> Live
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => navigate(`/projects/${project._id}`)} 
+                                        className="bg-primary text-white p-2 md:p-3 rounded-lg shadow-neo-mini hover:scale-105 transition-transform shrink-0"
+                                    >
+                                        <ArrowRight size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className="h-32 border-3 border-dashed border-primary/20 rounded-xl flex items-center justify-center text-primary/30 font-black uppercase text-xs">No active projects</div>
+                        )}
+                    </div>
+
+                    {/* Event Preview Card */}
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-3">
+                                <span className="w-8 h-8 bg-highlight-yellow border-3 border-primary rounded-lg flex items-center justify-center shadow-neo-sm"><Calendar size={16} /></span>
+                                Next Lineup
+                            </h2>
+                            <Link to="/events" className="text-[10px] font-black uppercase text-primary/40 hover:text-primary transition-colors flex items-center gap-2">Calendar <ArrowRight size={14} /></Link>
+                        </div>
+                        {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
+                            <div key={event._id} className="bg-white border-2 md:border-3 border-primary rounded-xl shadow-neo group hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all p-3 md:p-4 flex flex-row gap-4 sm:gap-5">
+                                <div className="w-16 h-16 sm:w-28 sm:h-28 bg-slate-100 border-2 border-primary rounded-lg overflow-hidden shrink-0 shadow-neo-mini md:shadow-neo-sm">
+                                    {event.image ? (
+                                        <img src={event.image} className="w-full h-full object-cover" alt={event.title} />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center opacity-10">
+                                            <ImageIcon size={24} />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0 flex flex-row items-end justify-between gap-2">
+                                    <div className="space-y-1 overflow-hidden">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="bg-highlight-green border-2 border-primary px-2 py-0.5 rounded-md text-[7px] font-black uppercase">{event.type || 'In-Person'}</span>
+                                        </div>
+                                        <h3 className="text-sm md:text-lg font-black uppercase text-primary truncate tracking-tight">{event.title}</h3>
+                                        <div className="flex flex-col gap-0.5 mt-1 border-l-2 border-highlight-yellow pl-2">
+                                            <span className="text-[8px] md:text-[10px] font-bold uppercase text-primary/60 flex items-center gap-2">
+                                                <Calendar size={10} className="text-highlight-yellow" /> 
+                                                {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                            </span>
+                                            <span className="text-[8px] md:text-[10px] font-bold uppercase text-primary/60 flex items-center gap-2">
+                                                <Clock size={10} className="text-highlight-purple" /> 
+                                                {event.time || '10:00 AM'}
+                                            </span>
+                                            <span className="text-[8px] md:text-[10px] font-bold uppercase text-primary/60 flex items-center gap-2">
+                                                <Globe size={10} className="text-highlight-blue" /> 
+                                                {event.location || 'Hall'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => navigate(`/events/${event._id}`)} 
+                                        className="bg-highlight-yellow border-2 border-primary p-2 md:p-3 rounded-lg shadow-neo-mini hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all shrink-0"
+                                    >
+                                        <ArrowRight size={16} className="text-primary" />
+                                    </button>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className="h-32 border-3 border-dashed border-primary/20 rounded-xl flex items-center justify-center text-primary/30 font-black uppercase text-xs">No upcoming sessions</div>
+                        )}
+                    </div>
+                </div>
+
+                {/* 3. MY ACTIVITY TABS SECTION */}
+                <div className="space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
+                        <div className="space-y-1">
+                            <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3"><Activity size={28} className="text-highlight-purple" /> My Activity</h2>
+                            <p className="text-[10px] font-black uppercase text-primary/40 tracking-widest pl-1">Everything you're building & exploring</p>
+                        </div>
+                        {/* Tab Switcher */}
+                        <div className="flex bg-white border-3 border-primary p-1.5 rounded-2xl shadow-neo-sm">
+                            {[
+                                { id: 'projects', label: 'Projects', icon: Folder },
+                                { id: 'mentors', label: 'Mentors', icon: Users },
+                                { id: 'roadmaps', label: 'Roadmaps', icon: Target }
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`px-4 md:px-6 py-2.5 rounded-xl font-black uppercase text-[10px] transition-all flex items-center gap-2 ${
+                                        activeTab === tab.id 
+                                        ? 'bg-highlight-purple text-primary shadow-neo-mini' 
+                                        : 'text-primary/40 hover:text-primary hover:bg-slate-50'
+                                    }`}
+                                >
+                                    <tab.icon size={14} />
+                                    <span className="hidden sm:inline">{tab.label}</span>
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Ongoing Projects & Events */}
-                    <div className="lg:col-span-8 space-y-8">
+                    <div className="bg-white border-4 border-primary rounded-3xl p-6 md:p-10 shadow-neo relative overflow-hidden">
+                        <div className="absolute bottom-0 right-0 w-48 h-48 bg-highlight-purple/5 -mr-12 -mb-12 rounded-full blur-2xl"></div>
                         
-                        {/* Projects */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-2">
-                                <h2 className="text-2xl font-black uppercase tracking-widest">Active Projects</h2>
-                                <Link to="/projects" className="text-[10px] font-black uppercase tracking-widest text-primary/40 hover:text-primary flex items-center gap-2">View Full Directory <ArrowRight size={14} /></Link>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {recentProjects.map(project => (
-                                    <div key={project._id} className="bg-white border-4 border-primary p-6 rounded-neo shadow-neo group hover:bg-highlight-blue/5 transition-all">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="w-14 h-14 bg-white border-2 border-primary rounded-2xl overflow-hidden shadow-neo-sm group-hover:-rotate-3 transition-transform">
-                                                {project.image ? <img src={project.image} className="w-full h-full object-cover" alt="" /> : <Zap size={24} className="p-3" />}
+                        {/* Tab Content: Projects */}
+                        {activeTab === 'projects' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+                                {myProjects.length > 0 ? myProjects.map(project => (
+                                    <div key={project._id} className="bg-bg border-3 border-primary p-5 rounded-2xl shadow-neo-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer" onClick={() => navigate(`/projects/${project._id}`)}>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="w-10 h-10 bg-white border-2 border-primary rounded-xl flex items-center justify-center shadow-neo-mini">
+                                                <Folder size={18} />
                                             </div>
-                                            <button onClick={() => navigate(`/projects/${project._id}`)} className="p-2 border-2 border-primary rounded-xl hover:bg-highlight-blue shadow-neo-sm transition-all"><ArrowRight size={18} /></button>
+                                            <span className={`text-[8px] font-black uppercase px-2 py-1 rounded border-2 border-primary ${project.status === 'active' ? 'bg-highlight-green' : 'bg-highlight-yellow'}`}>{project.status}</span>
                                         </div>
-                                        <h3 className="text-xl font-black uppercase truncate mb-2">{project.title}</h3>
-                                        <p className="text-xs font-bold text-primary/60 uppercase tracking-tighter line-clamp-2 leading-relaxed h-10">{project.description}</p>
-                                        <div className="mt-6 pt-4 border-t-2 border-primary/10 flex items-center justify-between">
-                                            <span className="text-[9px] font-black uppercase tracking-widest bg-highlight-teal border-2 border-primary px-3 py-1 rounded-full shadow-neo-sm">{project.category || 'Core'}</span>
-                                            <div className="flex -space-x-2">
-                                                {[1,2,3].map(i => <div key={i} className="w-6 h-6 bg-white border-2 border-primary rounded-full shadow-neo-sm overflow-hidden"><UserIcon size={12} className="p-1 opacity-20" /></div>)}
-                                            </div>
+                                        <h4 className="font-black uppercase text-xs truncate mb-1">{project.title}</h4>
+                                        <p className="text-[9px] font-bold text-primary/40 uppercase mb-4">Last Modified {(new Date()).toLocaleDateString()}</p>
+                                        <div className="w-full bg-white border-2 border-primary rounded-full h-2 overflow-hidden">
+                                            <div className="bg-highlight-purple h-full" style={{ width: '65%' }}></div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Events Lineup */}
-                        <div className="space-y-6">
-                            <h2 className="text-2xl font-black uppercase tracking-widest px-2">Upcoming Events</h2>
-                            <div className="space-y-4">
-                                {upcomingEvents.map(event => (
-                                    <div key={event._id} className="bg-white border-3 border-primary p-4 rounded-2xl shadow-neo group hover:translate-x-2 transition-all flex items-center gap-6">
-                                        <div className="w-16 h-16 bg-highlight-yellow border-3 border-primary rounded-2xl flex flex-col items-center justify-center shadow-neo-sm shrink-0">
-                                            <span className="text-[10px] font-black uppercase leading-none">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</span>
-                                            <span className="text-2xl font-black leading-none">{new Date(event.date).getDate()}</span>
+                                )) : (
+                                    <div className="col-span-full py-12 flex flex-col items-center justify-center gap-4 text-center">
+                                        <div className="w-20 h-20 bg-slate-50 border-3 border-dashed border-primary/20 rounded-full flex items-center justify-center">
+                                            <Folder className="opacity-10" size={40} />
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="text-base font-black uppercase truncate group-hover:text-primary transition-colors">{event.title}</h3>
-                                            <div className="flex flex-wrap gap-4 mt-2">
-                                                <span className="text-[10px] font-black uppercase text-primary/40 flex items-center gap-1.5"><Clock size={12} /> {event.time || '10:00 AM'}</span>
-                                                <span className="text-[10px] font-black uppercase text-primary/40 flex items-center gap-1.5"><Globe size={12} /> {event.location || 'Seminer Hall'}</span>
+                                        <div className="space-y-1">
+                                            <p className="font-black uppercase text-sm text-primary/40">No projects started yet</p>
+                                            <button onClick={() => navigate('/projects/submit')} className="text-primary font-black uppercase text-[10px] hover:underline">Start your first project →</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Tab Content: Mentors */}
+                        {activeTab === 'mentors' && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+                                {mentors.map(mentor => (
+                                    <div key={mentor._id} className="bg-white border-3 border-primary p-4 rounded-2xl shadow-neo-sm flex flex-col items-center text-center group hover:-translate-y-1 transition-transform">
+                                        <div className="relative mb-3">
+                                            <img src={mentor.profilePicture || `https://ui-avatars.com/api/?name=${mentor.username}`} className="w-16 h-16 rounded-full border-2 border-primary shadow-neo-mini object-cover" alt="" />
+                                            <div className="absolute -bottom-1 -right-1 bg-highlight-blue border-2 border-primary p-1 rounded-lg">
+                                                <Briefcase size={10} />
                                             </div>
                                         </div>
-                                        <button onClick={() => navigate(`/events/${event._id}`)} className="p-3 border-2 border-primary rounded-xl hover:bg-highlight-yellow shadow-neo-sm transition-all"><ArrowRight size={20} /></button>
+                                        <h4 className="font-black uppercase text-[10px] mb-1">{mentor.username}</h4>
+                                        <p className="text-[8px] font-bold text-primary/40 uppercase tracking-widest mb-3">Core Development</p>
+                                        <button className="w-full py-2 bg-bg border-2 border-primary rounded-xl font-black uppercase text-[9px] hover:bg-highlight-blue transition-colors">Chat Now</button>
                                     </div>
                                 ))}
+                                <div className="border-3 border-dashed border-primary/10 rounded-2xl flex flex-col items-center justify-center p-6 gap-3 group cursor-pointer hover:border-primary/30 transition-colors" onClick={() => navigate('/mentors')}>
+                                    <Users className="text-primary/10 group-hover:text-primary/30 transition-colors" size={32} />
+                                    <span className="font-black uppercase text-[9px] text-primary/30 group-hover:text-primary transition-colors">Find more mentors</span>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
+                        {/* Tab Content: Roadmaps */}
+                        {activeTab === 'roadmaps' && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+                                {matchedRoadmaps.length > 0 ? matchedRoadmaps.map((roadmap, i) => (
+                                    <a href={roadmap.url} target="_blank" key={i} className="bg-bg border-3 border-primary p-6 rounded-3xl shadow-neo-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex flex-col items-center text-center group">
+                                        <div className="w-14 h-14 bg-white border-3 border-primary rounded-2xl flex items-center justify-center shadow-neo mb-4 group-hover:scale-110 transition-transform">
+                                            <Code2 size={24} className="text-highlight-purple" />
+                                        </div>
+                                        <h4 className="font-black uppercase text-sm mb-2">{roadmap.label}</h4>
+                                        <p className="text-[10px] font-black uppercase text-primary/40 mb-4 h-8 overflow-hidden">Curated guide to master this field</p>
+                                        <div className="flex items-center gap-2 text-primary font-black uppercase text-[10px] border-b-2 border-primary pb-0.5">
+                                            Start Learning <ExternalLink size={12} />
+                                        </div>
+                                    </a>
+                                )) : (
+                                    <div className="col-span-full text-center py-10 opacity-30 font-black uppercase text-xs">Skills needed to match roadmaps</div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

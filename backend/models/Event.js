@@ -100,6 +100,15 @@ const eventSchema = new mongoose.Schema(
       ref: 'User',
       default: null,
     },
+    registrationType: {
+      type: String,
+      enum: ['platform', 'external'],
+      default: 'platform',
+    },
+    externalLink: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

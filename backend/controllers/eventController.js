@@ -135,6 +135,10 @@ const registerForEvent = async (req, res) => {
             return res.status(404).json({ message: 'Event not found' });
         }
 
+        if (event.registrationType === 'external') {
+            return res.status(400).json({ message: 'Registration for this event is handled externally.' });
+        }
+
         // Check if already registered
         const alreadyRegistered = await EventRegistration.findOne({
             eventId: req.params.id,

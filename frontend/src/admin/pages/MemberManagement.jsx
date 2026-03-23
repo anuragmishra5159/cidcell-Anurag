@@ -191,7 +191,7 @@ const MemberManagement = () => {
     try {
         const token = localStorage.getItem('token');
         await axios.post(`${import.meta.env.VITE_API_URL}/members/reorder`, {
-            memberOrders: reorderedList.map(m => ({ id: m._id, order: m.order }))
+            memberOrders: reorderedList.map(m => ({ id: m._id, order: m.order, team: m.team }))
         }, {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -215,34 +215,36 @@ const MemberManagement = () => {
   );
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto font-sans pb-10">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-10 max-w-7xl mx-auto font-sans pb-8">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b-4 border-primary pb-8">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-800">Team Management</h1>
-          <p className="text-slate-500 text-sm mt-1">Drag and drop cards to reorder the team structure.</p>
+          <h1 className="text-3xl lg:text-3xl font-black text-primary uppercase tracking-tight">Team Management</h1>
+          <div className="inline-block bg-highlight-blue border-2 border-primary px-3 py-0.5 mt-2 transform -rotate-1">
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Internal Ecosystem Oversight</p>
+          </div>
         </div>
         <button 
           onClick={() => handleOpenModal()} 
-          className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 active:scale-95"
+          className="px-6 py-3 bg-highlight-blue border-3 border-primary rounded-xl text-primary font-black uppercase text-[10px] shadow-neo-mini hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-2"
         >
-          <UserPlus size={18} /> Add Member
+          <UserPlus size={18} /> Assign New Member
         </button>
       </div>
 
-      <div className="p-3 sm:p-4 rounded-2xl border shadow-sm bg-white border-slate-200 flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+      <div className="flex flex-col md:flex-row gap-6 items-center pt-2">
+        <div className="relative group flex-1 w-full">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary opacity-30 group-focus-within:opacity-100 transition-opacity" />
             <input 
               type="text" 
-              placeholder="Search by name, role or team..." 
+              placeholder="SEARCH BY IDENTITY..." 
               value={searchTerm} 
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2.5 border rounded-xl w-full text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-700 bg-slate-50/50"
+              className="w-full bg-white border-2 border-primary rounded-xl py-3.5 pl-12 pr-6 outline-none shadow-neo-mini focus:shadow-neo transition-all font-black text-[10px] uppercase placeholder:text-primary/20"
             />
         </div>
-        <div className="flex items-center gap-3 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100">
-           <Filter size={16} className="text-indigo-600" />
-           <span className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Drag sorting enabled</span>
+        <div className="flex items-center gap-3 bg-highlight-yellow border-2 border-primary px-4 py-3 rounded-xl shadow-neo-mini">
+           <Filter size={16} className="text-primary" />
+           <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Interactive Reordering Enabled</span>
         </div>
       </div>
 
@@ -258,14 +260,14 @@ const MemberManagement = () => {
                 return (
                     <section 
                         key={teamName} 
-                        className="space-y-4"
+                        className="space-y-10"
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDrop(e, teamName)}
                     >
-                        <div className="flex items-center gap-3 px-1">
-                            <h3 className="text-lg font-bold text-slate-800 uppercase tracking-wider">{teamName}</h3>
-                            <div className="flex-1 h-[1px] bg-slate-200"></div>
-                            <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full">{teamMembers.length} Members</span>
+                        <div className="flex items-center gap-6">
+                            <h3 className="text-2xl font-black text-primary uppercase tracking-tighter">{teamName}</h3>
+                            <div className="flex-1 h-1 bg-primary/10 rounded-full"></div>
+                            <span className="text-[10px] font-black text-primary bg-highlight-teal border-2 border-primary px-5 py-2 rounded-xl shadow-neo-mini uppercase tracking-widest">{teamMembers.length} ARCHITECTS</span>
                         </div>
 
                         {teamMembers.length > 0 ? (
@@ -279,37 +281,39 @@ const MemberManagement = () => {
                                             e.stopPropagation(); // Avoid triggering team-level drop
                                             handleDrop(e, teamName, m._id);
                                         }}
-                                        className={`group relative bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all duration-300 p-5 cursor-move ${draggedMember?._id === m._id ? 'opacity-30 border-dashed border-indigo-500 bg-slate-50' : ''}`}
+                                        className={`group relative bg-white border-2 border-primary rounded-2xl shadow-neo-mini transition-all duration-300 p-5 cursor-move hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${draggedMember?._id === m._id ? 'opacity-30 border-dashed border-primary/40 bg-slate-50' : ''}`}
                                     >
-                                        <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                             <button 
                                                 onClick={() => handleOpenModal(m)}
-                                                className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors"
+                                                className="w-10 h-10 border-2 border-primary rounded-xl bg-white text-primary shadow-neo-mini hover:bg-highlight-yellow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
                                                 title="Edit Member"
                                             >
-                                                <Edit2 size={14} />
+                                                <Edit2 size={16} />
                                             </button>
                                             <button 
                                                 onClick={() => setDeleteConfirm({ isOpen: true, id: m._id })}
-                                                className="p-1.5 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-600 hover:text-white transition-colors"
+                                                className="w-10 h-10 border-2 border-primary rounded-xl bg-white text-rose-500 shadow-neo-mini hover:bg-rose-500 hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
                                                 title="Remove Member"
                                             >
-                                                <Trash2 size={14} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
 
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-slate-100 shrink-0">
+                                        <div className="flex flex-col items-center text-center gap-4 mb-6 pt-4">
+                                            <div className="w-20 h-20 rounded-3xl overflow-hidden border-3 border-primary shadow-neo-mini bg-white shrink-0 group-hover:rotate-2 transition-transform">
                                                 <img 
-                                                    src={m.user?.profilePicture || 'https://via.placeholder.com/60'} 
+                                                    src={m.user?.profilePicture || 'https://via.placeholder.com/100'} 
                                                     className="w-full h-full object-cover" 
                                                     alt={m.user?.username}
                                                 />
                                             </div>
-                                            <div className="overflow-hidden pr-6">
-                                                <h4 className="font-bold text-slate-800 truncate mb-0.5">{m.user?.username}</h4>
-                                                <p className="text-xs font-bold text-indigo-600 uppercase tracking-tight line-clamp-1">{m.designation}</p>
-                                                <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">{m.domain || 'General'}</p>
+                                            <div className="min-w-0 px-2">
+                                                <h4 className="font-black text-lg text-primary uppercase leading-tight truncate mb-1">{m.user?.username}</h4>
+                                                <div className="inline-block bg-highlight-pink border-2 border-primary px-3 py-0.5 rounded-lg mb-2">
+                                                    <p className="text-[9px] font-black text-primary uppercase tracking-widest">{m.designation}</p>
+                                                </div>
+                                                <p className="text-[10px] font-black text-primary/40 uppercase tracking-widest">{m.domain || 'SYSTEMS'}</p>
                                             </div>
                                         </div>
 

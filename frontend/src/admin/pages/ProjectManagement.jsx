@@ -4,6 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Modal from '../components/Modal';
+import { useNavigate } from 'react-router-dom';
 import {
   Trash2,
   Search,
@@ -14,7 +15,8 @@ import {
   Clock,
   Loader,
   Github,
-  ExternalLink
+  ExternalLink,
+  PlusCircle
 } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL;
@@ -35,6 +37,7 @@ const ProjectManagement = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [allProjects, setAllProjects] = useState([]);
   const [pendingProjects, setPendingProjects] = useState([]);
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState({});
@@ -97,33 +100,45 @@ const ProjectManagement = () => {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Project Management</h1>
+    <div className="space-y-10 pb-8">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b-4 border-primary pb-8">
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-black text-primary uppercase tracking-tight">Project Registry</h1>
+          <div className="inline-block bg-highlight-green border-2 border-primary px-3 py-0.5 mt-3 transform -rotate-1">
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Ecosystem Oversight Hub</p>
+          </div>
+        </div>
+        <button
+          onClick={() => navigate('/projects/submit')}
+          className="flex items-center gap-3 px-8 py-4 bg-highlight-blue border-3 border-primary rounded-2xl text-primary font-black uppercase text-xs shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all w-fit"
+        >
+          <PlusCircle size={20} /> Add New Entry
+        </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 pb-1">
+      {/* Tabs Segment */}
+      <div className="flex flex-wrap gap-6 pt-4">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-4 py-2 text-sm font-semibold rounded-t transition-colors ${
+          className={`px-8 py-4 text-xs font-black uppercase border-3 rounded-2xl transition-all shadow-neo-mini flex items-center gap-3 ${
             activeTab === 'pending'
-              ? 'bg-orange-100 text-orange-700 border-b-2 border-orange-500'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-highlight-yellow border-primary text-primary translate-x-[2px] translate-y-[2px] shadow-none'
+              : 'bg-white border-primary text-primary/40 hover:bg-highlight-yellow/10'
           }`}
         >
-          <Clock size={14} className="inline mr-1" />
-          Pending Approvals ({pendingProjects.length})
+          <Clock size={18} />
+          Review Queue ({pendingProjects.length})
         </button>
         <button
           onClick={() => setActiveTab('all')}
-          className={`px-4 py-2 text-sm font-semibold rounded-t transition-colors ${
+          className={`px-8 py-4 text-xs font-black uppercase border-3 rounded-2xl transition-all shadow-neo-mini flex items-center gap-3 ${
             activeTab === 'all'
-              ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-500'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-highlight-blue border-primary text-primary translate-x-[2px] translate-y-[2px] shadow-none'
+              : 'bg-white border-primary text-primary/40 hover:bg-highlight-blue/10'
           }`}
         >
-          All Projects ({allProjects.length})
+          <PlusCircle size={18} />
+          Registry Master ({allProjects.length})
         </button>
       </div>
 
@@ -133,124 +148,165 @@ const ProjectManagement = () => {
         </div>
       ) : activeTab === 'pending' ? (
         /* ── Pending Admin Approvals ── */
-        <div className="space-y-4">
+        <div className="space-y-8 bg-white border-4 border-primary shadow-neo rounded-3xl p-8 lg:p-12">
           {pendingProjects.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
-              <CheckCircle size={40} className="mx-auto mb-3 text-green-300" />
-              <p className="text-sm font-medium">No projects waiting for your approval.</p>
+            <div className="text-center py-20 text-primary/20">
+              <CheckCircle size={60} className="mx-auto mb-6 opacity-20" />
+              <p className="text-sm font-black uppercase tracking-[0.2em]">Queue Fully Purged</p>
             </div>
           ) : (
-            pendingProjects.map(project => (
-              <div key={project._id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <h3 className="font-bold text-gray-800 text-lg">{project.title}</h3>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-orange-100 text-orange-600 rounded">
-                        Awaiting Admin Approval
-                      </span>
-                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-50 text-blue-600 rounded">
-                        {project.type}
-                      </span>
+            <div className="grid grid-cols-1 gap-10">
+              {pendingProjects.map(project => (
+                <div key={project._id} className="bg-slate-50 border-3 border-primary rounded-3xl p-8 shadow-neo-mini hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+                  <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-8 pb-6 border-b-2 border-primary/10">
+                    <div className="space-y-4">
+                      <h3 className="text-2xl font-black text-primary uppercase leading-tight">{project.title}</h3>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="px-4 py-1.5 text-[10px] font-black uppercase text-primary bg-highlight-yellow border-2 border-primary rounded-xl tracking-widest shadow-neo-mini">
+                          Awaiting Oversight
+                        </span>
+                        <span className="px-4 py-1.5 text-[10px] font-black uppercase text-primary bg-highlight-blue border-2 border-primary rounded-xl tracking-widest shadow-neo-mini">
+                          {project.type}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-base text-primary/70 font-medium mb-6 leading-relaxed line-clamp-3">{project.description}</p>
+                  
+                  <div className="bg-white border-2 border-primary rounded-2xl p-5 mb-8">
+                    <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.15em] mb-2">Architect Identity</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-highlight-teal border-2 border-primary flex items-center justify-center font-black text-primary text-xs uppercase shadow-neo-mini">
+                        {project.createdBy?.username?.charAt(0) || "U"}
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-primary uppercase leading-none">{project.createdBy?.username}</p>
+                        <p className="text-[10px] font-black text-primary/40 uppercase mt-1.5">{project.createdBy?.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-6 mb-10">
+                    {project.githubRepo && (
+                      <a href={project.githubRepo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase text-primary bg-white border-2 border-primary px-5 py-2.5 rounded-xl shadow-neo-mini hover:shadow-none hover:bg-highlight-blue/10 transition-all">
+                        <Github size={16} /> Codebase
+                      </a>
+                    )}
+                    {project.deployedLink && (
+                      <a href={project.deployedLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase text-primary bg-white border-2 border-primary px-5 py-2.5 rounded-xl shadow-neo-mini hover:shadow-none hover:bg-highlight-teal/10 transition-all">
+                        <ExternalLink size={16} /> Launch Demo
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="relative">
+                      <textarea
+                        className="w-full p-6 bg-white border-3 border-primary rounded-3xl text-sm font-medium outline-none shadow-neo-mini focus:shadow-neo transition-all min-h-[120px]"
+                        placeholder="ADMIN FEEDBACK / MODIFICATION NOTES..."
+                        value={feedback[project._id] || ''}
+                        onChange={e => setFeedback({ ...feedback, [project._id]: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-5 pt-4">
+                      <button 
+                        onClick={() => handleAdminReview(project._id, 'approve')} 
+                        className="flex-1 min-w-[160px] flex items-center justify-center gap-3 px-8 py-5 bg-highlight-green border-3 border-primary rounded-2xl text-primary font-black uppercase text-xs shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      >
+                        <CheckCircle size={20} /> Authorize Entry
+                      </button>
+                      <button 
+                        onClick={() => handleAdminReview(project._id, 'reject')} 
+                        className="flex-1 min-w-[160px] flex items-center justify-center gap-3 px-8 py-5 bg-rose-500 border-3 border-primary rounded-2xl text-white font-black uppercase text-xs shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      >
+                        <XCircle size={20} /> Reject Entry
+                      </button>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 line-clamp-2 mb-2">{project.description}</p>
-                <p className="text-xs text-gray-400 mb-3">
-                  Submitted by: <span className="text-gray-700 font-medium">{project.createdBy?.username}</span> ({project.createdBy?.email})
-                </p>
-
-                <div className="flex gap-4 mb-4">
-                  {project.githubRepo && (
-                    <a href={project.githubRepo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] font-black uppercase text-blue-600 hover:underline">
-                      <Github size={14} /> GitHub Repo
-                    </a>
-                  )}
-                  {project.deployedLink && (
-                    <a href={project.deployedLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] font-black uppercase text-green-600 hover:underline">
-                      <ExternalLink size={14} /> Live Demo
-                    </a>
-                  )}
-                </div>
-
-                <textarea
-                  className="w-full p-2 border border-gray-300 rounded text-sm mb-3 outline-none focus:ring-2 focus:ring-blue-200"
-                  rows="2"
-                  placeholder="Optional feedback..."
-                  value={feedback[project._id] || ''}
-                  onChange={e => setFeedback({ ...feedback, [project._id]: e.target.value })}
-                />
-
-                <div className="flex gap-3">
-                  <button onClick={() => handleAdminReview(project._id, 'approve')} className="flex items-center gap-1 px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded hover:bg-green-600 transition-colors">
-                    <CheckCircle size={16} /> Approve
-                  </button>
-                  <button onClick={() => handleAdminReview(project._id, 'reject')} className="flex items-center gap-1 px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded hover:bg-red-600 transition-colors">
-                    <XCircle size={16} /> Reject
-                  </button>
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       ) : (
         /* ── All Projects ── */
-        <div className="space-y-4">
-          {/* Search */}
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="space-y-10">
+          {/* Registry Search */}
+          <div className="relative group max-w-2xl">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-primary opacity-30 group-focus-within:opacity-100 transition-opacity" />
             <input
               type="text"
-              placeholder="Search by title or creator..."
+              placeholder="SEARCH PROJECT REPOSITORY..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full bg-white border-3 border-primary rounded-2xl py-5 pl-16 pr-8 outline-none shadow-neo-mini focus:shadow-neo transition-all font-black text-[11px] uppercase placeholder:text-primary/20"
             />
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 text-left text-xs uppercase text-gray-500">
-                  <th className="py-3 px-4">Title</th>
-                  <th className="py-3 px-4">Type</th>
-                  <th className="py-3 px-4">Creator</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredAll.map(project => (
-                  <tr key={project._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4 font-medium text-gray-800">{project.title}</td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-50 text-blue-600 rounded">{project.type}</span>
-                    </td>
-                    <td className="py-3 px-4 text-gray-600">{project.createdBy?.username || '—'}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded ${statusColors[project.status] || 'bg-gray-100'}`}>
-                        {project.status?.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <button
-                        onClick={() => setDeleteConfirm({ isOpen: true, id: project._id })}
-                        className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </td>
+          {/* Master Registry Table */}
+          <div className="bg-white border-4 border-primary shadow-neo rounded-3xl overflow-hidden font-sans">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-highlight-blue border-b-4 border-primary text-primary">
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Project Identity</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Architecture</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Lead Developer</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest border-r-2 border-primary/10">Operational Status</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-right">Sanction</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y-2 divide-primary/10">
+                  {filteredAll.map(project => (
+                    <tr key={project._id} className="hover:bg-highlight-blue/5 transition-colors group">
+                      <td className="px-6 py-4">
+                        <p className="font-black text-sm text-primary uppercase leading-tight group-hover:translate-x-1 transition-transform">{project.title}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-block px-3 py-1 text-[9px] font-black uppercase bg-white border-2 border-primary rounded-lg tracking-widest shadow-neo-mini">
+                          {project.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-md bg-highlight-teal border border-primary flex items-center justify-center text-[8px] font-black text-primary uppercase">
+                            {project.createdBy?.username?.charAt(0) || "U"}
+                          </div>
+                          <span className="text-[10px] font-black text-primary/60 uppercase">{project.createdBy?.username || '—'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-block px-3 py-1 rounded-xl border-2 border-primary shadow-neo-mini text-[9px] font-black uppercase ${
+                          project.status === 'approved' ? 'bg-highlight-green' :
+                          project.status === 'pending' ? 'bg-highlight-yellow' :
+                          'bg-highlight-pink'
+                        }`}>
+                          {project.status?.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => setDeleteConfirm({ isOpen: true, id: project._id })}
+                          className="w-9 h-9 inline-flex items-center justify-center border-2 border-primary rounded-xl bg-white text-rose-500 shadow-neo-mini hover:bg-rose-500 hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                          title="Purge Entry"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {filteredAll.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-sm">No projects found.</div>
-          )}
+            {filteredAll.length === 0 && (
+              <div className="text-center py-20 bg-slate-50/50">
+                <Search className="w-14 h-14 mx-auto mb-6 opacity-10 text-primary" />
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-primary/20">Registry Is Empty</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
