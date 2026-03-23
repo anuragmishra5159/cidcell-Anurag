@@ -27,12 +27,35 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const app = express();
 const server = http.createServer(app); // Create HTTP server
 
+// Build allowed origins list from CLIENT_URL env var (comma-separated) + localhost fallback
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  ...(process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map((u) => u.trim())
+    : []),
+];
+
+const corsOriginFn = (origin, callback) => {
+  // Allow requests with no origin (e.g. server-to-server, curl, mobile apps)
+  if (!origin) return callback(null, true);
+  if (allowedOrigins.includes(origin)) return callback(null, true);
+  return callback(new Error(`CORS: Origin '${origin}' not allowed`));
+};
+
+const corsOptions = {
+  origin: corsOriginFn,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    credentials: true
+    origin: corsOriginFn,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
   }
 });
 
@@ -44,7 +67,8 @@ io.on('connection', socketHandler(io));
 
 // Middlewares
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
 app.use(express.json());
 
 // Global Fallback Rate Limiting (generous — per-route limits handle hot paths)
@@ -162,7 +186,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.log('\x1b[1m\x1b[32m%s\x1b[0m', '  🚀 CID-CELL BACKEND IS LIVE');
     console.log('\x1b[36m%s\x1b[0m', '--------------------------------------------------');
     console.log(`  📍  \x1b[33mPort:\x1b[0m      ${PORT}`);
-    console.log(`  🌐  \x1b[33mClient:\x1b[0m    ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
+    console.log(`  🌐  \x1b[33mClient:\x1b[0m    ${allowedOrigins.join(', ')}`);
     console.log(`  ⚡  \x1b[33mReal-time:\x1b[0m \x1b[32mSocket.IO Initialized\x1b[0m`);
     // The Database log will come from the async connectDB() function
   });
