@@ -10,8 +10,8 @@ const facultyCoordinator = [
 ];
 
 const mentors = [
-  { name: 'Dr. Manish Dixit', role: 'Faculty Mentor', accent: 'bg-highlight-blue', image: '/manishsir.jpg.jpeg' },
-  { name: 'Atul Chauhan', role: 'Co-Mentor', accent: 'bg-highlight-orange', image: '/atul2.jpeg' },
+  { name: 'Dr. Manish Dixit', role: 'Faculty Mentor', accent: 'bg-highlight-blue', image: '/manishsir.jpg.jpeg', imgClass: 'object-cover object-top' },
+  { name: 'Atul Chauhan', role: 'Co-Mentor', accent: 'bg-highlight-orange', image: '/atul2.jpeg', imgClass: 'object-cover object-top' },
 ];
 
 const staticSubTeams = [
@@ -49,10 +49,12 @@ const staticSubTeams = [
   { name: 'Hariom Gourh', team: 'Sub-Teams', domain: 'Data Science', linkedin: 'https://www.linkedin.com/in/hariomgourh', github: 'https://github.com/HariomGourh' },
 ];
 
-const staticCoreTeam = [
+const staticCoreTeam = [];
+
+const staticStudentBoard = [
   {
-    team: 'Core Team',
-    designation: 'Core Member',
+    team: 'Student Board',
+    designation: 'Chairman',
     user: {
       username: 'Anuj Shrivastava',
       profilePicture: 'https://github.com/AnujShrivastava01.png',
@@ -85,7 +87,7 @@ function LeaderCard({ person, delay, isDynamic = false }) {
         <div className="absolute top-0 right-0 w-16 h-16 bg-black/5 rounded-bl-full -mr-4 -mt-4 transition-transform duration-500 group-hover:scale-[2.5]"></div>
         <div className="w-32 h-32 bg-white border-3 border-black shadow-small flex items-center justify-center mb-6 transform -rotate-2 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-110 z-10 overflow-hidden">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+            <img src={imageUrl} alt={name} className={`w-full h-full ${person.imgClass || 'object-cover'}`} />
           ) : (
             <span className="font-heading font-black text-4xl text-black">
               {getInitials(name)}
@@ -205,7 +207,7 @@ export default function Team() {
   });
 
   const [teamData, setTeamData] = useState({
-    board: [],
+    board: [...staticStudentBoard],
     core: [...staticCoreTeam],
     subGroups: initialSubGroups
   });
@@ -217,7 +219,7 @@ export default function Team() {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/members`);
         const members = res.data;
 
-        const board = members.filter(m => m.team === 'Student Board');
+        const board = [...members.filter(m => m.team === 'Student Board'), ...staticStudentBoard];
         const core = [...members.filter(m => m.team === 'Core Team'), ...staticCoreTeam];
         
         const subTeams = [...members.filter(m => m.team === 'Sub-Teams'), ...staticSubTeams];
