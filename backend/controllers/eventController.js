@@ -1,6 +1,7 @@
 const Event = require('../models/Event');
 const EventRegistration = require('../models/EventRegistration');
-
+const User = require('../models/User');
+const emailService = require('../utils/emailService');
 // @desc    Get all events
 // @route   GET /api/events
 // @access  Public
@@ -230,8 +231,14 @@ const approveProposal = async (req, res) => {
             req.params.id,
             { status: 'approved' },
             { new: true }
-        );
+        ).populate('proposedBy');
+        
         if (!event) return res.status(404).json({ message: 'Proposal not found' });
+        
+        if (event.proposedBy && event.proposedBy.email) {
+            emailService.sendEventApprovalEmail(event.proposedBy.email, event.title);
+        }
+        
         res.json(event);
     } catch (error) {
         res.status(500).json({ message: error.message });

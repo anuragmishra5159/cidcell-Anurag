@@ -10,8 +10,58 @@ const facultyCoordinator = [
 ];
 
 const mentors = [
-  { name: 'Dr. Manish Dixit', role: 'Faculty Mentor', accent: 'bg-highlight-blue' },
-  { name: 'Atul Chauhan', role: 'Co-Mentor', accent: 'bg-highlight-orange' },
+  { name: 'Dr. Manish Dixit', role: 'Faculty Mentor', accent: 'bg-highlight-blue', image: '/manishsir.jpg.jpeg' },
+  { name: 'Atul Chauhan', role: 'Co-Mentor', accent: 'bg-highlight-orange', image: '/atul2.jpeg' },
+];
+
+const staticSubTeams = [
+  // Frontend
+  { name: 'Krish Dargar', team: 'Sub-Teams', domain: 'Frontend', linkedin: 'https://www.linkedin.com/in/krish-dargar-101774324/', github: 'https://github.com/KD2303' },
+  { name: 'Anurag Mishra', team: 'Sub-Teams', domain: 'Frontend', linkedin: 'https://www.linkedin.com/in/anuragmishra5159/', github: 'https://github.com/anuragmishra5159' },
+  { name: 'Nemish Nagaria', team: 'Sub-Teams', domain: 'Frontend', linkedin: 'https://www.linkedin.com/in/nemish-nagaria-555198313/', github: 'https://github.com/thedebroglie' },
+  // Backend
+  { name: 'Arin Gupta', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/arin-gupta-2b94b032a/', github: 'https://github.com/githubarin-art' },
+  { name: 'Sahil Jain', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/sahil-jain-610907211/', github: 'https://github.com/SAHILJAIN2024' },
+  { name: 'Harsh Manmode', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/harsh-manmode-2a0b91325', github: 'https://github.com/Harsh-2006-git/' },
+  { name: 'Aditya Gupta', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/aditya-gupta-4a037533a/', github: 'https://github.com/Adityagupta-mits' },
+  { name: 'Amit Manmode', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/amit-manmode-5b1a23328/', github: 'https://github.com/Amit-akm-22' },
+  { name: 'Yogesh Sanodiya', team: 'Sub-Teams', domain: 'Backend', linkedin: 'https://www.linkedin.com/in/yogesh-sanodiya-8a2816298/', github: 'https://github.com/yogeshsanodiya59-web' },
+  // Graphic
+  { name: 'Prateek Amar Batham', team: 'Sub-Teams', domain: 'Graphic', linkedin: 'https://www.linkedin.com/in/prateek-amar-batham-827734329/', github: 'https://github.com/Omyx0' },
+  { name: 'Palash Rai', team: 'Sub-Teams', domain: 'Graphic', linkedin: 'https://www.linkedin.com/in/palash-rai2612', github: 'https://github.com/Palash-r26' },
+  // Videography
+  { name: 'Sarvesh Baghel', team: 'Sub-Teams', domain: 'Videography', linkedin: 'https://www.linkedin.com/in/sarvesh-baghel-b3a726274/', github: 'https://github.com/sarveshbaghel' },
+  { name: 'Archit Varshney', team: 'Sub-Teams', domain: 'Videography', linkedin: 'https://www.linkedin.com/in/archit-varshney-30b2773a2', github: 'https://github.com/architvarshney7' },
+  { name: 'Naveen sharma', team: 'Sub-Teams', domain: 'Videography', linkedin: 'https://www.linkedin.com/in/naveen-sharma-64b51333a/', github: '' },
+  { name: 'Shashank Nigam', team: 'Sub-Teams', domain: 'Videography', linkedin: 'https://www.linkedin.com/in/shashanknigam2712/', github: 'https://github.com/ShashankNigam27' },
+  // Management
+  { name: 'Prarthana Sharma', team: 'Sub-Teams', domain: 'Management', linkedin: 'https://www.linkedin.com/in/prarthana-sharma-8b3923368/', github: 'https://github.com/sharmaprarthana829-source' },
+  // Content Writing
+  { name: 'Aakriti Ahirwar', team: 'Sub-Teams', domain: 'Content Writing', linkedin: 'https://www.linkedin.com/in/aakritiahirwar22/', github: 'https://github.com/aakriti1002' },
+  // AI/ML
+  { name: 'VANSH PRATAP SINGH JADON', team: 'Sub-Teams', domain: 'AI/ML', linkedin: 'https://www.linkedin.com/in/vansh-pratap-singh-jadon-5407b2320', github: 'https://github.com/jadonvansh2005' },
+  // App Development
+  { name: 'Kanika Jain', team: 'Sub-Teams', domain: 'App Development', linkedin: 'https://www.linkedin.com/in/kanika-jain-5477b52b9/', github: 'https://github.com/kanikajain2' },
+  { name: 'Pushpendra Suryawanshi', team: 'Sub-Teams', domain: 'App Development', linkedin: 'https://www.linkedin.com/in/pushpendra-suryawanshi-b8aa51338/', github: 'https://github.com/Pushpendra-7-ux' },
+  // Data Science
+  { name: 'Astha Saini', team: 'Sub-Teams', domain: 'Data Science', linkedin: 'https://www.linkedin.com/in/astha-saini-662369363/', github: 'https://github.com/asthasaini2605' },
+  { name: 'Alakh Gupta', team: 'Sub-Teams', domain: 'Data Science', linkedin: 'https://www.linkedin.com/in/alakh-gupta-475368311/', github: 'https://github.com/Alakh-gupta' },
+  { name: 'Hariom Gourh', team: 'Sub-Teams', domain: 'Data Science', linkedin: 'https://www.linkedin.com/in/hariomgourh', github: 'https://github.com/HariomGourh' },
+];
+
+const staticCoreTeam = [
+  {
+    team: 'Core Team',
+    designation: 'Core Member',
+    user: {
+      username: 'Anuj Shrivastava',
+      profilePicture: 'https://github.com/AnujShrivastava01.png',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/anujshrivastava1/',
+        github: 'https://github.com/AnujShrivastava01'
+      }
+    }
+  }
 ];
 
 function getInitials(name) {
@@ -25,6 +75,7 @@ function LeaderCard({ person, delay, isDynamic = false }) {
   const name = isDynamic ? person.user?.username : person.name;
   const role = isDynamic ? person.designation : person.role;
   const accent = person.accent || 'bg-highlight-yellow';
+  const imageUrl = isDynamic ? person.user?.profilePicture : person.image;
 
   return (
     <ScrollReveal delay={delay} className="h-full w-full max-w-[280px] mx-auto text-center">
@@ -32,10 +83,14 @@ function LeaderCard({ person, delay, isDynamic = false }) {
         className={`${accent} border-3 border-black p-8 shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex flex-col items-center h-full relative overflow-hidden group z-10`}
       >
         <div className="absolute top-0 right-0 w-16 h-16 bg-black/5 rounded-bl-full -mr-4 -mt-4 transition-transform duration-500 group-hover:scale-[2.5]"></div>
-        <div className="w-24 h-24 bg-white border-3 border-black shadow-small flex items-center justify-center mb-5 transform -rotate-2 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-110 z-10">
-          <span className="font-heading font-black text-3xl text-black">
-            {getInitials(name)}
-          </span>
+        <div className="w-32 h-32 bg-white border-3 border-black shadow-small flex items-center justify-center mb-6 transform -rotate-2 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-110 z-10 overflow-hidden">
+          {imageUrl ? (
+            <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="font-heading font-black text-4xl text-black">
+              {getInitials(name)}
+            </span>
+          )}
         </div>
         <h3 className="font-heading font-bold text-2xl text-black uppercase leading-tight mb-1 z-10">
           {name}
@@ -142,10 +197,17 @@ function MemberCard({ member, accentClass, delay }) {
 }
 
 export default function Team() {
+  const initialSubGroups = {};
+  staticSubTeams.forEach(m => {
+    const d = m.domain || 'General';
+    if (!initialSubGroups[d]) initialSubGroups[d] = [];
+    initialSubGroups[d].push(m);
+  });
+
   const [teamData, setTeamData] = useState({
     board: [],
-    core: [],
-    subGroups: {}
+    core: [...staticCoreTeam],
+    subGroups: initialSubGroups
   });
   const [loading, setLoading] = useState(true);
 
@@ -156,9 +218,9 @@ export default function Team() {
         const members = res.data;
 
         const board = members.filter(m => m.team === 'Student Board');
-        const core = members.filter(m => m.team === 'Core Team');
+        const core = [...members.filter(m => m.team === 'Core Team'), ...staticCoreTeam];
         
-        const subTeams = members.filter(m => m.team === 'Sub-Teams');
+        const subTeams = [...members.filter(m => m.team === 'Sub-Teams'), ...staticSubTeams];
         const groups = {};
         subTeams.forEach(m => {
           const domain = m.domain || 'General';
@@ -201,8 +263,44 @@ export default function Team() {
         </div>
       </section>
 
-      {/* Student Board */}
+      {/* Mentorship */}
       <section className="section-padding bg-white border-b-3 border-black">
+        <div className="container-max mx-auto px-4">
+          <SectionHeading subtitle="Advisors" title="Mentorship" />
+          <div className="flex flex-col gap-12 max-w-5xl mx-auto">
+            {/* 
+            <div>
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="h-1 bg-black flex-grow"></div>
+                <h3 className="font-heading text-2xl md:text-3xl font-black text-black uppercase px-4 text-center">Faculty Coordinator</h3>
+                <div className="h-1 bg-black flex-grow"></div>
+              </div>
+              <div className="flex justify-center">
+                {facultyCoordinator.map((person, i) => (
+                  <LeaderCard key={person.name} person={person} delay={i * 120} />
+                ))}
+              </div>
+            </div>
+            */}
+
+            <div>
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="h-1 bg-black flex-grow"></div>
+                <h3 className="font-heading text-2xl md:text-3xl font-black text-black uppercase px-4 text-center">Mentors</h3>
+                <div className="h-1 bg-black flex-grow"></div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                {mentors.map((person, i) => (
+                  <LeaderCard key={person.name} person={person} delay={i * 120} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Student Board */}
+      <section className="section-padding bg-highlight-cream border-b-3 border-black">
         <div className="container-max mx-auto">
           <SectionHeading subtitle="Leadership" title="Student Board" />
           <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
@@ -217,17 +315,22 @@ export default function Team() {
       <section className="section-padding bg-highlight-blue border-b-3 border-black">
         <div className="container-max mx-auto">
           <SectionHeading subtitle="Executives" title="Core Team" />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
             {teamData.core.map((person, i) => (
-              <ScrollReveal key={person._id} delay={i * 100} className="h-full">
-                <div
-                  className={`bg-highlight-teal border-3 border-black p-6 shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex flex-col items-center text-center h-full`}
-                >
-                  <div className="w-16 h-16 bg-white border-3 border-black shadow-small flex items-center justify-center mb-4 transform rotate-1">
-                    <span className="font-heading font-black text-xl text-black">
-                      {getInitials(person.user?.username)}
-                    </span>
-                  </div>
+              <div key={person._id || i} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-[280px]">
+                <ScrollReveal delay={i * 100} className="h-full">
+                  <div
+                    className={`bg-highlight-teal border-3 border-black p-6 shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex flex-col items-center text-center h-full`}
+                  >
+                    <div className="w-20 h-20 bg-white border-3 border-black shadow-small flex items-center justify-center mb-4 transform rotate-1 overflow-hidden">
+                      {person.user?.profilePicture ? (
+                        <img src={person.user.profilePicture} alt={person.user.username || "Team Member"} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="font-heading font-black text-xl text-black">
+                          {getInitials(person.user?.username)}
+                        </span>
+                      )}
+                    </div>
                   <h3 className="font-heading font-bold text-xl text-black uppercase leading-tight mb-1">
                     {person.user?.username}
                   </h3>
@@ -276,7 +379,8 @@ export default function Team() {
                     )}
                   </div>
                 </div>
-              </ScrollReveal>
+                </ScrollReveal>
+              </div>
             ))}
           </div>
         </div>
@@ -302,7 +406,7 @@ export default function Team() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 relative z-10">
                     {members.map((member, mi) => (
                       <MemberCard
-                        key={member._id}
+                        key={member._id || mi}
                         member={member}
                         accentClass={accent}
                         delay={mi * 50}
@@ -316,39 +420,7 @@ export default function Team() {
         </div>
       </section>
 
-      {/* Mentorship */}
-      <section className="section-padding bg-white border-b-3 border-black">
-        <div className="container-max mx-auto px-4">
-          <SectionHeading subtitle="Advisors" title="Mentorship" />
-          <div className="flex flex-col gap-12 max-w-5xl mx-auto">
-            <div>
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <div className="h-1 bg-black flex-grow"></div>
-                <h3 className="font-heading text-2xl md:text-3xl font-black text-black uppercase px-4 text-center">Faculty Coordinator</h3>
-                <div className="h-1 bg-black flex-grow"></div>
-              </div>
-              <div className="flex justify-center">
-                {facultyCoordinator.map((person, i) => (
-                  <LeaderCard key={person.name} person={person} delay={i * 120} />
-                ))}
-              </div>
-            </div>
 
-            <div>
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <div className="h-1 bg-black flex-grow"></div>
-                <h3 className="font-heading text-2xl md:text-3xl font-black text-black uppercase px-4 text-center">Mentors</h3>
-                <div className="h-1 bg-black flex-grow"></div>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                {mentors.map((person, i) => (
-                  <LeaderCard key={person.name} person={person} delay={i * 120} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

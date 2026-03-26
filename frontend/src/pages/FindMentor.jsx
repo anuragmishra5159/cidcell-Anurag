@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SectionHeading from '../components/SectionHeading';
 import ScrollReveal from '../components/ScrollReveal';
-import { Linkedin, Github, Code2, MessageCircle } from 'lucide-react';
+import { Search, Linkedin, Github, Code2, MessageCircle } from 'lucide-react';
 
 // Static Mock Data
 const staticMentors = [
@@ -371,19 +371,26 @@ function MentorCard({ mentor, delay }) {
 
 export default function MentorHub() {
   const [mentors, setMentors] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [domains, setDomains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMentors();
-  }, []);
+    const delayDebounceFn = setTimeout(() => {
+      fetchMentors();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
 
   const fetchMentors = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/mentors`);
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.append('search', searchQuery.trim());
+
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/mentors?${params.toString()}`);
 
       const mapped = res.data.map(m => ({
           _id: m._id,
@@ -476,7 +483,19 @@ export default function MentorHub() {
               <div className="flex flex-col items-center">
                 <SectionHeading title="Select Domain" subtitle="Filter by Expertise" />
                 
-                <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-10">
+                {/* Search Bar */}
+                <div className="w-full max-w-2xl relative mt-8">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={24} />
+                  <input
+                    type="text"
+                    placeholder="Search by name, department, or expertise..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-14 pr-6 py-4 bg-white border-4 border-primary font-bold text-lg focus:outline-none focus:border-highlight-blue transition-all shadow-neo"
+                  />
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-8">
                   <button
                     onClick={() => setSelectedDomain(null)}
                     className={`px-6 py-3 border-2 border-primary font-heading font-bold uppercase tracking-wider text-sm transition-all duration-200 ${

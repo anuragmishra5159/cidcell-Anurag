@@ -49,7 +49,7 @@ export default function VisionMission() {
                 >
                   <Icon size={40} className="text-primary stroke-[3px]" />
                 </div>
-                <h3 className="font-heading font-black text-3xl text-primary uppercase mb-4 tracking-tighter">{title}</h3>
+                <h3 className="font-heading font-black text-2xl lg:text-3xl text-primary uppercase mb-4 tracking-wider">{title}</h3>
                 <p className="text-primary font-bold text-base leading-relaxed font-body">{desc}</p>
               </div>
             </div>

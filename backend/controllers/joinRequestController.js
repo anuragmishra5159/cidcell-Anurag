@@ -1,7 +1,8 @@
 const JoinRequest = require('../models/JoinRequest');
 const Project = require('../models/Project');
 const Notification = require('../models/Notification');
-
+const User = require('../models/User');
+const emailService = require('../utils/emailService');
 // @desc    Student submits a join request
 // @route   POST /api/join-requests
 // @access  Private (student only)
@@ -182,6 +183,11 @@ const acceptJoinRequest = async (req, res) => {
         });
         await project.save();
 
+        const applicant = await User.findById(joinRequest.userId);
+        if (applicant && applicant.email) {
+            emailService.sendJoinRequestStatusEmail(applicant.email, project.title, 'accepted');
+        }
+
         // Phase 2: Create notification for the student
         const notification = await Notification.create({
             userId: joinRequest.userId,
@@ -227,6 +233,11 @@ const rejectJoinRequest = async (req, res) => {
         joinRequest.reviewedAt = new Date();
         joinRequest.reapplyAfter = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
         await joinRequest.save();
+
+        const applicant = await User.findById(joinRequest.userId);
+        if (applicant && applicant.email) {
+            emailService.sendJoinRequestStatusEmail(applicant.email, project.title, 'rejected');
+        }
 
         // Phase 2: Create notification for the student
         const notification = await Notification.create({

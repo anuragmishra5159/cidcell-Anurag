@@ -120,8 +120,8 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] pt-24 md:pt-28 pb-12 md:pb-16 px-3 md:px-8 font-sans">
-            <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+        <div className="min-h-screen bg-[#F8FAFC] pt-32 md:pt-40 pb-16 md:pb-24 px-4 md:px-8 font-sans">
+            <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
                 
                 {/* 1. TOP PROFILE BANNER - Balanced Layout */}
                 <div className="bg-white border-2 md:border-4 border-primary shadow-neo p-3 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-12 relative overflow-hidden group">

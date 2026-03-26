@@ -52,6 +52,7 @@ export default function Navbar() {
   const [chatUnread, setChatUnread] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [mobileDropdowns, setMobileDropdowns] = useState({});
   
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
@@ -395,8 +396,8 @@ export default function Navbar() {
 
         {/* Mobile menu overlay */}
         {isOpen && (
-          <div className="absolute top-full left-0 w-full md:hidden px-4 pb-4 animate-fade-in-up bg-bg/95 backdrop-blur-sm border-b-2 border-primary shadow-neo h-screen sm:h-auto z-40">
-            <div className="bg-white border-3 border-primary shadow-neo rounded-xl p-4 space-y-2 mt-4">
+          <div className="absolute top-full left-0 w-full md:hidden px-4 pb-24 overflow-y-auto animate-fade-in-up bg-bg/95 backdrop-blur-sm border-b-2 border-primary shadow-neo h-[calc(100vh-64px)] z-40">
+            <div className="bg-white border-3 border-primary shadow-neo rounded-xl p-4 space-y-2 mt-4 mb-8">
               {navLinks.filter(link => {
                 if (link.isDropdown) return true;
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;
@@ -422,24 +423,29 @@ export default function Navbar() {
                   if (visibleChildren.length === 0) return null;
                   return (
                     <div key={link.name} className="space-y-2 mt-4 bg-slate-50 border-3 border-transparent rounded-xl p-2 pb-3">
-                       <div className="px-4 py-1 font-bold uppercase text-primary text-xs flex items-center gap-2">
-                          <ChevronDown size={14} /> {link.name}
+                       <button
+                         onClick={() => setMobileDropdowns(prev => ({...prev, [link.name]: !prev[link.name]}))}
+                         className="w-full px-4 py-1 font-bold uppercase text-primary text-xs flex items-center gap-2"
+                       >
+                          <ChevronDown size={14} className={`transition-transform duration-200 ${mobileDropdowns[link.name] ? 'rotate-180' : ''}`} /> {link.name}
+                       </button>
+                       <div className="space-y-2">
+                         {mobileDropdowns[link.name] && visibleChildren.map(child => (
+                             <NavLink
+                               key={child.name}
+                               to={child.path}
+                               onClick={() => setIsOpen(false)}
+                               className={({ isActive }) =>
+                                 `block px-4 py-3 font-bold uppercase border-2 transition-all rounded-lg ml-2 text-xs transition-opacity duration-300 ${isActive
+                                   ? 'bg-highlight-purple border-primary shadow-neo-sm'
+                                   : 'border-transparent hover:bg-highlight-blue hover:border-primary bg-white'
+                                 }`
+                               }
+                             >
+                               {child.name}
+                             </NavLink>
+                         ))}
                        </div>
-                       {visibleChildren.map(child => (
-                           <NavLink
-                             key={child.name}
-                             to={child.path}
-                             onClick={() => setIsOpen(false)}
-                             className={({ isActive }) =>
-                               `block px-4 py-3 font-bold uppercase border-2 transition-all rounded-lg ml-2 text-xs ${isActive
-                                 ? 'bg-highlight-purple border-primary shadow-neo-sm'
-                                 : 'border-transparent hover:bg-highlight-blue hover:border-primary bg-white'
-                               }`
-                             }
-                           >
-                             {child.name}
-                           </NavLink>
-                       ))}
                     </div>
                   );
                 }

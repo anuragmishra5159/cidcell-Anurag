@@ -82,9 +82,9 @@ export const skillBasedRoadmaps = [
 ];
 
 export const projectIdeas = [
-  { label: 'Frontend', url: 'https://roadmap.sh/projects/frontend' },
-  { label: 'Backend', url: 'https://roadmap.sh/projects/backend' },
-  { label: 'DevOps', url: 'https://roadmap.sh/projects/devops' },
+  { label: 'Frontend', url: 'https://roadmap.sh/frontend/projects' },
+  { label: 'Backend', url: 'https://roadmap.sh/backend/projects' },
+  { label: 'DevOps', url: 'https://roadmap.sh/devops/projects' },
 ];
 
 export const bestPractices = [

@@ -20,6 +20,24 @@ const developers = [
     bio: 'Software engineer who loves solving complex problems and building scalable apps.',
     color: 'bg-highlight-teal',
   },
+  {
+    name: 'Harsh Manmode',
+    role: 'Developer',
+    github: 'https://github.com/Harsh-2006-git',
+    linkedin: 'https://www.linkedin.com/in/harsh-manmode-2a0b91325/',
+    image: 'https://github.com/Harsh-2006-git.png',
+    bio: 'Dedicated developer passionate about crafting robust web applications.',
+    color: 'bg-highlight-yellow',
+  },
+  {
+    name: 'Nemish Nagaria',
+    role: 'Developer',
+    github: 'https://github.com/thedebroglie',
+    linkedin: 'https://www.linkedin.com/in/nemish-nagaria-555198313/',
+    image: 'https://github.com/thedebroglie.png',
+    bio: 'Innovative software engineer focused on building efficient technological solutions.',
+    color: 'bg-highlight-pink',
+  },
 ];
 
 export default function Developers() {
@@ -108,7 +126,7 @@ export default function Developers() {
             CID-Cell is an open community. Whether you're interested in making modifications to this site, or starting a new project, we're always looking for collaborators.
           </p>
           <a
-            href="https://github.com/anuragmishra5159/cidcell-frontend"
+            href="https://github.com/CID-CELL"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-white text-primary font-heading uppercase tracking-widest text-xl px-8 py-4 border-4 border-primary shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-neo transform rotate-1"

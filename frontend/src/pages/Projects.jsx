@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import {
+  Search,
   ExternalLink,
   Github,
   Filter,
@@ -24,18 +25,27 @@ const authHeaders = () => {
 export default function Projects() {
   const { user } = useContext(AuthContext);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [techStackQuery, setTechStackQuery] = useState('');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchActiveProjects();
-  }, []);
+    const delayDebounceFn = setTimeout(() => {
+      fetchActiveProjects();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, techStackQuery]);
 
   const fetchActiveProjects = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/projects`, authHeaders());
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.append('search', searchQuery.trim());
+      if (techStackQuery.trim()) params.append('techStack', techStackQuery.trim());
+
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/projects?${params.toString()}`, authHeaders());
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -78,20 +88,44 @@ export default function Projects() {
 
       <section className="section-padding bg-white min-h-[600px]">
         <div className="container-max mx-auto px-4">
-          {/* Filter Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-            <div className="bg-white border-3 border-primary p-2 rounded-xl sm:rounded-full shadow-neo flex flex-wrap gap-2">
-              <span className="flex items-center px-4 font-bold uppercase text-primary text-xs">
-                <Filter size={16} className="mr-2" /> Type:
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-16 bg-white p-4 md:p-6 rounded-2xl border-3 border-primary shadow-neo">
+            {/* Search Inputs */}
+            <div className="flex flex-col md:flex-row flex-1 w-full gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search projects..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-primary font-bold focus:outline-none focus:border-highlight-blue focus:bg-white transition-all shadow-neo-sm"
+                />
+              </div>
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  placeholder="Filter by tech stack (e.g. React, Node)"
+                  value={techStackQuery}
+                  onChange={(e) => setTechStackQuery(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-primary font-bold focus:outline-none focus:border-highlight-pink focus:bg-white transition-all shadow-neo-sm"
+                />
+              </div>
+            </div>
+
+            {/* Type Filter */}
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="hidden xl:flex items-center px-2 font-bold uppercase text-primary text-xs">
+                <Filter size={16} className="mr-1" /> Type:
               </span>
               {typeFilters.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveFilter(cat)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold uppercase border-2 transition-all ${
+                  className={`px-4 py-2.5 sm:py-3 rounded-none text-xs font-bold uppercase border-2 transition-all ${
                     activeFilter === cat
-                      ? 'bg-primary text-white border-primary translate-y-[1px]'
-                      : 'bg-white text-primary border-transparent hover:border-primary hover:bg-gray-50'
+                      ? 'bg-primary text-white border-primary translate-y-[1px] shadow-neo-sm hover:shadow-none'
+                      : 'bg-white text-primary border-primary hover:bg-highlight-yellow shadow-neo-sm hover:shadow-none hover:translate-y-[1px]'
                   }`}
                 >
                   {cat}

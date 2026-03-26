@@ -4,7 +4,8 @@ const { protect } = require('../middleware/authMiddleware');
 const { writeLimiter, chatLimiter } = require('../middleware/rateLimiters');
 const DoubtSession = require('../models/DoubtSession');
 const DoubtMessage = require('../models/DoubtMessage');
-
+const User = require('../models/User');
+const emailService = require('../utils/emailService');
 // Student: Create a new doubt session (write — rate limited)
 router.post('/sessions', writeLimiter, protect, async (req, res) => {
     try {
@@ -26,6 +27,12 @@ router.post('/sessions', writeLimiter, protect, async (req, res) => {
             domain,
             status: 'open'
         });
+
+        const mentor = await User.findById(mentorId);
+        if (mentor && mentor.email) {
+            emailService.sendDoubtSessionRequestEmail(mentor.email, req.user.username || req.user.name, domain);
+        }
+
         res.status(201).json(newSession);
     } catch (err) {
         res.status(500).json({ message: err.message });

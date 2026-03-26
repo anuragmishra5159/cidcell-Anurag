@@ -51,7 +51,20 @@ const JoinRequest = require('../models/JoinRequest');
 // @access  Public
 const getActiveProjects = async (req, res) => {
     try {
-        const projects = await Project.find({ status: 'active' })
+        const { search, techStack } = req.query;
+        let query = { status: 'active' };
+
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+        if (techStack) {
+            const stacks = techStack.split(',').map(s => s.trim()).filter(Boolean);
+            if (stacks.length > 0) {
+                query.techStack = { $in: stacks };
+            }
+        }
+
+        const projects = await Project.find(query)
             .populate('createdBy', 'username email')
             .populate('contributors.userId', 'username')
             .populate('mentors.userId', 'username')

@@ -145,11 +145,19 @@ const deleteUser = async (req, res) => {
 // @access  Private
 const getMentors = async (req, res) => {
     try {
-        const { domain } = req.query;
+        const { domain, search } = req.query;
         let query = { userType: 'mentor' };
         
         if (domain) {
             query.domainOfExpertise = { $regex: domain, $options: 'i' };
+        }
+
+        if (search) {
+            query.$or = [
+                { username: { $regex: search, $options: 'i' } },
+                { department: { $regex: search, $options: 'i' } },
+                { expertise: { $regex: search, $options: 'i' } }
+            ];
         }
 
         const mentors = await User.find(query)

@@ -47,7 +47,8 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[85vh] lg:h-screen flex items-center pt-24 md:pt-28 lg:pt-24 pb-4 lg:pb-8 overflow-hidden bg-bg text-primary">
+    <>
+    <section className="relative w-full min-h-[85vh] lg:h-screen flex items-center pt-24 md:pt-28 lg:pt-24 pb-4 lg:pb-8 overflow-hidden bg-bg text-primary z-10">
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none -z-10"></div>
 
@@ -55,8 +56,18 @@ export default function HeroSection() {
 
 
       {/* Abstract Background Shapes */}
+      {/* Existing right yellow square */}
       <div className={`absolute top-[25%] -right-8 w-28 h-28 md:w-36 md:h-36 bg-highlight-yellow border-4 border-primary shadow-neo hidden lg:block transition-all duration-1000 ${isVisible ? 'transform translate-y-0 opacity-100' : 'transform -translate-y-12 opacity-0'}`}></div>
+      {/* Existing left purple square */}
       <div className={`absolute bottom-8 left-5 w-24 h-24 sm:w-28 sm:h-28 bg-[#c0b4f8] border-4 border-primary shadow-[8px_8px_0_0_#1a1a1a] hidden md:block transition-all duration-1000 delay-200 ${isVisible ? 'transform translate-y-0 -rotate-12 opacity-100' : 'transform translate-y-12 -rotate-12 opacity-0'}`}></div>
+      
+      {/* NEW: Top Left Pink Circle */}
+      <div className={`absolute top-[12%] left-[8%] w-16 h-16 bg-highlight-pink border-4 border-primary shadow-neo rounded-full hidden lg:block transition-all duration-1000 delay-150 ${isVisible ? 'transform translate-y-0 opacity-100' : 'transform -translate-y-12 opacity-0'}`}></div>
+      {/* NEW: Bottom Center-Right Blue Pill */}
+      <div className={`absolute bottom-[10%] right-[40%] w-32 h-12 bg-highlight-blue border-4 border-primary shadow-neo rounded-full hidden xl:block transition-all duration-1000 delay-300 ${isVisible ? 'transform translate-y-0 rotate-[15deg] opacity-100' : 'transform translate-y-12 rotate-0 opacity-0'}`}></div>
+      {/* NEW: Brutalist Typographic Elements */}
+      <div className={`absolute top-[18%] right-[32%] text-highlight-orange font-black text-5xl hidden lg:block transition-all duration-1000 delay-700 opacity-80 ${isVisible ? 'transform translate-y-0 rotate-12' : 'transform -translate-y-12 rotate-0'}`}>*</div>
+      <div className={`absolute bottom-[25%] left-[30%] w-6 h-6 bg-highlight-teal border-3 border-primary shadow-neo-mini hidden lg:block transition-all duration-1000 delay-400 ${isVisible ? 'transform translate-y-0 rotate-45 opacity-100' : 'transform translate-y-12 opacity-0'}`}></div>
 
       <div className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 lg:gap-12 xl:gap-8 pt-0 lg:pt-2">
@@ -111,7 +122,7 @@ export default function HeroSection() {
             <div className="absolute top-4 -right-4 md:top-6 md:-right-6 w-full h-full bg-[#1a1a1a] -z-10"></div>
 
             {/* Main Carousel Container */}
-            <div className="relative bg-white border-4 border-primary p-3 md:p-4 transform rotate-2 hover:rotate-1 transition-transform duration-500">
+            <div className="relative bg-highlight-teal border-[6px] border-primary p-3 md:p-4 transform rotate-2 hover:rotate-1 transition-transform duration-500 shadow-[8px_8px_0_0_#1a1a1a]">
               <div className="relative overflow-hidden aspect-[16/10] bg-gray-100 border-[3px] border-primary">
                 {/* Slides */}
                 {SLIDES.map((src, i) => (
@@ -160,5 +171,21 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
+
+    {/* SCROLLING MARQUEE */}
+    <div className="w-full bg-highlight-pink border-y-4 border-primary overflow-hidden py-3 md:py-4 z-20 relative flex shadow-neo">
+      <div className="whitespace-nowrap flex font-heading font-black text-xl md:text-3xl uppercase tracking-widest animate-marquee min-w-max text-black">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex gap-4 md:gap-8 px-2 md:px-4 items-center">
+            <span>✦ INNOVATION</span>
+            <span>✦ DEVELOPMENT</span>
+            <span>✦ EVENTS</span>
+            <span>✦ REAL-WORLD PROJECTS</span>
+            <span>✦ PEER LEARNING</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    </>
   );
 }
