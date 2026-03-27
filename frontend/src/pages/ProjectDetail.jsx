@@ -18,8 +18,10 @@ import {
   X,
   Send,
   Plus,
-  MessageSquare
+  MessageSquare,
+  Trello
 } from 'lucide-react';
+import KanbanBoard from '../components/KanbanBoard';
 
 const API = import.meta.env.VITE_API_URL;
 const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -51,6 +53,11 @@ export default function ProjectDetail() {
   const [joinMessage, setJoinMessage] = useState('');
   const [joinSkills, setJoinSkills] = useState([]);
   const [skillInput, setSkillInput] = useState('');
+
+  // ── Kanban / Task Modals ──
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [newTask, setNewTask] = useState({ title: '', description: '', difficulty: 'small', assignedTo: '' });
+  const [creatingTask, setCreatingTask] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -183,6 +190,37 @@ export default function ProjectDetail() {
       setTasks(res.data);
     } catch (err) {
       showToast(err.response?.data?.message || 'Failed to pick task.', 'error');
+    }
+  };
+
+  const handleMoveTask = async (taskId, newStatus) => {
+    // Optimistic Update
+    const oldTasks = [...tasks];
+    setTasks(prev => prev.map(t => t._id === taskId ? { ...t, status: newStatus } : t));
+
+    try {
+      await axios.patch(`${API}/tasks/${taskId}/status`, { status: newStatus }, authHeaders());
+      showToast('Task moved successfully');
+    } catch (err) {
+      setTasks(oldTasks); // Rollback
+      showToast(err.response?.data?.message || 'Unauthorized move', 'error');
+    }
+  };
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (!newTask.title) return;
+    setCreatingTask(true);
+    try {
+        const res = await axios.post(`${API}/tasks`, { ...newTask, projectId: id }, authHeaders());
+        setTasks([res.data, ...tasks]);
+        setShowTaskModal(false);
+        setNewTask({ title: '', description: '', difficulty: 'small', assignedTo: '' });
+        showToast('Task created successfully');
+    } catch (err) {
+        showToast(err.response?.data?.message || 'Error creating task', 'error');
+    } finally {
+        setCreatingTask(false);
     }
   };
 
@@ -544,29 +582,36 @@ export default function ProjectDetail() {
               </div>
             )}
 
-            {/* Task Section (visible if logged in and project is active) */}
-            {project.status === 'active' && user && tasks.length > 0 && (
-              <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl">
-                <h3 className="text-xl font-black text-primary uppercase mb-6 flex items-center gap-3">
-                  <Clock size={20} /> Project Tasks
-                </h3>
-                {loadingTasks ? (
-                  <Loader className="animate-spin text-primary" size={24} />
-                ) : (
-                  <div className="space-y-4">
-                    {tasks.map(task => (
-                      <TaskCard
-                        key={task._id}
-                        task={task}
-                        user={user}
-                        isCreator={isCreator}
-                        userRole={project.contributors?.find(c => (c.userId?._id || c.userId) === user._id)?.role}
-                        onPick={handlePickTask}
-                        onSubmitPR={handleSubmitPR}
-                      />
-                    ))}
-                  </div>
-                )}
+            {/* Task Kanban Section (visible if logged in and project is active) */}
+            {project.status === 'active' && user && (
+              <div className="bg-white p-8 border-3 border-primary shadow-neo rounded-2xl overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-black text-primary uppercase flex items-center gap-3">
+                        <Trello size={24} className="text-highlight-purple" /> Interactive Kanban
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        {loadingTasks && <Loader className="animate-spin text-slate-300" size={16} />}
+                        {(isCreator || isContributor) && (
+                            <button 
+                                onClick={() => setShowTaskModal(true)}
+                                className="px-4 py-2 bg-primary text-white border-2 border-primary text-[10px] font-black uppercase shadow-neo-mini hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2"
+                            >
+                                <Plus size={14} /> New Task
+                            </button>
+                        )}
+                    </div>
+                </div>
+                
+                <KanbanBoard 
+                    tasks={tasks}
+                    user={user}
+                    onMoveTask={handleMoveTask}
+                    onPick={handlePickTask}
+                    onSubmitPR={handleSubmitPR}
+                    onCreateTask={() => setShowTaskModal(true)}
+                    canManage={isCreator || isContributor}
+                    contributors={project.contributors}
+                />
               </div>
             )}
 
@@ -652,7 +697,7 @@ export default function ProjectDetail() {
               value={joinMessage}
               onChange={e => setJoinMessage(e.target.value)}
               placeholder="Explain your motivation, relevant experience, and what you can contribute... (min 30 characters)"
-              className="w-full h-28 border-2 border-primary p-3 text-sm font-medium outline-none resize-none mb-1"
+              className="w-full h-28 border-2 border-primary p-3 text-sm font-medium outline-none resize-none mb-1 shadow-neo-mini"
             />
             <p className="text-[10px] text-slate-400 mb-4">{joinMessage.length}/30 min characters</p>
 
@@ -667,15 +712,15 @@ export default function ProjectDetail() {
                 onChange={e => setSkillInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
                 placeholder="e.g. React, Python..."
-                className="flex-1 border-2 border-primary px-3 py-2 text-sm outline-none"
+                className="flex-1 border-2 border-primary px-3 py-2 text-sm outline-none shadow-neo-mini"
               />
-              <button onClick={handleAddSkill} className="px-3 py-2 bg-primary text-white border-2 border-primary">
+              <button onClick={handleAddSkill} className="px-3 py-2 bg-primary text-white border-2 border-primary shadow-neo-mini">
                 <Plus size={16} />
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mb-6">
               {joinSkills.map((skill, i) => (
-                <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-highlight-blue border border-primary text-[11px] font-bold uppercase">
+                <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-highlight-blue border border-primary text-[11px] font-bold uppercase shadow-neo-mini">
                   {skill}
                   <button onClick={() => handleRemoveSkill(skill)} className="text-slate-500 hover:text-red-500">
                     <X size={10} />
@@ -693,6 +738,79 @@ export default function ProjectDetail() {
               {joining ? <Loader size={16} className="animate-spin" /> : <Send size={16} />}
               {joining ? 'Sending...' : 'Send Request'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── New Task Modal ── */}
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+          <div className="bg-white border-3 border-primary shadow-neo rounded-2xl w-full max-w-lg p-8 relative">
+            <button onClick={() => setShowTaskModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-primary">
+              <X size={20} />
+            </button>
+            <h3 className="text-xl font-black text-primary uppercase mb-6">Create New Project Task</h3>
+
+            <div className="space-y-4">
+               <div>
+                  <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Task Title*</label>
+                  <input 
+                    type="text" 
+                    value={newTask.title}
+                    onChange={e => setNewTask({...newTask, title: e.target.value})}
+                    placeholder="Briefly describe the objective..."
+                    className="w-full border-2 border-primary px-3 py-2 text-sm font-bold outline-none shadow-neo-mini"
+                  />
+               </div>
+
+               <div>
+                  <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Description</label>
+                  <textarea 
+                    value={newTask.description}
+                    onChange={e => setNewTask({...newTask, description: e.target.value})}
+                    placeholder="Detail the technical requirements..."
+                    className="w-full h-24 border-2 border-primary p-3 text-sm font-medium outline-none shadow-neo-mini resize-none"
+                  />
+               </div>
+
+               <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Difficulty</label>
+                    <select 
+                        value={newTask.difficulty}
+                        onChange={e => setNewTask({...newTask, difficulty: e.target.value})}
+                        className="w-full border-2 border-primary px-3 py-2 text-xs font-black uppercase outline-none shadow-neo-mini bg-white"
+                    >
+                        <option value="small">Low - Quick Fix</option>
+                        <option value="medium">Medium - Feature</option>
+                        <option value="large">High - Refactor</option>
+                        <option value="critical">Critical - Urgent</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Assign To</label>
+                    <select 
+                        value={newTask.assignedTo}
+                        onChange={e => setNewTask({...newTask, assignedTo: e.target.value})}
+                        className="w-full border-2 border-primary px-3 py-2 text-xs font-black uppercase outline-none shadow-neo-mini bg-white"
+                    >
+                        <option value="">Unassigned</option>
+                        {project.contributors?.map(c => (
+                            <option key={c.userId?._id} value={c.userId?._id}>{c.userId?.username}</option>
+                        ))}
+                    </select>
+                  </div>
+               </div>
+
+               <button
+                  onClick={handleCreateTask}
+                  disabled={creatingTask || !newTask.title}
+                  className="w-full py-4 mt-4 bg-highlight-yellow border-3 border-primary font-black uppercase text-sm shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+               >
+                  {creatingTask ? <Loader size={16} className="animate-spin" /> : <Plus size={16} />}
+                  {creatingTask ? 'Saving Output...' : 'Add Task to Board'}
+               </button>
+            </div>
           </div>
         </div>
       )}
