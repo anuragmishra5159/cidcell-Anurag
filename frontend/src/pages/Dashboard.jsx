@@ -123,8 +123,18 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] pt-32 md:pt-40 pb-16 md:pb-24 px-4 md:px-8 font-sans">
-            <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
+        <div className="min-h-screen bg-transparent pt-32 md:pt-40 pb-16 md:pb-24 px-4 md:px-8 font-sans relative overflow-hidden">
+            {/* Background Decor */}
+            <div className="fixed inset-0 pointer-events-none opacity-[0.03] flex flex-wrap justify-around items-center gap-20 p-20 z-0">
+                <Plus size={120} strokeWidth={1} />
+                <Zap size={100} strokeWidth={1} />
+                <Target size={140} strokeWidth={1} />
+                <Users size={110} strokeWidth={1} />
+                <Code2 size={130} strokeWidth={1} />
+                <Activity size={90} strokeWidth={1} />
+            </div>
+
+            <div className="max-w-7xl mx-auto space-y-8 md:space-y-12 relative z-10">
                 
                 {/* 1. TOP PROFILE BANNER - Balanced Layout */}
                 <div className="bg-white border-2 md:border-4 border-primary shadow-neo p-3 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-12 relative overflow-hidden group">
