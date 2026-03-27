@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Menu, X, Bell, Check, MessageSquare, User, LogOut, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Bell, Check, MessageSquare, User, LogOut, ChevronDown, LayoutDashboard, Github } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
