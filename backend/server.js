@@ -107,6 +107,16 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/project-messages', require('./routes/projectMessageRoutes'));
 app.use('/api/chat', require('./routes/chatHubRoutes'));
 
+// Diagnostic route
+app.get('/api/test-chat', (req, res) => {
+    console.log('--- TEST CHAT ROUTE HIT ---');
+    res.json({ 
+        status: 'alive', 
+        time: new Date().toISOString(),
+        message: 'If you see this, the backend is updated.' 
+    });
+});
+
 // Auto-inactivity cleanup (runs every 12 hours)
 setInterval(async () => {
     try {
