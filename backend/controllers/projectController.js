@@ -1,4 +1,5 @@
 const Project = require('../models/Project');
+const JoinRequest = require('../models/JoinRequest');
 
 // @desc    Submit a new project
 // @route   POST /api/projects
@@ -7,18 +8,16 @@ const submitProject = async (req, res) => {
     try {
         const { title, description, type, techStack, githubRepo, deployedLink, images } = req.body;
 
-        if (!title || !description || !type) {
-            return res.status(400).json({ message: 'Title, description, and type are required' });
-        }
+        // Basic validation (Zod schema runs first via route middleware)
         if (type === 'independent' && !githubRepo && !deployedLink) {
             return res.status(400).json({ message: 'Independent projects require a GitHub repo or deployed link' });
         }
 
-        // Trusted users (faculty, admin, HOD) skip reviews and go straight to active
+        // Trusted users (faculty, admin, hod) skip reviews and go straight to active
         let initialStatus;
-        const userType = req.user.userType;
+        const userType = req.user.userType?.toLowerCase();
 
-        if (['faculty', 'Admin', 'HOD'].includes(userType)) {
+        if (['faculty', 'admin', 'hod'].includes(userType)) {
             initialStatus = 'active';
         } else {
             initialStatus = type === 'independent'
@@ -44,8 +43,6 @@ const submitProject = async (req, res) => {
     }
 };
 
-const JoinRequest = require('../models/JoinRequest');
-
 // @desc    Get all active (public) projects
 // @route   GET /api/projects
 // @access  Public
@@ -55,7 +52,9 @@ const getActiveProjects = async (req, res) => {
         let query = { status: 'active' };
 
         if (search) {
-            query.title = { $regex: search, $options: 'i' };
+            // Sanitise regex — escape special chars to prevent injection
+            const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            query.title = { $regex: escaped, $options: 'i' };
         }
         if (techStack) {
             const stacks = techStack.split(',').map(s => s.trim()).filter(Boolean);
@@ -70,14 +69,28 @@ const getActiveProjects = async (req, res) => {
             .populate('mentors.userId', 'username')
             .sort({ createdAt: -1 })
             .lean();
-            
-        if (req.user) {
-            for (let p of projects) {
-                if (p.createdBy && p.createdBy._id.toString() === req.user._id.toString() && p.type === 'collaborative') {
-                    p.pendingJoinRequests = await JoinRequest.countDocuments({ projectId: p._id, status: 'pending' });
-                }
+
+        // ── Fix N+1: single batch query instead of per-project countDocuments ────
+        if (req.user && projects.length > 0) {
+            const userId = req.user._id?.toString() || req.user.id?.toString();
+            const ownedProjectIds = projects
+                .filter(p => p.createdBy && p.createdBy._id?.toString() === userId && p.type === 'collaborative')
+                .map(p => p._id);
+
+            if (ownedProjectIds.length > 0) {
+                const pendingCounts = await JoinRequest.aggregate([
+                    { $match: { projectId: { $in: ownedProjectIds }, status: 'pending' } },
+                    { $group: { _id: '$projectId', count: { $sum: 1 } } },
+                ]);
+                const countMap = Object.fromEntries(pendingCounts.map(c => [c._id.toString(), c.count]));
+                projects.forEach(p => {
+                    if (ownedProjectIds.some(id => id.toString() === p._id.toString())) {
+                        p.pendingJoinRequests = countMap[p._id.toString()] || 0;
+                    }
+                });
             }
         }
+
         res.json(projects);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -92,12 +105,22 @@ const getMyProjects = async (req, res) => {
         const projects = await Project.find({ createdBy: req.user._id })
             .sort({ createdAt: -1 })
             .lean();
-            
-        for (let p of projects) {
-            if (p.type === 'collaborative') {
-                p.pendingJoinRequests = await JoinRequest.countDocuments({ projectId: p._id, status: 'pending' });
-            }
+
+        // ── Fix N+1: batch count for owned collaborative projects ─────────────
+        const collabIds = projects.filter(p => p.type === 'collaborative').map(p => p._id);
+        if (collabIds.length > 0) {
+            const pendingCounts = await JoinRequest.aggregate([
+                { $match: { projectId: { $in: collabIds }, status: 'pending' } },
+                { $group: { _id: '$projectId', count: { $sum: 1 } } },
+            ]);
+            const countMap = Object.fromEntries(pendingCounts.map(c => [c._id.toString(), c.count]));
+            projects.forEach(p => {
+                if (p.type === 'collaborative') {
+                    p.pendingJoinRequests = countMap[p._id.toString()] || 0;
+                }
+            });
         }
+
         res.json(projects);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -169,7 +192,7 @@ const getPendingForAdmin = async (req, res) => {
 // @access  Private (mentor)
 const mentorReview = async (req, res) => {
     try {
-        const { action, feedback } = req.body; // action: 'approve' | 'reject'
+        const { action, feedback } = req.body;
         const project = await Project.findById(req.params.id);
         if (!project) return res.status(404).json({ message: 'Not found' });
         if (project.status !== 'pending_mentor_review') {
@@ -190,7 +213,7 @@ const mentorReview = async (req, res) => {
 // @access  Private (faculty)
 const facultyReview = async (req, res) => {
     try {
-        const { action, feedback } = req.body; // action: 'approve' | 'reject'
+        const { action, feedback } = req.body;
         const project = await Project.findById(req.params.id);
         if (!project) return res.status(404).json({ message: 'Not found' });
         if (project.status !== 'pending_faculty_review') {
@@ -201,7 +224,6 @@ const facultyReview = async (req, res) => {
         project.facultyReviewer = req.user._id;
 
         if (action === 'approve') {
-            // Independent projects go directly active, collaborative go to admin
             project.status = project.type === 'independent'
                 ? 'active'
                 : 'pending_admin_approval';
@@ -238,33 +260,6 @@ const adminReview = async (req, res) => {
     }
 };
 
-// @desc    Student joins an active collaborative project
-// @route   POST /api/projects/:id/join
-// @access  Private
-const joinProject = async (req, res) => {
-    try {
-        const project = await Project.findById(req.params.id);
-        if (!project) return res.status(404).json({ message: 'Not found' });
-        if (project.status !== 'active') {
-            return res.status(400).json({ message: 'You can only join active projects' });
-        }
-        if (project.type !== 'collaborative') {
-            return res.status(400).json({ message: 'Independent projects do not accept contributors' });
-        }
-
-        const alreadyJoined = project.contributors.some(
-            c => c.userId.toString() === req.user._id.toString()
-        );
-        if (alreadyJoined) return res.status(400).json({ message: 'Already a contributor' });
-
-        project.contributors.push({ userId: req.user._id });
-        await project.save();
-        res.json({ message: 'Joined successfully', project });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
 // @desc    Admin assigns a mentor to a project
 // @route   PATCH /api/projects/:id/add-mentor
 // @access  Private (admin)
@@ -287,17 +282,28 @@ const addMentorToProject = async (req, res) => {
     }
 };
 
-// @desc    Get ALL projects (admin view)
-// @route   GET /api/projects/all
+// @desc    Get ALL projects (admin view) — paginated
+// @route   GET /api/projects/all?page=1&limit=20
 // @access  Private (admin)
 const getAllProjects = async (req, res) => {
     try {
-        const projects = await Project.find({})
-            .populate('createdBy', 'username email')
-            .populate('contributors.userId', 'username')
-            .populate('mentors.userId', 'username')
-            .sort({ createdAt: -1 });
-        res.json(projects);
+        const page  = Math.max(1, parseInt(req.query.page, 10)  || 1);
+        const limit = Math.min(100, parseInt(req.query.limit, 10) || 20);
+        const skip  = (page - 1) * limit;
+
+        const [total, projects] = await Promise.all([
+            Project.countDocuments({}),
+            Project.find({})
+                .populate('createdBy', 'username email')
+                .populate('contributors.userId', 'username')
+                .populate('mentors.userId', 'username')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+        ]);
+
+        res.json({ data: projects, total, page, pages: Math.ceil(total / limit) });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -327,7 +333,7 @@ const updateContributorRole = async (req, res) => {
     try {
         const { id, userId } = req.params;
         const { role } = req.body;
-        
+
         const validRoles = ['developer', 'tester', 'designer', 'viewer'];
         if (!validRoles.includes(role)) {
             return res.status(400).json({ message: 'Invalid role' });
@@ -335,9 +341,8 @@ const updateContributorRole = async (req, res) => {
 
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: 'Project not found' });
-        
-        // Only creator can update roles
-        if (project.createdBy.toString() !== req.user._id.toString()) {
+
+        if (project.createdBy.toString() !== (req.user._id?.toString() || req.user.id)) {
             return res.status(403).json({ message: 'Only the project creator can update roles' });
         }
 
@@ -348,7 +353,6 @@ const updateContributorRole = async (req, res) => {
 
         project.contributors[contributorIndex].role = role;
         await project.save();
-
         res.json({ success: true, project });
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -362,7 +366,7 @@ const updateContributorLevel = async (req, res) => {
     try {
         const { id, userId } = req.params;
         const { level } = req.body;
-        
+
         const validLevels = ['new_contributor', 'active_contributor', 'core_member'];
         if (!validLevels.includes(level)) {
             return res.status(400).json({ message: 'Invalid level' });
@@ -370,9 +374,8 @@ const updateContributorLevel = async (req, res) => {
 
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: 'Project not found' });
-        
-        // Only creator can update levels
-        if (project.createdBy.toString() !== req.user._id.toString()) {
+
+        if (project.createdBy.toString() !== (req.user._id?.toString() || req.user.id)) {
             return res.status(403).json({ message: 'Only the project creator can update levels' });
         }
 
@@ -383,7 +386,6 @@ const updateContributorLevel = async (req, res) => {
 
         project.contributors[contributorIndex].level = level;
         await project.save();
-
         res.json({ success: true, project });
     } catch (err) {
         res.status(500).json({ message: err.message });

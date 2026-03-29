@@ -15,11 +15,15 @@ const socketHandler = (io) => {
         // Join personal room for private messaging
         socket.join(userId);
         
-        // Broadcast user is online
-        io.emit('user_online', { userId });
-        
-        // Send initial online list
+        // Send initial online list to the newly connected user only
         socket.emit('online_users', Array.from(onlineUsers.keys()));
+        
+        // ── Targeted user_online broadcast ────────────────────────────────────
+        // We intentionally do NOT do io.emit('user_online') here — broadcasting
+        // to ALL N connected sockets on every new connection creates an O(N²)
+        // event flood with many concurrent users. Instead, each client can call
+        // 'request_online_users' to refresh the list when they open a chat.
+        // The existing online_users event on connect gives the full current list.
 
         // --- Private Chat Events ---
 

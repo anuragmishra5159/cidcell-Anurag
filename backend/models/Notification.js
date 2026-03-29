@@ -13,7 +13,8 @@ const notificationSchema = new mongoose.Schema({
     },
     message: { 
         type: String, 
-        required: true 
+        required: true,
+        maxlength: [500, 'Notification message cannot exceed 500 characters'],
     },
     link: { 
         type: String 
@@ -24,7 +25,14 @@ const notificationSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Index for efficient querying by user and sorting by date
+// ── Indexes ───────────────────────────────────────────────────────────────────
+// Efficient querying by user and sorting by date
 notificationSchema.index({ userId: 1, createdAt: -1 });
+// isRead index for fast "unread count" queries
+notificationSchema.index({ userId: 1, isRead: 1 });
+
+// ── TTL: Auto-delete notifications older than 30 days ─────────────────────────
+// This prevents unbounded accumulation on the Atlas free tier (512MB limit).
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('Notification', notificationSchema);

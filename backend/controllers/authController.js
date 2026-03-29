@@ -10,10 +10,16 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 /**
  * Generate JWT token for session
  */
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    });
+/**
+ * Generate JWT token — embeds userType and email in the payload so
+ * authMiddleware can authorise role-based routes without a DB lookup.
+ */
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user._id, userType: user.userType, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '30d' }
+    );
 };
 
 /**
@@ -82,7 +88,7 @@ const googleLogin = async (req, res) => {
             }
 
             const ADMIN_EMAILS = ['24it10ha60@mitsgwl.ac.in'];
-            const assignedRole = ADMIN_EMAILS.includes(email) ? 'admin' : 'student';
+            const assignedRole = ADMIN_EMAILS.includes(email) ? 'admin' : 'student'; // always lowercase
 
             // Create new user if they don't exist
             user = await User.create({
@@ -103,9 +109,10 @@ const googleLogin = async (req, res) => {
             let shouldSave = false;
             const ADMIN_EMAILS = ['24it10ha60@mitsgwl.ac.in'];
 
-            // Promote to admin if email matches and they aren't already an admin
-            if (ADMIN_EMAILS.includes(email) && user.userType !== 'admin') {
-                user.userType = 'admin';
+            // Promote to admin if email matches and they aren't already (check lowercase)
+            const currentRole = user.userType?.toLowerCase();
+            if (ADMIN_EMAILS.includes(email) && currentRole !== 'admin') {
+                user.userType = 'admin'; // normalised lowercase
                 shouldSave = true;
             }
 
@@ -119,8 +126,8 @@ const googleLogin = async (req, res) => {
             if (shouldSave) await user.save();
         }
 
-        // Generate JWT token for session
-        const token = generateToken(user._id);
+        // Generate JWT token for session — includes userType+email to avoid per-request DB lookups
+        const token = generateToken(user);
 
         res.status(200).json({
             success: true,

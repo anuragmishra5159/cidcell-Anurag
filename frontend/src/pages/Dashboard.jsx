@@ -72,6 +72,7 @@ const Dashboard = () => {
     const { user } = useContext(AuthContext);
     const [stats, setStats] = useState({ totalProjects: 0, activeEvents: 0, totalMembers: 0, messages: 0 });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [recentProjects, setRecentProjects] = useState([]);
     const [myProjects, setMyProjects] = useState([]);
     const [myEvents, setMyEvents] = useState([]);
@@ -108,17 +109,38 @@ const Dashboard = () => {
                 setMyProjects(myProjectsRes.data);
                 setMyEvents(myEventsRes.data);
                 setMentors(mentorsRes.data);
-            } catch (err) { console.error("Dashboard fetch error:", err); }
+            } catch (err) {
+                console.error("Dashboard fetch error:", err);
+                setError('Failed to load dashboard data. Please refresh the page.');
+            }
             finally { setLoading(false); }
         };
         if (user) fetchDashboardData();
-    }, [user, API_URL]);
+        // Depend on user._id only — prevents re-fetching whenever any user field changes
+    }, [user?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-bg">
                 <Loader className="w-16 h-16 animate-spin text-primary" />
                 <p className="mt-6 text-primary font-black uppercase tracking-widest text-sm">Building Hub...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-bg gap-4">
+                <div className="bg-highlight-orange border-4 border-primary p-6 shadow-neo text-center max-w-md">
+                    <p className="font-black uppercase text-primary text-sm mb-3">⚠️ Dashboard Error</p>
+                    <p className="font-bold text-primary/70 text-xs mb-4">{error}</p>
+                    <button
+                        onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+                        className="bg-primary text-white px-6 py-2 font-black uppercase text-xs border-2 border-primary shadow-neo-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                    >
+                        Retry
+                    </button>
+                </div>
             </div>
         );
     }
@@ -210,8 +232,12 @@ const Dashboard = () => {
                                 <Pencil size={12} /> Edit profile
                             </button>
                             <div className="flex gap-1.5 font-sans">
-                                <a href={user?.socialLinks?.github} target="_blank" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Github size={14} /></a>
-                                <a href={user?.socialLinks?.linkedin} target="_blank" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Linkedin size={14} /></a>
+                                {user?.socialLinks?.github && (
+                                    <a href={user.socialLinks.github} target="_blank" rel="noopener noreferrer" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Github size={14} /></a>
+                                )}
+                                {user?.socialLinks?.linkedin && (
+                                    <a href={user.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="bg-white border-2 border-primary p-2 rounded-lg shadow-neo-mini hover:bg-highlight-blue transition-all"><Linkedin size={14} /></a>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -393,9 +419,15 @@ const Dashboard = () => {
                                             <span className={`text-[8px] font-black uppercase px-2 py-1 rounded border-2 border-primary ${project.status === 'active' ? 'bg-highlight-green' : 'bg-highlight-yellow'}`}>{project.status}</span>
                                         </div>
                                         <h4 className="font-black uppercase text-xs truncate mb-1">{project.title}</h4>
-                                        <p className="text-[9px] font-bold text-primary/40 uppercase mb-4">Last Modified {(new Date()).toLocaleDateString()}</p>
+                                        <p className="text-[9px] font-bold text-primary/40 uppercase mb-4">
+                                            {project.status === 'active' ? 'Active' : project.status?.replace(/_/g, ' ')}
+                                        </p>
+                                        {/* Progress bar based on contributor count vs a reasonable baseline */}
                                         <div className="w-full bg-white border-2 border-primary rounded-full h-2 overflow-hidden">
-                                            <div className="bg-highlight-purple h-full" style={{ width: '65%' }}></div>
+                                            <div
+                                                className={`h-full ${project.status === 'active' ? 'bg-highlight-purple' : 'bg-highlight-orange'}`}
+                                                style={{ width: project.status === 'active' ? '100%' : project.status === 'completed' ? '100%' : '40%' }}
+                                            />
                                         </div>
                                     </div>
                                 )) : (
@@ -456,7 +488,9 @@ const Dashboard = () => {
                                             </div>
                                         </div>
                                         <h4 className="font-black uppercase text-[10px] mb-1">{mentor.username}</h4>
-                                        <p className="text-[8px] font-bold text-primary/40 uppercase tracking-widest mb-3">Core Development</p>
+                                        <p className="text-[8px] font-bold text-primary/40 uppercase tracking-widest mb-3">
+                                            {mentor.domainOfExpertise || 'Mentor'}
+                                        </p>
                                         <button className="w-full py-2 bg-bg border-2 border-primary rounded-xl font-black uppercase text-[9px] hover:bg-highlight-blue transition-colors">Chat Now</button>
                                     </div>
                                 ))}

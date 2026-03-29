@@ -1,13 +1,15 @@
 const rateLimit = require('express-rate-limit');
 
 /**
- * 🔴 AUTH LIMITER — Strict
- * Protects login/signup from brute force attacks.
- * 10 attempts per 15 minutes per IP.
+ * 🔴 AUTH LIMITER — Relaxed for campus NAT
+ * Google OAuth on a shared college network can have many students behind the
+ * same IP (NAT). The previous limit of 10/15min would block classmates.
+ * 50 requests per 15 minutes is still strict enough to prevent brute-force
+ * while allowing a realistic campus environment.
  */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 50,
   message: { message: 'Too many login attempts from this IP. Please try again after 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -55,7 +57,7 @@ const chatLimiter = rateLimit({
 /**
  * ⚪ GLOBAL FALLBACK LIMITER
  * Safety net for all other routes not specifically covered above.
- * 200 requests per 15 minutes per IP (up from the old 100).
+ * 200 requests per 15 minutes per IP.
  */
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

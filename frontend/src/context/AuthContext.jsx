@@ -1,42 +1,39 @@
-import React, { createContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
 export const AuthContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const SOCKET_URL = API_URL.replace('/api', '');
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);       // initial auth check loading
+    const [authLoading, setAuthLoading] = useState(false); // Google login in-progress
     const [socket, setSocket] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const socketRef = useRef(null);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-    const SOCKET_URL = API_URL.replace('/api', '');
-
     // Socket Connection Management
     useEffect(() => {
         const token = localStorage.getItem('token');
-        
+
         if (user && token && !socketRef.current) {
-            console.log('🔌 Connecting to WebSocket at:', SOCKET_URL);
-            const s = io(SOCKET_URL, { 
-                auth: { token }, 
+            const s = io(SOCKET_URL, {
+                auth: { token },
                 transports: ['websocket', 'polling'],
                 reconnectionAttempts: 5,
-                timeout: 10000
+                timeout: 10000,
             });
-            
+
             socketRef.current = s;
             setSocket(s);
 
             s.on('connect', () => console.log('✅ WebSocket Connected'));
             s.on('connect_error', (err) => {
-                console.error('❌ WebSocket Connection Error:', err.message);
-                if (err.message === 'xhr poll error') {
-                    // This happens if the backend doesn't support websockets or is down
-                    setOnlineUsers([]);
-                }
+                console.error('❌ WebSocket Error:', err.message);
+                if (err.message === 'xhr poll error') setOnlineUsers([]);
             });
 
             s.on('online_users', (uIds) => setOnlineUsers(uIds.map(String)));
@@ -44,7 +41,6 @@ export const AuthProvider = ({ children }) => {
             s.on('user_offline', (data) => setOnlineUsers(prev => prev.filter(id => id !== String(data.userId))));
 
             return () => {
-                console.log('🔌 Disconnecting WebSocket');
                 s.disconnect();
                 socketRef.current = null;
                 setSocket(null);
@@ -56,21 +52,20 @@ export const AuthProvider = ({ children }) => {
             setSocket(null);
             setOnlineUsers([]);
         }
-    }, [user, SOCKET_URL]); // Stable URL and User dependency
+    }, [user]);
 
-    // Check if token exists on load
+    // Restore session on page load
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                    const res = await axios.get(`${apiUrl}/auth/profile`, {
-                        headers: { Authorization: `Bearer ${token}` }
+                    const res = await axios.get(`${API_URL}/auth/profile`, {
+                        headers: { Authorization: `Bearer ${token}` },
                     });
                     setUser(res.data.user);
                 } catch (error) {
-                    console.error("Token invalid", error);
+                    console.error('Token invalid or expired, clearing session.');
                     localStorage.removeItem('token');
                 }
             }
@@ -80,35 +75,39 @@ export const AuthProvider = ({ children }) => {
         fetchUser();
     }, []);
 
-    const loginWithGoogle = async (idToken) => {
+    /**
+     * loginWithGoogle — posts Google idToken to backend, stores JWT, sets user.
+     * Sets authLoading=true during the round-trip so the UI can show a spinner.
+     */
+    const loginWithGoogle = useCallback(async (idToken) => {
+        setAuthLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            const res = await axios.post(`${apiUrl}/auth/google`, {
-                idToken,
-            });
-
-            console.log('Login successful:', res.data);
+            const res = await axios.post(`${API_URL}/auth/google`, { idToken });
             localStorage.setItem('token', res.data.token);
             setUser(res.data.user);
-            return res.data; 
+            return res.data;
         } catch (error) {
-            console.error('Login error:', error.response?.data?.message || error.message);
-            throw new Error(error.response?.data?.message || 'Failed to login with Google');
+            const message = error.response?.data?.message || 'Failed to login with Google';
+            console.error('Login error:', message);
+            throw new Error(message);
+        } finally {
+            setAuthLoading(false);
         }
-    };
+    }, []);
 
-    const logout = () => {
-        if (socket) {
-            socket.disconnect();
+    const logout = useCallback(() => {
+        if (socketRef.current) {
+            socketRef.current.disconnect();
+            socketRef.current = null;
             setSocket(null);
         }
         localStorage.removeItem('token');
         setUser(null);
         setOnlineUsers([]);
-    };
+    }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loginWithGoogle, logout, setUser, loading, socket, onlineUsers }}>
+        <AuthContext.Provider value={{ user, loginWithGoogle, logout, setUser, loading, authLoading, socket, onlineUsers }}>
             {children}
         </AuthContext.Provider>
     );

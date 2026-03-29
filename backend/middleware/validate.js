@@ -26,54 +26,63 @@ const validate = (schema) => (req, res, next) => {
 
 // --- SCHEMAS ---
 
-const registerSchema = z.object({
+/**
+ * Project submission — validates title, description, type, and URLs.
+ * Prevents oversized payloads and invalid URLs from reaching the DB.
+ */
+const submitProjectSchema = z.object({
     body: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        email: z.string().email("Invalid email format"),
-        password: z.string().min(6, "Password must be at least 6 characters"),
-        sapId: z.string().optional(),
-        branch: z.string().optional(),
-        year: z.string().optional(),
-        section: z.string().optional()
+        title: z.string()
+            .min(3, 'Title must be at least 3 characters')
+            .max(150, 'Title cannot exceed 150 characters')
+            .trim(),
+        description: z.string()
+            .min(20, 'Description must be at least 20 characters')
+            .max(5000, 'Description cannot exceed 5000 characters'),
+        type: z.enum(['independent', 'collaborative'], {
+            errorMap: () => ({ message: "Type must be 'independent' or 'collaborative'" })
+        }),
+        techStack: z.array(z.string().max(50)).max(20, 'Too many tech stack entries').optional(),
+        githubRepo: z.string().url('GitHub repo must be a valid URL').max(500).optional().or(z.literal('')),
+        deployedLink: z.string().url('Deployed link must be a valid URL').max(500).optional().or(z.literal('')),
+        images: z.array(z.string().url()).max(10, 'Too many images').optional(),
     })
 });
 
-const loginSchema = z.object({
-    body: z.object({
-        email: z.string().email("Invalid email format"),
-        password: z.string().min(1, "Password is required")
-    })
-});
-
+/**
+ * Event creation schema
+ */
 const createEventSchema = z.object({
     body: z.object({
-        title: z.string().min(3, "Title must be at least 3 characters"),
-        description: z.string().min(10, "Description needs more detail"),
-        date: z.string(),
-        time: z.string().optional(),
-        location: z.string().min(2, "Location is required"),
-        organizer: z.string(),
-        organizerEmail: z.string().email("Invalid organizer email"),
-        maxAttendees: z.coerce.number().int().positive().optional(),
-        category: z.string().optional(),
-        type: z.enum(["virtual", "in-person"]).optional()
+        title:          z.string().min(3, 'Title must be at least 3 characters').max(200),
+        description:    z.string().min(10, 'Description needs more detail').max(5000),
+        date:           z.string(),
+        time:           z.string().optional(),
+        location:       z.string().min(2, 'Location is required').max(300),
+        organizer:      z.string().max(100),
+        organizerEmail: z.string().email('Invalid organizer email'),
+        maxAttendees:   z.coerce.number().int().positive().optional(),
+        category:       z.string().max(50).optional(),
+        type:           z.enum(['virtual', 'in-person']).optional(),
     }).passthrough() // Allow other fields like image, whatsappGroupLink
 });
 
+/**
+ * Pagination schema — used on GET list endpoints
+ */
 const paginationSchema = z.object({
     query: z.object({
-        page: z.string().regex(/^\d+$/).transform(Number).optional(),
-        limit: z.string().regex(/^\d+$/).transform(Number).optional(),
-        search: z.string().optional()
+        page:   z.string().regex(/^\d+$/).transform(Number).optional(),
+        limit:  z.string().regex(/^\d+$/).transform(Number).optional(),
+        search: z.string().max(100).optional(),
     }).passthrough()
 });
 
 module.exports = {
     validate,
     schemas: {
-        registerSchema,
-        loginSchema,
+        submitProjectSchema,
         createEventSchema,
-        paginationSchema
+        paginationSchema,
     }
 };

@@ -10,12 +10,14 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 const { authLimiter } = require('../middleware/rateLimiters');
 
-// Template & Logo Preview Routes (Public for easy viewing)
-router.get('/template-preview', previewEmailTemplate);
-router.get('/logo-preview', previewLogo);
+// Template & Logo Preview Routes
+// ⚠️  GATED to development only — prevents info-leak in production.
+if (process.env.NODE_ENV !== 'production') {
+    router.get('/template-preview', previewEmailTemplate);
+    router.get('/logo-preview', previewLogo);
+}
 
 // Google Authentication Route — strict limiter to prevent brute force
-
 router.post('/google', authLimiter, googleLogin);
 
 // Protected routes
