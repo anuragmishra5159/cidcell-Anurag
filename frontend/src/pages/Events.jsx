@@ -115,10 +115,10 @@ export default function Events() {
                   <ScrollReveal key={event._id} delay={idx * 50}>
                     <div 
                       onClick={() => navigate(`/events/${event._id}`)}
-                      className="neo-card flex flex-col group relative h-full bg-white border-3 border-primary shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all cursor-pointer"
+                      className="neo-card flex flex-col group relative h-full bg-white border-3 border-primary shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all cursor-pointer overflow-hidden"
                     >
                       {/* Image Thumbnail */}
-                      <div className="h-48 bg-slate-50 border-b-3 border-primary overflow-hidden relative">
+                      <div className="w-full aspect-[2/1] bg-slate-50 border-b-3 border-primary overflow-hidden relative rounded-t-neo">
                         {event.image ? (
                           <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                         ) : (

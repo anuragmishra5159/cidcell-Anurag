@@ -147,7 +147,7 @@ export default function EventDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-12">
             {/* Banner Image */}
-            <div className="aspect-[21/9] w-full border-3 border-primary shadow-neo overflow-hidden bg-slate-50 relative">
+            <div className="aspect-[2/1] w-full border-3 border-primary shadow-neo overflow-hidden bg-slate-50 relative">
               {event.image ? (
                 <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
               ) : (
