@@ -48,8 +48,8 @@ const Auth = () => {
 
                 {/* Left Side */}
                 <div className="hidden lg:flex flex-col items-start justify-center relative z-10">
-                    <div className="mb-10 p-4 bg-surface/50 border border-white/10 rounded-2xl shadow-glass inline-block backdrop-blur-md">
-                        <img src="/logo.png" alt="CID-Cell Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                    <div className="mb-10 p-4 bg-white/[0.03] border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] inline-block backdrop-blur-md">
+                        <img src="/logo.png" alt="CID-Cell Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
                     </div>
 
                     <h1 className="font-heading text-5xl xl:text-7xl uppercase text-white leading-[1.1] tracking-widest mb-8 drop-shadow-2xl">
@@ -65,13 +65,13 @@ const Auth = () => {
                     </p>
 
                     <div className="flex gap-4">
-                        <div className="bg-surface/60 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-glass hover:border-accent/50 hover:bg-white/5 transition-all">
+                        <div className="bg-[#0a0a0a]/80 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:border-accent/50 hover:bg-white/5 transition-all">
                             <span className="font-bold uppercase tracking-widest text-slate-300 text-xs">Ideate</span>
                         </div>
-                        <div className="bg-surface/60 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-glass hover:border-accent-blue/50 hover:bg-white/5 transition-all">
+                        <div className="bg-[#0a0a0a]/80 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:border-accent-blue/50 hover:bg-white/5 transition-all">
                             <span className="font-bold uppercase tracking-widest text-slate-300 text-xs">Deploy</span>
                         </div>
-                        <div className="bg-surface/60 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-glass hover:border-accent-magenta/50 hover:bg-white/5 transition-all">
+                        <div className="bg-[#0a0a0a]/80 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:border-accent-magenta/50 hover:bg-white/5 transition-all">
                             <span className="font-bold uppercase tracking-widest text-slate-300 text-xs">Scale</span>
                         </div>
                     </div>
@@ -82,8 +82,8 @@ const Auth = () => {
                     
                     {/* Mobile Branding */}
                     <div className="lg:hidden text-center mb-10 flex flex-col items-center">
-                        <div className="mb-6 p-4 bg-surface/50 border border-white/10 rounded-2xl shadow-glass inline-block backdrop-blur-md">
-                            <img src="/logo.png" alt="CID-Cell Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                        <div className="mb-6 p-4 bg-white/[0.03] border border-white/10 rounded-2xl shadow-glass inline-block backdrop-blur-md">
+                            <img src="/logo.png" alt="CID-Cell Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
                         </div>
                         <h1 className="font-heading text-4xl sm:text-5xl uppercase tracking-widest text-white leading-none drop-shadow-lg mb-4">
                             CID-Cell
@@ -94,7 +94,7 @@ const Auth = () => {
                     </div>
 
                     {/* Glassmorphism Auth Container */}
-                    <div className="glass-panel border border-white/10 rounded-3xl shadow-glass relative overflow-hidden group backdrop-blur-xl">
+                    <div className="bg-[#050505]/60 border border-white/10 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.8)] relative overflow-hidden group backdrop-blur-2xl">
                         
                         {/* Top Gradient Bar */}
                         <div className="h-1.5 w-full bg-gradient-to-r from-accent via-accent-blue to-accent-magenta" />
@@ -102,7 +102,7 @@ const Auth = () => {
                         <div className="p-8 md:p-10 space-y-8 relative z-10">
                             
                             <div className="space-y-4">
-                                <span className="inline-block px-3 py-1 bg-surface border border-white/10 rounded-md shadow-sm">
+                                <span className="inline-block px-3 py-1 bg-black/40 border border-white/10 rounded-md shadow-sm">
                                     <span className="font-bold uppercase text-[10px] tracking-widest text-accent">Member Portal</span>
                                 </span>
                                 <h2 className="font-black text-3xl md:text-4xl uppercase tracking-widest text-white leading-none">
@@ -124,9 +124,9 @@ const Auth = () => {
                             </div>
 
                             {/* Login Mechanism */}
-                            <div className="flex flex-col items-center gap-4 bg-surface/50 border border-white/5 rounded-2xl p-6 shadow-inner relative overflow-hidden">
+                            <div className="flex flex-col items-center gap-4 bg-black/40 border border-white/5 rounded-2xl p-6 shadow-[inset_0_2px_15px_rgba(0,0,0,0.5)] relative overflow-hidden">
                                 {/* Subtle inner glow */}
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-xl pointer-events-none"></div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-3xl pointer-events-none"></div>
 
                                 <div className="w-full flex justify-center relative z-10 transition-transform hover:scale-[1.02] duration-300">
                                     {authLoading ? (
@@ -162,7 +162,7 @@ const Auth = () => {
                             {/* Footer links */}
                             <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center sm:text-left">Unregistered Node?</p>
-                                <span className="inline-flex items-center justify-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest bg-surface border border-white/10 px-4 py-2.5 rounded-lg shadow-glass hover:bg-white/5 hover:border-white/20 transition-all cursor-default w-full sm:w-auto">
+                                <span className="inline-flex items-center justify-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest bg-black/40 border border-white/10 px-4 py-2.5 rounded-lg shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:bg-white/5 hover:border-white/20 transition-all cursor-default w-full sm:w-auto">
                                     Login to Create Profile <ArrowRight className="w-3 h-3 text-accent" />
                                 </span>
                             </div>

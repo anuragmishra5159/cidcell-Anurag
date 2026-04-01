@@ -17,11 +17,11 @@ export default function Footer() {
             <div className="flex gap-4 mb-6 shrink-0 justify-center lg:justify-start">
               <div className="w-14 h-14 relative group">
                 <div className="absolute inset-0 bg-accent rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity"></div>
-                <img src="/logo.png" alt="CID-Cell Logo" className="w-full h-full object-contain relative z-10 brightness-200" />
+                <img src="/logo.png" alt="CID-Cell Logo" className="w-full h-full object-contain relative z-10 drop-shadow-md" />
               </div>
               <div className="w-14 h-14 relative group">
                 <div className="absolute inset-0 bg-blue-500 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity"></div>
-                <img src="/sdc.png" alt="SDC Club Logo" className="w-full h-full object-contain relative z-10 brightness-200" />
+                <img src="/sdc.png" alt="SDC Club Logo" className="w-full h-full object-contain relative z-10 drop-shadow-md" />
               </div>
             </div>
             <div className="mb-6">

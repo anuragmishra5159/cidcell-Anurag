@@ -68,8 +68,8 @@ export default function Events() {
       {/* Hero */}
       <section className="pt-40 pb-20 bg-bg relative overflow-hidden border-b border-border">
         {/* Abstract Glowing Orb Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent/15 rounded-full blur-[150px] pointer-events-none z-0"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-accent-magenta/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent/15 rounded-full blur-3xl pointer-events-none z-0"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-accent-magenta/10 rounded-full blur-2xl pointer-events-none z-0"></div>
 
         <div className="container-max mx-auto px-4 text-center relative z-10">
           <div className="inline-flex px-4 py-1.5 glass-panel rounded-full border border-accent/20 mb-6 items-center gap-2">
@@ -123,7 +123,7 @@ export default function Events() {
                       className="glass-card flex flex-col group relative h-full transition-all duration-300 hover:shadow-glow-purple cursor-pointer overflow-hidden hover:-translate-y-1"
                     >
                       {/* Image Thumbnail */}
-                      <div className="w-full aspect-[2/1] bg-surface/50 border-b border-border overflow-hidden relative">
+                      <div className="w-full aspect-[2/1] bg-[#0a0a0a] border-b border-border overflow-hidden relative">
                         {event.image ? (
                           <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100 mix-blend-screen" />
                         ) : (

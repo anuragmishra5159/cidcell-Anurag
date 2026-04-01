@@ -358,8 +358,7 @@ const Dashboard = () => {
                             <h2 className="text-3xl lg:text-4xl font-black uppercase tracking-widest text-white drop-shadow-md">Node Activity</h2>
                             <p className="text-xs font-bold uppercase text-slate-400 tracking-[0.3em]">Operational Dashboard</p>
                         </div>
-                        {/* Tab Switcher */}
-                        <div className="flex bg-white/[0.03] border border-white/10 p-1.5 rounded-2xl shadow-glass overflow-x-auto min-w-max backdrop-blur-md">
+                        <div className="flex bg-white/[0.03] border border-white/10 p-1.5 rounded-2xl shadow-glass overflow-x-auto w-full md:w-auto backdrop-blur-md custom-scrollbar-dark">
                             {[
                                 { id: 'projects', label: 'Projects', icon: Folder },
                                 { id: 'events', label: 'Events', icon: Calendar },

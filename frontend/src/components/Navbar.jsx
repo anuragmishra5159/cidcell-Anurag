@@ -159,11 +159,11 @@ export default function Navbar() {
         <div className="relative flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group shrink-0 z-10 relative">
-            <div className="absolute -inset-2 bg-gradient-to-r from-accent/20 to-accent-magenta/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-accent/10 to-accent-magenta/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
             <img
               src="/logo.png"
               alt="CID-Cell Logo"
-              className="w-10 h-10 md:w-12 md:h-12 object-contain relative z-10 brightness-200 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain relative z-10 drop-shadow-[0_0_4px_rgba(217,70,239,0.5)]"
             />
             <div className="hidden sm:flex flex-col justify-center relative z-10">
               <span className="text-white font-heading font-black text-xl md:text-2xl tracking-tighter leading-none block group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-accent-magenta transition-all">
@@ -174,7 +174,7 @@ export default function Navbar() {
 
           {/* Desktop nav - Centered */}
           <div className="hidden xl:flex flex-1 justify-center items-center px-4">
-            <div className="flex items-center bg-surface/50 backdrop-blur-md border border-border rounded-full p-1 shadow-glass">
+            <div className="flex items-center bg-[#0a0a0a]/80 backdrop-blur-md border border-white/5 rounded-full p-1 shadow-glass">
               {navLinks.filter(link => {
                 if (link.isDropdown) return true;
                 if (link.adminRequired && user?.userType?.toLowerCase() !== 'admin') return false;

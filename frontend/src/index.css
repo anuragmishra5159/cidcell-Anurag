@@ -113,6 +113,7 @@
 
 .animate-marquee {
   animation: marquee 25s linear infinite;
+  will-change: transform;
 }
 
 @keyframes fade-in-up {

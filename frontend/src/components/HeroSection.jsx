@@ -32,8 +32,8 @@ export default function HeroSection() {
       <section className="relative w-full min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-[#050505] text-white z-10">
         
         {/* Deep Background Nebula / Grid */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none z-0" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-accent rounded-full blur-[120px] opacity-10 animate-pulse-slow pointer-events-none transition-all duration-1000 ${isVisible ? 'scale-100' : 'scale-50'}`} style={{ willChange: 'transform, opacity' }}></div>
+        <div className="absolute inset-0 opacity-20 pointer-events-none z-0" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', willChange: 'transform' }}></div>
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[1000px] md:h-[1000px] rounded-full pointer-events-none transition-all duration-1000 ${isVisible ? 'scale-100 opacity-100' : 'scale-75 opacity-0'}`} style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 60%)', willChange: 'transform, opacity' }}></div>
 
         {/* 3D Robot Spline - Cropped perfectly to hide watermark */}
         <div className="absolute inset-0 z-0 pointer-events-auto overflow-hidden">
@@ -51,18 +51,18 @@ export default function HeroSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center pointer-events-none">
 
             {/* ====== LEFT COLUMN (3/12) - Metrics & Health ====== */}
-            <div className="hidden lg:flex flex-col gap-6 col-span-3 self-center animate-fade-in-up delay-200 pointer-events-auto">
+            <div className="flex flex-col gap-6 col-span-1 lg:col-span-3 order-3 lg:order-1 self-center animate-fade-in-up delay-200 pointer-events-auto w-full pt-10 lg:pt-0">
               
               {/* Widget 1: Live Activity */}
               <div 
-                className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass overflow-hidden relative group"
+                className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass overflow-hidden relative group hover:border-accent/40 hover:-translate-y-1 hover:shadow-glow-purple transition-all duration-300"
                 style={{ willChange: 'transform' }}
               >
                 <div className="absolute top-0 left-0 w-1 bg-accent h-full shadow-[0_0_15px_#8b5cf6]"></div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-1">Network Status</p>
-                    <h4 className="text-xl font-heading font-bold text-white leading-none">Healthy</h4>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-1">Network Node</p>
+                    <h4 className="text-xl font-heading font-bold text-white leading-none">Active</h4>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent">
                     <Activity size={16} />
@@ -78,7 +78,7 @@ export default function HeroSection() {
 
                {/* Widget 2: Node Distribution */}
               <div 
-                className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass relative group"
+                className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass relative group hover:border-blue-500/40 hover:-translate-y-1 hover:shadow-glow-blue transition-all duration-300"
                 style={{ willChange: 'transform' }}
               >
                 <div className="flex items-center gap-3 mb-4">
@@ -86,8 +86,8 @@ export default function HeroSection() {
                      <Network size={16} />
                    </div>
                    <div>
-                     <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-0.5">Project Scope</p>
-                     <p className="text-lg font-heading font-bold text-white leading-none">134<span className="text-blue-400 text-sm ml-1">Files</span></p>
+                     <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-0.5">Active Members</p>
+                     <p className="text-lg font-heading font-bold text-white leading-none">248<span className="text-blue-400 text-sm ml-1">Nodes</span></p>
                    </div>
                 </div>
                 <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
@@ -100,15 +100,15 @@ export default function HeroSection() {
               <div className="bg-black/40 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-glass flex items-center gap-3 hover:bg-white/5 transition-colors">
                 <ShieldCheck size={20} className="text-green-400" />
                 <div className="flex-1">
-                  <p className="text-[10px] text-slate-300 font-semibold tracking-widest uppercase">Security</p>
-                  <p className="text-xs text-white font-medium">JWT / Bcrypt Active</p>
+                  <p className="text-[10px] text-slate-300 font-semibold tracking-widest uppercase">Clearance</p>
+                  <p className="text-xs text-white font-medium">Level 3 Access Active</p>
                 </div>
               </div>
 
             </div>
 
             {/* ====== CENTER COLUMN (6/12) - Emptying out center for the Robot ====== */}
-            <div className="col-span-1 lg:col-span-6 flex flex-col items-center text-center justify-end min-h-[60vh] lg:min-h-[80vh] relative z-30 pointer-events-none pb-12 lg:pb-0">
+            <div className="col-span-1 lg:col-span-6 order-1 lg:order-2 flex flex-col items-center text-center justify-end min-h-[60vh] lg:min-h-[80vh] relative z-30 pointer-events-none pb-4 lg:pb-0">
               
               <div className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-md border border-accent/30 shadow-glow-purple px-4 py-2 rounded-full mb-8 pointer-events-auto">
                 <Cpu size={14} className="text-accent" />
@@ -127,24 +127,24 @@ export default function HeroSection() {
             </div>
 
             {/* ====== RIGHT COLUMN (3/12) - Database & Collaboration ====== */}
-            <div className="hidden lg:flex flex-col gap-6 col-span-3 self-center animate-fade-in-up delay-300 pointer-events-auto">
+            <div className="flex flex-col gap-6 col-span-1 lg:col-span-3 order-2 lg:order-3 self-center animate-fade-in-up delay-300 pointer-events-auto w-full pt-6 lg:pt-0">
               
               {/* Widget 4: Database Snapshot */}
-              <div className="bg-black/40 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-glass relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-accent-magenta/20 blur-2xl rounded-full"></div>
+              <Link to="/projects" className="block bg-black/40 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-glass relative overflow-hidden group hover:border-accent/50 hover:-translate-y-1 transition-all duration-300" style={{ willChange: 'transform' }}>
+                <div className="absolute top-0 right-0 w-16 h-16 bg-accent-magenta/20 blur-2xl rounded-full pointer-events-none"></div>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Database size={16} />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Repository Map</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Domain Clusters</span>
                   </div>
                   <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80] animate-pulse"></div>
                 </div>
                 
                 <div className="space-y-3">
                   {[
-                    { label: 'Frontend Core', val: 'Vite / React', color: 'text-accent' },
-                    { label: 'Backend Engine', val: 'Node / Express', color: 'text-blue-400' },
-                    { label: 'Database Sync', val: 'MDB / Socket.IO', color: 'text-accent-magenta' }
+                    { label: 'AI & Data Science', val: 'PyTorch / TF', color: 'text-accent' },
+                    { label: 'Web Development', val: 'React / Node', color: 'text-blue-400' },
+                    { label: 'Cyber Security', val: 'Kali / OSINT', color: 'text-accent-magenta' }
                   ].map((stat, i) => (
                     <div key={i} className="flex justify-between items-center text-xs font-medium">
                       <span className="text-slate-400">{stat.label}</span>
@@ -152,14 +152,14 @@ export default function HeroSection() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Link>
 
               {/* Widget 5: Recent Contributors (Stacked Avatars) */}
               <div 
                 className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass group hover:border-accent/40 transition-colors"
                 style={{ willChange: 'transform' }}
               >
-                 <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-3">Core Developers</p>
+                 <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-3">Core Committee</p>
                  <div className="flex items-center mb-3">
                    {shuffledDevs.map((dev, i) => (
                      <div key={i} className={`w-10 h-10 rounded-full border-2 border-[#050505] bg-surface flex items-center justify-center -ml-3 first:ml-0 relative shadow-lg`} style={{ zIndex: 10 - i }}>
@@ -169,7 +169,7 @@ export default function HeroSection() {
                  </div>
                  <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
                     <Zap size={14} className="text-yellow-400" />
-                    <span>Real-time Sync Active</span>
+                    <span>Operations Sync Active</span>
                  </div>
               </div>
               
@@ -180,7 +180,7 @@ export default function HeroSection() {
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
                 </div>
-                <p><span className="text-accent">CID_USER@terminal</span>:~$ init --core</p>
+                <p><span className="text-accent">CID_USER@mits</span>:~$ connect --matrix</p>
                 <p className="text-slate-400">Loading modules...</p>
                 <p className="text-slate-400">Establishing handshake [OK]</p>
                 <p className="text-green-400">Access Granted.</p>

@@ -34,7 +34,7 @@ export default function CTASection() {
     <section ref={elementRef} className={`w-full min-h-screen py-24 flex items-center bg-transparent relative overflow-hidden transition-opacity duration-1000 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       
       {/* Background decorations */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10 animate-pulse-slow"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
       
       {/* Grid Pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none -z-10" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '64px 64px' }}></div>

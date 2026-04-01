@@ -31,8 +31,8 @@ export default function About() {
       {/* Hero */}
       <section className="pt-32 pb-16 relative overflow-hidden border-b border-border">
         {/* Background decorations */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-2xl pointer-events-none -z-10"></div>
         
         <div className="container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="inline-block px-4 py-2 glass-panel rounded-full mb-6">
@@ -113,7 +113,7 @@ export default function About() {
       </section>
 
       {/* Vision & Mission */}
-      <section className="section-padding bg-surface/30 relative overflow-hidden border-y border-border">
+      <section className="section-padding bg-transparent relative overflow-hidden border-y border-border">
         {/* Large purely aesthetic background text */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full overflow-hidden flex justify-center pointer-events-none opacity-[0.02] -z-0">
           <span className="font-heading text-[15vw] text-white whitespace-nowrap leading-none tracking-widest font-black">
@@ -186,7 +186,7 @@ export default function About() {
       {/* CTA */}
       <section className="section-padding relative overflow-hidden border-t border-border">
         {/* Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10 animate-pulse-slow"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
         <div className="container-max mx-auto text-center relative z-10 px-4">
           <h2 className="font-heading text-4xl md:text-5xl text-white mb-6 uppercase tracking-tight leading-tight font-black">
