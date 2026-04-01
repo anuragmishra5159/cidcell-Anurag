@@ -65,8 +65,8 @@ export default function Timeline() {
       <div className="absolute bottom-[20%] right-[-5%] font-black text-6xl md:text-9xl lg:text-[14rem] text-accent-cyan opacity-[0.02] transform rotate-6 pointer-events-none z-0 whitespace-nowrap tracking-widest uppercase py-4">Sequence</div>
 
       {/* Floating Glass Orbs */}
-      <div className="absolute top-[15%] left-[5%] w-64 h-64 bg-accent/10 rounded-full blur-[80px] hidden md:block z-0"></div>
-      <div className="absolute top-[40%] right-[5%] w-80 h-80 bg-accent-blue/10 rounded-full blur-[100px] hidden lg:block z-0 animate-pulse-slow"></div>
+      <div className="absolute top-[15%] left-[5%] w-64 h-64 bg-glow-accent rounded-full hidden md:block z-0"></div>
+      <div className="absolute top-[40%] right-[5%] w-80 h-80 bg-glow-blue rounded-full hidden lg:block z-0 animate-pulse-slow"></div>
       <div className="absolute bottom-[10%] left-[20%] w-56 h-56 bg-accent-cyan/10 rounded-full blur-[70px] hidden md:block z-0"></div>
 
       <div className="container-max mx-auto relative z-10 w-full px-4 sm:px-6">

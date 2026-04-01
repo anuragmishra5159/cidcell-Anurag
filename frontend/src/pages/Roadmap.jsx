@@ -93,8 +93,8 @@ export default function Roadmap() {
   return (
     <div className="bg-bg min-h-screen pt-32 pb-24 border-b border-border relative overflow-hidden text-white">
       {/* Background Orbs */}
-      <div className="pointer-events-none absolute top-0 -right-20 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] -z-10"></div>
-      <div className="pointer-events-none absolute bottom-0 -left-20 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] -z-10 animate-pulse-slow"></div>
+      <div className="pointer-events-none absolute top-0 -right-20 w-[500px] h-[500px] bg-glow-accent rounded-full -z-10"></div>
+      <div className="pointer-events-none absolute bottom-0 -left-20 w-[400px] h-[400px] bg-glow-blue rounded-full -z-10 animate-pulse-slow"></div>
       
       <section className="container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 relative">

@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { CheckCircle2, ChevronDown, LogOut, ChevronRight, UploadCloud, X, Plus } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { compressImage } from '../utils/compressImage';
 
 export const branches = [
@@ -119,7 +120,7 @@ export default function Onboarding() {
             });
             setFormData(prev => ({ ...prev, profilePicture: res.data.url }));
         } catch (err) {
-            alert('Failed to upload profile picture.');
+            toast.error('Failed to upload profile picture.');
         } finally {
             setUploadingImage(false);
         }
@@ -153,7 +154,7 @@ export default function Onboarding() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (user?.userType !== 'mentor' && formData.skills.length === 0) {
-            alert('Please add at least one capability before synchronization.');
+            toast.error('Please add at least one capability before synchronization.');
             return;
         }
         setSaving(true);
@@ -170,7 +171,7 @@ export default function Onboarding() {
             }
         } catch (error) {
             console.error('Error saving profile:', error);
-            alert('Failed to synchronize profile. Please try again.');
+            toast.error('Failed to synchronize profile. Please try again.');
         } finally {
             setSaving(false);
         }
@@ -182,14 +183,14 @@ export default function Onboarding() {
     return (
         <div className="min-h-screen bg-bg relative overflow-hidden font-body pt-32 pb-20">
             {/* Abstract Background Elements */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none -z-10 animate-pulse-slow"></div>
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
 
                 {/* Page header */}
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-white/10 pb-6 relative">
-                    <div className="absolute -left-10 top-0 w-20 h-20 bg-accent/20 blur-[30px] rounded-full"></div>
+                    <div className="absolute -left-10 top-0 w-20 h-20 bg-glow-accent rounded-full rounded-full"></div>
                     <div>
                         <span className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-2 block relative z-10">
                             Initialization Sequence
@@ -220,7 +221,7 @@ export default function Onboarding() {
 
                     {/* ── Profile Picture ── */}
                     <div className="glass-panel border border-white/10 rounded-2xl p-6 md:p-8 shadow-glass relative overflow-hidden group">
-                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 blur-[30px] rounded-full pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-glow-accent rounded-full rounded-full pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
                         <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
                              Visual Identification Log
                         </h3>

@@ -89,8 +89,8 @@ export default function EventDetail() {
   return (
     <div className="bg-bg min-h-screen pb-20 text-white relative overflow-hidden">
       {/* Abstract Backgrounds */}
-      <div className="absolute top-0 right-[-10%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute top-[30%] left-[-10%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+      <div className="absolute top-0 right-[-10%] w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-[30%] left-[-10%] w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10"></div>
 
       {/* Detail Header */}
       <section className="pt-32 pb-16 relative overflow-hidden border-b border-border">
@@ -166,7 +166,7 @@ export default function EventDetail() {
 
             {/* Description */}
             <div className="glass-panel p-8 md:p-12 border border-white/10 rounded-2xl shadow-glass relative overflow-hidden">
-               <div className="absolute -top-32 -left-32 w-64 h-64 bg-accent/5 blur-[50px] rounded-full pointer-events-none"></div>
+               <div className="absolute -top-32 -left-32 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none"></div>
                
                <h2 className="text-2xl font-black text-white uppercase tracking-widest mb-8 border-b border-border pb-4 flex items-center gap-3 relative z-10">
                  <FileText className="text-accent" /> Decrypted Payload
@@ -202,7 +202,7 @@ export default function EventDetail() {
            {/* Sidebar */}
            <div className="space-y-8">
             <div className="glass-panel p-8 border border-white/10 rounded-2xl shadow-glass relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[40px] pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-glow-accent rounded-full pointer-events-none"></div>
 
               <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-10 text-white flex items-center gap-3 border-b border-border pb-4 relative z-10">
                 <Clock size={16} className="text-accent" /> Node Telemetry
@@ -279,7 +279,7 @@ export default function EventDetail() {
 
             {/* Support */}
             <div className="glass-panel p-8 rounded-2xl border border-white/10 text-center shadow-glass relative overflow-hidden group">
-               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-[40px] pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
                <p className="text-[10px] font-bold text-accent uppercase tracking-widest mb-3 relative z-10">Diagnostics Support</p>
                <p className="text-xs font-medium text-slate-400 mb-6 leading-relaxed relative z-10">Ping the coordinator node for parameter clarification.</p>
                <a href={`mailto:${event.organizerEmail}`} className="block w-full py-3 bg-surface border border-white/10 text-white font-bold text-xs hover:border-accent hover:bg-white/5 transition-all shadow-glass uppercase tracking-widest rounded-xl relative z-10">

@@ -40,6 +40,7 @@ import ProposeEvent from './faculty/pages/ProposeEvent';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 // Component to protect routes that require login
 const PrivateRoute = ({ children }) => {
@@ -123,6 +124,18 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'rgba(10, 10, 10, 0.8)',
+            color: '#fff',
+            border: '1px solid rgba(139, 92, 246, 0.3)',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)',
+          },
+        }}
+      />
       {!isAdminRoute && <ScrollToTop />}
       {!isAdminRoute && <Navbar />}
       <main className="flex-1">

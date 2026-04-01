@@ -131,14 +131,14 @@ const Dashboard = () => {
     return (
         <div className="dashboard-theme min-h-screen bg-bg pt-32 pb-20 px-4 md:px-6 font-body text-white relative overflow-hidden">
             {/* Ambient Background Glows */}
-            <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-            <div className="absolute top-[40%] right-[-50px] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
+            <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+            <div className="absolute top-[40%] right-[-50px] w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
             <div className="max-w-7xl mx-auto space-y-8 relative z-10">
                 
                 {/* 1. TOP PROFILE BANNER */}
                 <div className="glass-panel border border-white/10 shadow-glass rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 relative overflow-hidden group">
-                    <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-accent/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
+                    <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
                     
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 w-full md:w-auto z-10">
                         <div className="relative shrink-0 group/avatar">
@@ -258,7 +258,7 @@ const Dashboard = () => {
                         </div>
                         {recentProjects.length > 0 ? recentProjects.map(project => (
                             <div key={project._id} className="glass-panel border border-white/10 rounded-2xl shadow-glass group hover:border-accent-blue/50 hover:bg-white/5 transition-all p-5 flex flex-col sm:flex-row gap-5 relative overflow-hidden cursor-pointer" onClick={() => navigate(`/projects/${project._id}`)}>
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-accent-blue/5 blur-[40px] rounded-full pointer-events-none group-hover:bg-accent-blue/10 transition-colors"></div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-glow-blue rounded-full rounded-full pointer-events-none group-hover:bg-accent-blue/10 transition-colors"></div>
                                 
                                 <div className="w-full sm:w-32 h-40 sm:h-32 bg-surface border border-white/10 rounded-xl overflow-hidden shrink-0 shadow-inner relative z-10">
                                     {project.images?.[0] || project.image ? (
@@ -309,7 +309,7 @@ const Dashboard = () => {
                         </div>
                         {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
                             <div key={event._id} className="glass-panel border border-white/10 rounded-2xl shadow-glass group hover:border-accent/50 hover:bg-white/5 transition-all p-5 flex flex-col sm:flex-row gap-5 relative overflow-hidden cursor-pointer" onClick={() => navigate(`/events/${event._id}`)}>
-                                <div className="absolute top-0 left-0 w-32 h-32 bg-accent/5 blur-[40px] rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
+                                <div className="absolute top-0 left-0 w-32 h-32 bg-glow-accent rounded-full rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
                                 
                                 <div className="w-full sm:w-32 h-40 sm:h-32 bg-surface border border-white/10 rounded-xl overflow-hidden shrink-0 shadow-inner relative z-10">
                                     {event.image ? (
@@ -383,7 +383,7 @@ const Dashboard = () => {
 
                     <div className="glass-panel border border-white/10 rounded-3xl p-6 md:p-10 shadow-glass relative overflow-hidden min-h-[400px]">
                          {/* Ambient Glows for tabs */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-[80px] pointer-events-none"></div>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-glow-accent rounded-full pointer-events-none"></div>
                         
                         {/* Tab Content: Projects */}
                         {activeTab === 'projects' && (

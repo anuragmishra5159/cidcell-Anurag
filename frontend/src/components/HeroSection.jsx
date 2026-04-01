@@ -108,10 +108,15 @@ export default function HeroSection() {
             </div>
 
             {/* ====== CENTER COLUMN (6/12) - Emptying out center for the Robot ====== */}
-            <div className="col-span-1 lg:col-span-6 order-1 lg:order-2 flex flex-col items-center text-center justify-end min-h-[60vh] lg:min-h-[80vh] relative z-30 pointer-events-none pb-4 lg:pb-0">
+            <div className="col-span-1 lg:col-span-6 order-1 lg:order-2 flex flex-col items-center text-center justify-end min-h-[60vh] lg:min-h-[80vh] relative z-30 pointer-events-none pb-4 lg:pb-0 mt-32 lg:mt-0">
               
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black text-white uppercase tracking-widest leading-tight mb-5 drop-shadow-2xl pointer-events-auto">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-blue-400 to-accent-magenta drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">Collaborative Innovation</span><br className="hidden sm:block" />
+                <span className="text-2xl sm:text-3xl lg:text-4xl">& Development Cell</span>
+              </h1>
+
               <div className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-md border border-accent/30 shadow-glow-purple px-4 py-2 rounded-full mb-8 pointer-events-auto">
-                <Cpu size={14} className="text-accent" />
+                <Cpu size={14} className="text-accent animate-pulse" />
                 <span className="text-xs font-bold tracking-[0.25em] uppercase text-slate-200">CID-CELL CORE v2.0</span>
               </div>
 
@@ -159,7 +164,7 @@ export default function HeroSection() {
                 className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-glass group hover:border-accent/40 transition-colors"
                 style={{ willChange: 'transform' }}
               >
-                 <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-3">Core Committee</p>
+                 <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-3">Developers</p>
                  <div className="flex items-center mb-3">
                    {shuffledDevs.map((dev, i) => (
                      <div key={i} className={`w-10 h-10 rounded-full border-2 border-[#050505] bg-surface flex items-center justify-center -ml-3 first:ml-0 relative shadow-lg`} style={{ zIndex: 10 - i }}>

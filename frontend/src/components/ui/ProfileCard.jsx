@@ -509,8 +509,8 @@ const ProfileCardComponent = ({
                         />
                       </div>
                       <div className="flex flex-col items-start gap-1.5 hidden sm:flex">
-                        <div className="text-sm font-medium text-white/90 leading-none">@{handle}</div>
-                        <div className="text-sm text-accent leading-none font-bold uppercase tracking-wider text-[10px]">{status}</div>
+                        <div className="text-xs font-semibold text-white/90 leading-none truncate max-w-[110px]" title={`@${handle}`}>@{handle}</div>
+                        <div className="text-[9px] text-accent bg-accent/20 px-2 py-0.5 rounded-sm uppercase font-bold tracking-widest border border-accent/40 w-max shadow-[0_0_10px_rgba(139,92,246,0.2)]">{status}</div>
                       </div>
                     </div>
                     
@@ -520,7 +520,7 @@ const ProfileCardComponent = ({
                            href={githubUrl}
                            target="_blank"
                            rel="noreferrer"
-                           className="border border-white/20 rounded-lg p-2.5 flex items-center justify-center text-white/90 hover:bg-white/10 transition-colors"
+                           className="border border-white/20 rounded-lg p-2 flex items-center justify-center text-white/90 hover:bg-green-500/20 hover:text-green-400 hover:border-green-500 hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300 transform hover:-translate-y-0.5"
                            aria-label="GitHub"
                          >
                            <Github size={14} />
@@ -531,7 +531,7 @@ const ProfileCardComponent = ({
                            href={linkedinUrl}
                            target="_blank"
                            rel="noreferrer"
-                           className="border border-white/20 rounded-lg p-2.5 flex items-center justify-center text-white/90 hover:bg-white/10 transition-colors"
+                           className="border border-white/20 rounded-lg p-2 flex items-center justify-center text-white/90 hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 transform hover:-translate-y-0.5"
                            aria-label="LinkedIn"
                          >
                            <Linkedin size={14} />

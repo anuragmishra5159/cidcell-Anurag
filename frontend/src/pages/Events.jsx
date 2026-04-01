@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import ScrollReveal from '../components/ScrollReveal';
 import { formatTime12h } from '../utils/formatTime';
 import { AuthContext } from '../context/AuthContext';
+import EmptyState from '../components/ui/EmptyState';
 
 const categories = ['All', 'trainig and mentorships', 'tech', 'cultural', 'sports', 'educational', 'special'];
 
@@ -195,11 +196,8 @@ export default function Events() {
           )}
 
           {!loading && filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 glass-panel border border-dashed border-border/50 max-w-2xl mx-auto">
-              <div className="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-secondary">
-                 <Calendar size={24} />
-              </div>
-              <p className="font-semibold text-secondary uppercase tracking-widest text-sm">No Events found</p>
+            <div className="flex justify-center py-10 w-full max-w-2xl mx-auto">
+              <EmptyState title="No Events Found In Matrix" message="Adjust your active filters or clear search to discover events." icon={Calendar} />
             </div>
           )}
         </div>

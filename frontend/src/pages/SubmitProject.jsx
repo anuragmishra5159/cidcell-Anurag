@@ -86,8 +86,8 @@ export default function SubmitProject() {
   return (
     <div className="min-h-screen bg-bg text-white relative overflow-hidden">
       {/* Abstract Backgrounds */}
-      <div className="absolute top-0 right-[-100px] w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
+      <div className="absolute top-0 right-[-100px] w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
       <div className="pt-32 pb-20 container-max mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
         <Link to="/projects" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-white transition-colors mb-10 group">
@@ -105,7 +105,7 @@ export default function SubmitProject() {
         </div>
 
         <div className="glass-panel p-6 md:p-10 border border-white/10 shadow-glass rounded-2xl relative overflow-hidden">
-          <div className="absolute -top-32 -right-32 w-64 h-64 bg-accent/10 blur-[50px] rounded-full pointer-events-none"></div>
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none"></div>
 
           <form onSubmit={handleSubmit} className="relative z-10">
             <div className="space-y-8">

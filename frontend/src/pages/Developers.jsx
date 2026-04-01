@@ -18,9 +18,9 @@ export default function Developers() {
   return (
     <div className="pt-32 min-h-screen pb-24 relative overflow-hidden bg-bg text-white">
       {/* Background Ambience */}
-      <div className="absolute top-20 right-10 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
-      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-accent-magenta/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute top-20 right-10 w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
+      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-glow-magenta rounded-full pointer-events-none -z-10"></div>
 
       <div className="relative z-10 container-max mx-auto px-4 text-center">
         <div className="inline-flex px-4 py-1.5 glass-panel rounded-full border border-accent/20 mb-6 items-center gap-2 shadow-glow-purple mx-auto">
@@ -64,8 +64,8 @@ export default function Developers() {
         {/* Call to action */}
         <ScrollReveal delay={400}>
           <div className="mt-24 max-w-4xl mx-auto glass-panel border border-accent/30 p-10 md:p-14 text-center relative overflow-hidden group hover:border-accent/60 transition-colors shadow-glow-purple">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 blur-[60px] rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-1000"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent-blue/10 blur-[60px] rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-1000"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-1000"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-glow-blue rounded-full rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-1000"></div>
             
             <h4 className="font-heading text-3xl md:text-5xl uppercase tracking-widest font-black text-white mb-6 relative z-10 leading-tight">
               Want to <br className="md:hidden" /> <span className="text-accent">Contribute?</span>

@@ -20,8 +20,8 @@ export default function Contact() {
   return (
     <div className="bg-bg min-h-screen text-white pt-32 relative overflow-hidden">
       {/* Abstract Background */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10"></div>
       
       {/* Hero */}
       <section className="pb-16 relative overflow-hidden border-b border-border">
@@ -86,7 +86,7 @@ export default function Contact() {
 
               {/* Department Contacts */}
               <div className="glass-panel p-8 border border-white/10 shadow-glass relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-accent-magenta/10 rounded-full blur-[40px] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-glow-magenta rounded-full pointer-events-none"></div>
                 
                 <h4 className="font-heading font-black text-lg text-white mb-6 uppercase tracking-widest border-b border-border pb-3">Directory</h4>
                 <div className="space-y-5">
@@ -103,7 +103,7 @@ export default function Contact() {
 
               {/* Office Hours */}
               <div className="bg-gradient-to-br from-surface to-bg p-8 border border-white/10 rounded-2xl shadow-glass flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute top-1/2 left-0 w-full h-full bg-blue-500/5 blur-[50px] -translate-y-1/2"></div>
+                <div className="absolute top-1/2 left-0 w-full h-full bg-glow-blue rounded-full -translate-y-1/2"></div>
                 <div className="flex items-center gap-3 mb-6 relative z-10">
                   <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400">
                     <Clock size={16} />
@@ -130,7 +130,7 @@ export default function Contact() {
             {/* Contact Form & Social */}
             <ScrollReveal className="lg:col-span-3 space-y-6" delay={200}>
               <div className="glass-panel border-l-2 border-l-accent border-r border-r-white/10 border-y border-y-white/10 p-8 lg:p-12 shadow-glow-purple relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[60px] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-glow-accent rounded-full pointer-events-none"></div>
 
                 <h3 className="font-heading font-black text-3xl text-white mb-2 uppercase tracking-widest">Send a Message</h3>
                 <p className="text-slate-400 text-sm font-medium mb-10">Fill in the secure form below for any specific requests or feedback.</p>

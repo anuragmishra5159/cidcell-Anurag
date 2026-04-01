@@ -31,7 +31,7 @@ export default function VisionMission() {
     <section className="w-full min-h-screen py-20 flex items-center bg-transparent relative overflow-hidden z-0">
       {/* Background Decor Elements */}
       <div className="absolute top-[10%] left-[-2%] font-heading font-black text-6xl md:text-9xl text-white opacity-[0.02] transform -rotate-6 pointer-events-none z-0">PILLARS</div>
-      <div className="absolute right-10 bottom-20 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[100px] hidden md:block z-0 pointer-events-none"></div>
+      <div className="absolute right-10 bottom-20 w-[300px] h-[300px] bg-glow-accent rounded-full hidden md:block z-0 pointer-events-none"></div>
       
       <div className="container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         <SectionHeading

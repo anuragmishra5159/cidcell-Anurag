@@ -165,8 +165,8 @@ export default function ChatHub() {
     <div className="bg-bg h-screen pt-20 flex overflow-hidden selection:bg-accent/30">
       {/* Background Decorative patterns */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[20%] -left-[10%] w-[40%] h-[40%] bg-accent/5 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[20%] -right-[10%] w-[30%] h-[30%] bg-accent-magenta/5 blur-[150px] rounded-full"></div>
+        <div className="absolute top-[20%] -left-[10%] w-[40%] h-[40%] bg-glow-accent rounded-full rounded-full"></div>
+        <div className="absolute bottom-[20%] -right-[10%] w-[30%] h-[30%] bg-glow-magenta rounded-full rounded-full"></div>
       </div>
 
       <div className={`${activePanel.id ? 'hidden md:flex' : 'flex'} contents`}>

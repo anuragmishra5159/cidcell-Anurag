@@ -118,14 +118,14 @@ const MentorDashboard = () => {
     return (
         <div className="dashboard-theme bg-bg min-h-screen pt-32 pb-20 font-body text-white relative overflow-hidden">
             {/* Ambient Background Glows */}
-            <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-            <div className="absolute bottom-[-100px] left-[-100px] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
+            <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+            <div className="absolute bottom-[-100px] left-[-100px] w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
 
                 {/* Header Banner */}
                 <div className="glass-panel border border-white/10 shadow-glass md:p-10 p-6 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group rounded-3xl">
-                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
+                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
                     
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-8 w-full z-10">
                         <div className="relative shrink-0 group/avatar">
@@ -398,7 +398,7 @@ const MentorDashboard = () => {
 
                 {/* Quick Chat Link */}
                 <div className="glass-panel border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_30px_rgba(139,92,246,0.15)] relative overflow-hidden group">
-                    <div className="absolute top-1/2 right-10 -translate-y-1/2 w-48 h-48 bg-accent/20 blur-[50px] pointer-events-none group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="absolute top-1/2 right-10 -translate-y-1/2 w-48 h-48 bg-glow-accent rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-700"></div>
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                         <div>

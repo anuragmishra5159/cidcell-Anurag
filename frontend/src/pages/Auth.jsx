@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 import { ArrowRight, Loader2, ShieldAlert } from 'lucide-react';
 
 const Auth = () => {
@@ -19,20 +20,20 @@ const Auth = () => {
                 navigate(from, { replace: true });
             }
         } catch (error) {
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
     const handleGoogleError = () => {
-        alert('Google Auth Node offline. Please attempt reconnection.');
+        toast.error('Google Auth Node offline. Please attempt reconnection.');
     };
 
     return (
         <div className="min-h-screen pt-20 bg-bg flex items-center justify-center px-4 py-12 relative overflow-hidden text-white">
 
             {/* Abstract Background Elements */}
-            <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-accent/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+            <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-glow-accent rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-glow-blue rounded-full pointer-events-none -z-10"></div>
 
             {/* Full-screen loading overlay */}
             {authLoading && (

@@ -51,7 +51,7 @@ function LeaderCard({ person, delay, isDynamic = false }) {
         <div className={`w-36 h-36 md:w-44 md:h-44 rounded-full bg-surface border border-white/10 shadow-glass flex items-center justify-center mb-6 z-10 overflow-hidden group-hover:border-white/30 transition-colors p-1.5`}>
            <div className="w-full h-full rounded-full overflow-hidden bg-bg relative">
             {imageUrl ? (
-              <img src={imageUrl} alt={name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <img src={imageUrl} alt={name} className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <span className="font-heading font-black text-4xl text-slate-500">
@@ -124,7 +124,7 @@ function MemberCard({ member, delay }) {
                 <img 
                   src={member.user.profilePicture} 
                   alt={name} 
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" 
+                  className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" 
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -225,9 +225,9 @@ export default function Team() {
     <div className="bg-bg min-h-screen text-white pt-32 pb-20 relative overflow-hidden">
       
       {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent-magenta/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-glow-magenta rounded-full pointer-events-none -z-10"></div>
 
       {/* Hero */}
       <section className="relative overflow-hidden mb-24">
@@ -298,7 +298,7 @@ export default function Team() {
                 return (
                   <div key={domain} className="glass-panel p-6 md:p-10 border border-white/10 rounded-[2rem] shadow-glass relative group overflow-hidden">
                     {/* Domain BG Glow */}
-                    <div className="absolute -top-32 -right-32 w-64 h-64 bg-accent/5 blur-[50px] rounded-full pointer-events-none transition-transform duration-700 group-hover:scale-150 group-hover:bg-accent/10"></div>
+                    <div className="absolute -top-32 -right-32 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none transition-transform duration-700 group-hover:scale-150 group-hover:bg-accent/10"></div>
                     
                     <div className="flex items-center gap-3 mb-8 relative z-10">
                       <div className="w-10 h-10 rounded-xl bg-surface border border-white/10 flex items-center justify-center text-accent shadow-glass">

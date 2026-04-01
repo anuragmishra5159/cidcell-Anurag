@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import ScrollReveal from '../components/ScrollReveal';
+import EmptyState from '../components/ui/EmptyState';
 
 const typeFilters = ['All', 'independent', 'collaborative'];
 
@@ -63,8 +64,8 @@ export default function Projects() {
     <>
       <section className="pt-32 pb-16 bg-bg relative overflow-hidden border-b border-border">
         {/* Glow Effects */}
-        <div className="absolute top-1/4 right-[-50px] w-[500px] h-[500px] bg-accent/15 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-        <div className="absolute bottom-10 left-[-50px] w-[300px] h-[300px] bg-accent-blue/15 rounded-full blur-[100px] pointer-events-none -z-10 animate-float"></div>
+        <div className="absolute top-1/4 right-[-50px] w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+        <div className="absolute bottom-10 left-[-50px] w-[300px] h-[300px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-float"></div>
 
         <div className="container-max mx-auto px-4 text-center relative z-10">
           <div className="inline-flex px-4 py-1.5 glass-panel rounded-full border border-accent/20 mb-6 items-center gap-2 shadow-glow-purple">
@@ -273,11 +274,8 @@ export default function Projects() {
           )}
 
           {!loading && filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 glass-panel border border-dashed border-border/50 max-w-2xl mx-auto">
-              <div className="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-secondary">
-                 <Terminal size={24} />
-              </div>
-              <p className="font-semibold text-secondary uppercase tracking-widest text-sm">No Projects Found In Matrix</p>
+            <div className="flex justify-center py-10 w-full max-w-2xl mx-auto">
+              <EmptyState title="No Projects Found In Matrix" message="Adjust your active filters or query parameters to discover nodes." />
             </div>
           )}
         </div>

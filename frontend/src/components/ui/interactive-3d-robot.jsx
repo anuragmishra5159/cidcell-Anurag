@@ -6,7 +6,7 @@ export function InteractiveRobotSpline({ scene, className }) {
     <Suspense
       fallback={
         <div className={`w-full h-full flex flex-col items-center justify-center bg-transparent text-white relative ${className || ''}`}>
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-accent/20 rounded-full blur-[40px] animate-pulse-slow"></div>
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-glow-accent rounded-full animate-pulse-slow"></div>
            <div className="relative z-10 flex flex-col items-center gap-4">
                <div className="relative flex items-center justify-center w-20 h-20">
                   <div className="absolute inset-0 rounded-full border-t-2 border-accent border-opacity-50 animate-spin"></div>

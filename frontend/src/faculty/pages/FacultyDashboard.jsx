@@ -73,14 +73,14 @@ const FacultyDashboard = () => {
   return (
     <div className="dashboard-theme min-h-screen bg-bg pt-32 pb-20 px-4 md:px-6 font-body text-white relative overflow-hidden">
         {/* Ambient Glows */}
-        <div className="absolute top-[10%] left-[-100px] w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none -z-10 animate-pulse-slow"></div>
-        <div className="absolute bottom-[20%] right-[-100px] w-[400px] h-[400px] bg-accent-blue/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+        <div className="absolute top-[10%] left-[-100px] w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
+        <div className="absolute bottom-[20%] right-[-100px] w-[400px] h-[400px] bg-glow-blue rounded-full pointer-events-none -z-10"></div>
 
       <div className="max-w-7xl mx-auto space-y-12 relative z-10">
 
         {/* Header Profile Section */}
         <div className="glass-panel border border-white/10 shadow-glass rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 relative overflow-hidden group">
-            <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-accent/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
+            <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
             
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 w-full z-10">
                 <div className="relative shrink-0 group/avatar">
@@ -162,7 +162,7 @@ const FacultyDashboard = () => {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
             {/* ── Project Reviews Section ── */}
             <div className="glass-panel border border-white/10 p-6 md:p-8 rounded-3xl shadow-glass mb-10 xl:col-span-7 relative overflow-hidden flex flex-col min-h-[500px]">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-accent-blue/5 blur-[50px] pointer-events-none -z-10"></div>
+                <div className="absolute top-0 right-0 w-80 h-80 bg-glow-blue rounded-full pointer-events-none -z-10"></div>
                 
                 <div className="relative z-10 border-b border-white/10 pb-4 mb-6">
                     <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest flex items-center gap-3 text-white">
@@ -235,7 +235,7 @@ const FacultyDashboard = () => {
 
             {/* ── Event Proposals Section ── */}
             <div className="glass-panel border border-white/10 p-6 md:p-8 rounded-3xl shadow-glass xl:col-span-5 relative overflow-hidden flex flex-col min-h-[500px]">
-                <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/5 blur-[50px] pointer-events-none -z-10"></div>
+                <div className="absolute bottom-0 right-0 w-64 h-64 bg-glow-accent rounded-full pointer-events-none -z-10"></div>
                 
                 <div className="relative z-10 border-b border-white/10 pb-4 mb-6">
                     <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest flex items-center gap-3 text-white">

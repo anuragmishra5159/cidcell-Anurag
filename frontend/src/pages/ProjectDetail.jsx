@@ -289,8 +289,8 @@ export default function ProjectDetail() {
   return (
     <div className="bg-bg min-h-screen pb-20 text-white relative overflow-hidden">
       {/* Abstract Backgrounds */}
-      <div className="absolute top-0 right-[-100px] w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute top-[30%] left-[-100px] w-[500px] h-[500px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
+      <div className="absolute top-0 right-[-100px] w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-[30%] left-[-100px] w-[500px] h-[500px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
       {/* Header */}
       <section className="pt-32 pb-16 relative overflow-hidden border-b border-border">
@@ -368,7 +368,7 @@ export default function ProjectDetail() {
 
             {/* Description */}
             <div className="glass-panel p-8 md:p-12 border border-white/10 shadow-glass rounded-2xl relative overflow-hidden">
-               <div className="absolute -top-32 -left-32 w-64 h-64 bg-accent/5 blur-[50px] rounded-full pointer-events-none"></div>
+               <div className="absolute -top-32 -left-32 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none"></div>
               <h2 className="flex items-center gap-3 text-2xl font-black text-white uppercase tracking-widest mb-8 border-b border-border pb-4 relative z-10">
                 <Info size={20} className="text-accent" /> System Overview
               </h2>
@@ -392,7 +392,7 @@ export default function ProjectDetail() {
 
             {/* Team Leaderboard */}
             <div className="glass-panel p-8 border border-white/10 shadow-glass rounded-2xl relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[50px] pointer-events-none"></div>
+               <div className="absolute top-0 right-0 w-64 h-64 bg-glow-accent rounded-full pointer-events-none"></div>
                
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-border pb-4 relative z-10">
                 <h3 className="text-2xl font-black text-white uppercase tracking-widest flex items-center gap-3">
@@ -610,7 +610,7 @@ export default function ProjectDetail() {
             {/* Task Kanban Section (visible if logged in and project is active) */}
             {project.status === 'active' && user && (
               <div className="glass-panel py-8 px-4 md:px-8 border border-white/10 shadow-glass rounded-2xl overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-glow-accent rounded-full pointer-events-none"></div>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 relative z-10 border-b border-border pb-4">
                     <h3 className="text-xl font-black text-white uppercase tracking-widest flex items-center gap-3">
@@ -663,7 +663,7 @@ export default function ProjectDetail() {
           {/* Sidebar */}
           <div className="space-y-8">
             <div className="glass-panel p-8 border border-white/10 shadow-glass rounded-2xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[40px] pointer-events-none"></div>
+               <div className="absolute top-0 right-0 w-32 h-32 bg-glow-accent rounded-full pointer-events-none"></div>
 
               <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-8 text-white flex items-center gap-3 border-b border-border pb-4 relative z-10">
                 <Info size={16} className="text-accent" /> System Metadata
@@ -711,7 +711,7 @@ export default function ProjectDetail() {
             </div>
 
             <div className="glass-panel p-8 border border-white/10 shadow-glass rounded-2xl text-center relative overflow-hidden group">
-               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-[40px] pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
                
               <p className="text-[10px] font-bold text-accent uppercase tracking-widest mb-3 relative z-10">External Collaboration</p>
               <p className="text-xs font-medium text-slate-400 mb-6 leading-relaxed relative z-10">Ping the CID Cell coordinators to interface with this development team.</p>
@@ -727,7 +727,7 @@ export default function ProjectDetail() {
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
           <div className="glass-panel border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-2xl w-full max-w-lg p-8 relative overflow-hidden">
-            <div className="absolute -top-32 -right-32 w-64 h-64 bg-accent/10 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-glow-accent rounded-full rounded-full pointer-events-none"></div>
 
             <button onClick={() => setShowJoinModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors bg-surface border border-white/10 p-1.5 rounded-lg shadow-glass">
               <X size={16} />
@@ -799,7 +799,7 @@ export default function ProjectDetail() {
       {showTaskModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
           <div className="glass-panel border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-2xl w-full max-w-lg p-8 relative overflow-hidden">
-            <div className="absolute -top-32 -right-32 w-64 h-64 bg-accent-blue/10 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-glow-blue rounded-full rounded-full pointer-events-none"></div>
 
             <button onClick={() => setShowTaskModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors bg-surface border border-white/10 p-1.5 rounded-lg shadow-glass">
               <X size={16} />

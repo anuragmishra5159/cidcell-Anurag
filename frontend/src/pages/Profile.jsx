@@ -142,8 +142,8 @@ export default function Profile() {
   return (
     <div className="bg-bg min-h-screen pt-32 pb-20 relative overflow-hidden text-white font-body">
       {/* Abstract Backgrounds */}
-      <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-accent-blue/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow"></div>
+      <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-glow-accent rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-glow-blue rounded-full pointer-events-none -z-10 animate-pulse-slow"></div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
@@ -169,7 +169,7 @@ export default function Profile() {
             SECTION A — TOP PROFILE CARD
             ────────────────────────────────────────────────── */}
         <div className="glass-panel border border-white/10 shadow-glass rounded-3xl p-8 mb-8 lg:flex lg:items-center lg:gap-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-glow-accent rounded-full pointer-events-none"></div>
 
           {/* LEFT — Avatar + User Type */}
           <div className="flex flex-col items-center mb-8 lg:mb-0 lg:flex-shrink-0 relative z-10">
@@ -240,7 +240,7 @@ export default function Profile() {
 
           {user.userType === 'mentor' ? (
               <div className="glass-panel border border-white/10 rounded-2xl p-8 lg:col-span-12 shadow-glass relative overflow-hidden group">
-                 <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[50px] pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
+                 <div className="absolute top-0 right-0 w-64 h-64 bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
 
                 <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4 relative z-10">
                   <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent flex items-center gap-2">
@@ -284,7 +284,7 @@ export default function Profile() {
               ──────────────────────────────────────── */}
           <div className="glass-panel border border-white/10 rounded-2xl p-8 lg:col-span-5 shadow-glass relative overflow-hidden">
              {/* Gradient glow */}
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-accent/20 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-glow-accent rounded-full rounded-full pointer-events-none"></div>
 
             <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4 relative z-10">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">
@@ -412,7 +412,7 @@ export default function Profile() {
               CARD 3 — Guidance Hub (bottom left)
               ──────────────────────────────────────── */}
           <div className="bg-surface border border-white/10 rounded-2xl p-8 lg:col-span-8 shadow-glass relative overflow-hidden group">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/5 blur-[50px] pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-glow-accent rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors"></div>
 
             <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4 relative z-10">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">
@@ -461,7 +461,7 @@ export default function Profile() {
               ──────────────────────────────────────── */}
           <div className="glass-panel border border-white/10 rounded-2xl p-8 lg:col-span-4 shadow-glass relative overflow-hidden group">
             {/* abstract accent */}
-             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-accent-blue/10 blur-[40px] rounded-full pointer-events-none"></div>
+             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-glow-blue rounded-full rounded-full pointer-events-none"></div>
 
             <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4 relative z-10">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">

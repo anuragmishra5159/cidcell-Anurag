@@ -7,8 +7,8 @@ export default function AboutPreview() {
   return (
     <section className="w-full min-h-screen flex items-center bg-transparent py-20 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-1/4 right-0 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[80px] hidden lg:block -z-10" style={{ willChange: 'transform' }}></div>
-      <div className="absolute bottom-20 left-10 w-[200px] h-[200px] bg-accent-blue/5 rounded-full blur-[60px] hidden lg:block -z-10" style={{ willChange: 'transform' }}></div>
+      <div className="absolute top-1/4 right-0 w-[300px] h-[300px] bg-glow-accent rounded-full hidden lg:block -z-10" style={{ willChange: 'transform' }}></div>
+      <div className="absolute bottom-20 left-10 w-[200px] h-[200px] bg-glow-blue rounded-full hidden lg:block -z-10" style={{ willChange: 'transform' }}></div>
       
       <div className="container-max mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <SectionHeading

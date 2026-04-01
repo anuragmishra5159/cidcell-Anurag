@@ -206,8 +206,8 @@ export default function MentorHub() {
       
       {/* Dynamic Background Patterns */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[20%] -left-[10%] w-[40%] h-[40%] bg-accent/10 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[20%] -right-[10%] w-[30%] h-[30%] bg-accent-magenta/10 blur-[150px] rounded-full"></div>
+        <div className="absolute top-[20%] -left-[10%] w-[40%] h-[40%] bg-glow-accent rounded-full rounded-full"></div>
+        <div className="absolute bottom-[20%] -right-[10%] w-[30%] h-[30%] bg-glow-magenta rounded-full rounded-full"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
       </div>
 
@@ -352,7 +352,7 @@ export default function MentorHub() {
       {/* Global Stats Bar */}
       {!loading && mentors.length > 0 && (
         <div className="border-t border-white/5 bg-white/[0.01] backdrop-blur-3xl py-20 relative overflow-hidden">
-           <div className="absolute inset-0 bg-accent/5 blur-[200px] pointer-events-none"></div>
+           <div className="absolute inset-0 bg-glow-accent rounded-full pointer-events-none"></div>
            <div className="max-w-7xl mx-auto px-4 relative z-10">
              <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center md:text-left">
                 {[
